@@ -1,27 +1,43 @@
-import { PrioritizedListItem } from '../PrioritizedListItem/PrioritizedListItem';
-import {
-    Paper,
-    MenuList
-} from '@mui/material'
+import PrioritizedListItem from '../PrioritizedListItem/PrioritizedListItem';
+import { Paper, MenuList } from '@mui/material';
 
 function PrioritizedList(props) {
-    // sort functions go here
+	const {
+		qualifiedMembers, //array of members {available, callsign, dutyCount}
+		onSelect, //callback returning selected member {available, callsign, dutyCount}
+	} = props;
 
-    //sort by dutycount
+	function sortByDutyCount(members) {
+		return members.sort((a, b) => a.dutyCount - b.dutyCount);
+	}
 
-    //sort by availability
+	function sortByAvailability(members) {
+		return members.sort((a, b) => (a.available && !b.available ? -1 : 0));
+	}
 
-    const listComponents = qualifiedMembers.map( (qualifiedMember) => {
-        return <PrioritizedListItem callsign={qualifiedMember.callsign} count={qualifiedMember.dutyCount}></PrioritizedListItem>
-    });
+	function sortMembers(members) {
+		console.log(sortByDutyCount(members));
+		return sortByAvailability(sortByDutyCount(members));
+	}
 
-    return(
-        <Paper>
-            <MenuList>
-                { listComponents }
-            </MenuList>
-        </Paper>
-    );
-};
+	function renderListItems() {
+		return sortMembers(qualifiedMembers).map((qualifiedMember, i) => {
+			return (
+				<PrioritizedListItem
+					{...qualifiedMember}
+					onClick={() => {
+						onSelect(qualifiedMember);
+					}}
+					key={i}></PrioritizedListItem>
+			);
+		});
+	}
+
+	return (
+		<Paper>
+			<MenuList>{renderListItems()}</MenuList>
+		</Paper>
+	);
+}
 
 export default PrioritizedList;
