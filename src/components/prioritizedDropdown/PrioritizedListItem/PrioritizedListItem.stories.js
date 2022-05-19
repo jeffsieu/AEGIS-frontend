@@ -1,5 +1,7 @@
 import React from 'react';
 import PrioritizedListItem from './PrioritizedListItem';
+import { lightTheme } from 'hummingbird-ui';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default {
   title: 'Prioritized Dropdown/Prioritized List Item',
@@ -8,7 +10,15 @@ export default {
     available: {
       control: 'boolean'
     }
-  }
+  },
+  decorators: [
+    (Story) => (
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <Story />
+      </ThemeProvider>
+    ),
+  ],
 };
 
 const Template = (args) => <PrioritizedListItem {...args} />;

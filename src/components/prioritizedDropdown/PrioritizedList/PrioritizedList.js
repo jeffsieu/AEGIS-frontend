@@ -7,6 +7,10 @@ import {
 function PrioritizedList(props) {
     // sort functions go here
 
+    //sort by dutycount
+
+    //sort by availability
+
     const listComponents = qualifiedMembers.map( (qualifiedMember) => {
         return <PrioritizedListItem callsign={qualifiedMember.callsign} count={qualifiedMember.dutyCount}></PrioritizedListItem>
     });
