@@ -1,0 +1,1 @@
+constants go here i.e. roles
