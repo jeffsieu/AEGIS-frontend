@@ -1,8 +1,9 @@
 import { MenuItem, ListItemText, Typography } from '@mui/material';
 import { primary, neutrals } from 'hummingbird-ui';
+import LightTooltip from '../../tooltips/LightTooltip';
 
 function PrioritizedListItem(props) {
-	const { available, callsign, dutyCount, onClick } = props;
+	const { available, callsign, dutyCount, reason, onClick } = props;
 
 	if (available) {
 		return (
@@ -13,10 +14,12 @@ function PrioritizedListItem(props) {
 		);
 	} else {
 		return (
-			<MenuItem sx={{ color: neutrals[100] }} onClick={onClick}>
-				<ListItemText>{callsign} </ListItemText>
-				<Typography sx={{ ml: 5 }}>{dutyCount} </Typography>
-			</MenuItem>
+			<LightTooltip title={<>Unavailable due to <b>{reason}</b> </>} placement="right">
+				<MenuItem sx={{ color: neutrals[100] }} onClick={onClick}>
+					<ListItemText>{callsign} </ListItemText>
+					<Typography sx={{ ml: 5 }}>{dutyCount} </Typography>
+				</MenuItem>
+			</LightTooltip>
 		);
 	}
 }
