@@ -1,10 +1,10 @@
 import PrioritizedListItem from '../PrioritizedListItem/PrioritizedListItem';
-import { Paper, MenuList } from '@mui/material';
+import { Paper, MenuList, Popover } from '@mui/material';
 
 function PrioritizedList(props) {
 	const {
+		isOpen, onResolve, onReject, anchorEl,
 		qualifiedMembers, //array of members {available, callsign, dutyCount}
-		onSelect, //callback returning selected member {available, callsign, dutyCount}
 	} = props;
 
 	function sortByDutyCount(members) {
@@ -26,7 +26,7 @@ function PrioritizedList(props) {
 				<PrioritizedListItem
 					{...qualifiedMember}
 					onClick={() => {
-						onSelect(qualifiedMember);
+						onResolve(qualifiedMember);
 					}}
 					key={i}></PrioritizedListItem>
 			);
@@ -34,9 +34,17 @@ function PrioritizedList(props) {
 	}
 
 	return (
-		<Paper>
+		<Popover
+		open={isOpen}
+		anchorEl={anchorEl}
+		onClose={onReject}
+		anchorOrigin={{
+			vertical: 'bottom',
+			horizontal: 'left',
+		}}
+		>
 			<MenuList>{renderListItems()}</MenuList>
-		</Paper>
+		</Popover>
 	);
 }
 
