@@ -17,7 +17,7 @@ function PrioritizedList(props) {
     }
 
     function sortByAvailability(members) {
-      return [...members].sort((a, b) => a.available - b.available);
+      return [...members].sort((a, b) => b.available - a.available);
     }
 
     function sortMembers(members) {

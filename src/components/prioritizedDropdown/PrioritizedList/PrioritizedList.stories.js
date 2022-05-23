@@ -2,7 +2,7 @@ import React from 'react';
 import PrioritizedList from './PrioritizedList';
 import { lightTheme } from 'hummingbird-ui';
 import { ThemeProvider, CssBaseline, Button } from '@mui/material';
-import ModalContainer, { create } from 'react-modal-promise';
+import PrioritizedListPopOver from './PrioritizedListPopover';
 
 export default {
   title: 'Prioritized Dropdown/Prioritized List',
@@ -11,7 +11,6 @@ export default {
   decorators: [
     (Story) => (
       <ThemeProvider theme={lightTheme}>
-        <ModalContainer />
         <CssBaseline />
         <Story />
       </ThemeProvider>
@@ -20,13 +19,11 @@ export default {
 };
 
 const Template = (args) => {
-  const popover = create(PrioritizedList);
-  function openPopover(event) {
-    return popover({ ...args, anchorEl: event.currentTarget })
-      .then((res) => console.log(res))
-      .catch((rej) => console.log(rej));
-  }
-  return <Button onClick={openPopover}>Popover</Button>;
+  return (
+    <PrioritizedListPopOver {...args}>
+      {(openPopover) => <Button onClick={openPopover}>Open popover</Button>}
+    </PrioritizedListPopOver>
+  );
 };
 
 export const Main = Template.bind({});
