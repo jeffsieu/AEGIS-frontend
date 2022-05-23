@@ -1,9 +1,15 @@
-import { Button, Typography, createTheme, ThemeProvider } from '@mui/material';
-import { neutrals } from 'hummingbird-ui';
+import {
+  Button,
+  Typography,
+  createTheme,
+  ThemeProvider,
+  useTheme,
+} from '@mui/material';
 import PropTypes from 'prop-types';
 
 function ScheduleRowHeader(props) {
   const { roleName } = props;
+  const theme = useTheme();
   const customButtonTheme = createTheme({
     typography: {
       button: {
@@ -21,7 +27,7 @@ function ScheduleRowHeader(props) {
         disabled
         sx={{ justifyContent: 'left' }}
       >
-        <Typography color={neutrals[300]}>{roleName}</Typography>
+        <Typography color={theme.palette.text.secondary}>{roleName}</Typography>
       </Button>
     </ThemeProvider>
   );

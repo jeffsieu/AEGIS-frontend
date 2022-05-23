@@ -1,6 +1,5 @@
 import { Button, createTheme, ThemeProvider } from '@mui/material';
 import PropTypes from 'prop-types';
-import { neutrals } from 'hummingbird-ui';
 import { useTheme } from '@mui/material';
 import {
   COLOR_SCHEDULE_ITEM_FILLED,
@@ -19,10 +18,9 @@ function ScheduleItem(props) {
       warning: {
         main: COLOR_SCHEDULE_ITEM_PENDING,
       },
-      disabled: {},
       action: {
-        disabled: neutrals[100],
-        disabledBackground: neutrals[100],
+        disabled: 'transparent',
+        disabledBackground: theme.palette.action.disabledBackground,
       },
     },
     typography: {
@@ -52,11 +50,7 @@ function ScheduleItem(props) {
     } else {
       return (
         <ThemeProvider theme={customButtonTheme}>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: theme.palette.background.paper }}
-            disabled
-          >
+          <Button aria-hidden variant="contained" disabled>
             Empty {/* Placeholder text to ensure button height is correct */}
           </Button>
         </ThemeProvider>

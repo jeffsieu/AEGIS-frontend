@@ -5,9 +5,9 @@ import {
   styled,
   linearProgressClasses,
   IconButton,
+  useTheme,
 } from '@mui/material';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
-import { neutrals } from 'hummingbird-ui';
 
 import {
   COLOR_SCHEDULE_PROGRESS_BACKGROUND,
@@ -23,6 +23,8 @@ import './ScheduleHeader.css';
 
 function ScheduleHeader(props) {
   const { startDate, endDate, progress } = props;
+
+  const theme = useTheme();
 
   const startDateString = toShortenedDateString(startDate);
   const endDateString = toShortenedDateString(endDate);
@@ -58,7 +60,7 @@ function ScheduleHeader(props) {
     <Box display="flex" flexDirection="column" textAlign="center" gap={3}>
       <Box position="relative" sx={{ margin: 'auto' }}>
         <Typography variant="h2">{monthRangeString}</Typography>
-        <Typography variant="h5" color={neutrals[300]}>
+        <Typography variant="h5" color={theme.palette.text.secondary}>
           {dateRangeString}
         </Typography>
         <IconButton
@@ -66,14 +68,17 @@ function ScheduleHeader(props) {
           className="next-button"
           position="absolute"
           color="primary"
-          sx={{ position: 'absolute', backgroundColor: neutrals[100] }}
+          sx={{
+            position: 'absolute',
+            background: theme.palette.action.disabledBackground,
+          }}
         >
           <NavigateNextRoundedIcon />
         </IconButton>
       </Box>
       <Box display="flex" flexDirection="column" gap={1}>
         <BorderLinearProgress variant="determinate" value={progress} />
-        <Typography variant="h6" color={neutrals[200]}>
+        <Typography variant="h6" color={theme.palette.text.secondary}>
           {completionStatusString}
         </Typography>
       </Box>
