@@ -1,13 +1,13 @@
-import { MenuItem, ListItemText, Typography } from '@mui/material';
-import { primary, neutrals } from 'hummingbird-ui';
+import { MenuItem, ListItemText, Typography, useTheme } from '@mui/material';
 import LightTooltip from '../../tooltips/LightTooltip';
 
 function PrioritizedListItem(props) {
   const { available, callsign, dutyCount, reason, onClick } = props;
+  const theme = useTheme();
 
   if (available) {
     return (
-      <MenuItem sx={{ color: primary[400] }} onClick={onClick}>
+      <MenuItem sx={{ color: theme.palette.primary.main }} onClick={onClick}>
         <ListItemText>{callsign} </ListItemText>
         <Typography sx={{ ml: 5 }}>{dutyCount} </Typography>
       </MenuItem>
@@ -22,7 +22,10 @@ function PrioritizedListItem(props) {
         }
         placement="right"
       >
-        <MenuItem sx={{ color: neutrals[100] }} onClick={onClick}>
+        <MenuItem
+          sx={{ color: theme.palette.action.disabled }}
+          onClick={onClick}
+        >
           <ListItemText>{callsign} </ListItemText>
           <Typography sx={{ ml: 5 }}>{dutyCount} </Typography>
         </MenuItem>

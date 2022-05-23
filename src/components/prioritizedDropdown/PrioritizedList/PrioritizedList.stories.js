@@ -1,21 +1,11 @@
 import React from 'react';
 import PrioritizedList from './PrioritizedList';
-import { lightTheme } from 'hummingbird-ui';
-import { ThemeProvider, CssBaseline, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import PrioritizedListPopOver from './PrioritizedListPopover';
 
 export default {
   title: 'Prioritized Dropdown/Prioritized List',
   component: PrioritizedList,
-  argTypes: {},
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 };
 
 const Template = (args) => {
