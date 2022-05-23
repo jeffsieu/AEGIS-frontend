@@ -1,6 +1,4 @@
 import ScheduleRowHeaders from './ScheduleRowHeaders';
-import { lightTheme } from 'hummingbird-ui';
-import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default {
   title: 'Schedule/Schedule Row Headers',
@@ -13,14 +11,6 @@ export default {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 };
 
 const Template = (args) => <ScheduleRowHeaders {...args} />;

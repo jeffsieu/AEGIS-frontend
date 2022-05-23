@@ -1,6 +1,4 @@
 import ScheduleColumns from './ScheduleColumns';
-import { lightTheme } from 'hummingbird-ui';
-import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default {
   title: 'Schedule/Schedule Columns',
@@ -19,14 +17,6 @@ export default {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 };
 
 const Template = ({ date, ...restArgs }) => (

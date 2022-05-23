@@ -1,6 +1,4 @@
 import ScheduleTable from './ScheduleTable';
-import { lightTheme } from 'hummingbird-ui';
-import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default {
   title: 'Schedule/Schedule Table',
@@ -25,14 +23,6 @@ export default {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 };
 
 const Template = ({ startDate, endDate, ...restArgs }) => (

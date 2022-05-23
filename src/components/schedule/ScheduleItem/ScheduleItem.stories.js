@@ -1,18 +1,8 @@
 import ScheduleItem from './ScheduleItem';
-import { lightTheme } from 'hummingbird-ui';
-import { ThemeProvider, CssBaseline } from '@mui/material';
 
 export default {
   title: 'Schedule/Schedule Item',
   component: ScheduleItem,
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
   argTypes: {
     assignedCallsign: {
       control: 'text',
