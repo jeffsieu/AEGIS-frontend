@@ -1,5 +1,5 @@
 import { darkTheme, lightTheme } from 'hummingbird-ui';
-import { ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 export const parameters = {
   chromatic: { disableSnapshot: false },
@@ -22,6 +22,7 @@ export const decorators = [
     const theme = context.args.theme === 'light' ? lightTheme : darkTheme;
     return (
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Story />
       </ThemeProvider>
     );
