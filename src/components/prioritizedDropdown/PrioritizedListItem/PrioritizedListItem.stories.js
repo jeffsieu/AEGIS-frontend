@@ -8,8 +8,17 @@ export default {
   component: PrioritizedListItem,
   argTypes: {
     available: {
-      control: 'boolean'
-    }
+      control: false,
+    },
+    callsign: {
+      control: 'text',
+    },
+    dutyCount: {
+      control: 'number',
+    },
+    reason: {
+      control: 'text',
+    },
   },
   decorators: [
     (Story) => (
@@ -21,14 +30,23 @@ export default {
   ],
 };
 
-const Template = (args) => <PrioritizedListItem {...args} />;
+const Template = (args) => (
+  <div style={{ maxWidth: '50vw' }}>
+    <PrioritizedListItem {...args} />
+  </div>
+);
 
 export const Available = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Available.args = {
   available: true,
   callsign: 'Daniel',
-  dutyCount: 1
+  dutyCount: 1,
+};
+Available.argTypes = {
+  reason: {
+    control: false,
+  },
 };
 
 export const Unavailable = Template.bind({});
@@ -36,5 +54,6 @@ export const Unavailable = Template.bind({});
 Unavailable.args = {
   available: false,
   callsign: 'Daniel',
-  dutyCount: 1
+  dutyCount: 1,
+  reason: 'Medical Leave',
 };

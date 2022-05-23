@@ -1,27 +1,59 @@
-import { PrioritizedListItem } from '../PrioritizedListItem/PrioritizedListItem';
-import {
-    Paper,
-    MenuList
-} from '@mui/material'
+import { useMemo } from 'react';
+import PrioritizedListItem from '../PrioritizedListItem/PrioritizedListItem';
+import { MenuList, Popover } from '@mui/material';
 
 function PrioritizedList(props) {
-    // sort functions go here
+  const {
+    isOpen,
+    onResolve,
+    onReject,
+    anchorEl,
+    qualifiedMembers, //array of members {available, callsign, dutyCount}
+  } = props;
 
-    //sort by dutycount
+  const sortedMembers = useMemo(() => {
+    function sortByDutyCount(members) {
+      return [...members].sort((a, b) => a.dutyCount - b.dutyCount);
+    }
 
-    //sort by availability
+    function sortByAvailability(members) {
+      return [...members].sort((a, b) => b.available - a.available);
+    }
 
-    const listComponents = qualifiedMembers.map( (qualifiedMember) => {
-        return <PrioritizedListItem callsign={qualifiedMember.callsign} count={qualifiedMember.dutyCount}></PrioritizedListItem>
+    function sortMembers(members) {
+      return sortByAvailability(sortByDutyCount(members));
+    }
+
+    return sortMembers(qualifiedMembers);
+  }, [qualifiedMembers]);
+
+  function renderListItems() {
+    return sortedMembers.map((qualifiedMember, i) => {
+      return (
+        <PrioritizedListItem
+          {...qualifiedMember}
+          key={i}
+          onClick={() => {
+            onResolve(qualifiedMember);
+          }}
+        ></PrioritizedListItem>
+      );
     });
+  }
 
-    return(
-        <Paper>
-            <MenuList>
-                { listComponents }
-            </MenuList>
-        </Paper>
-    );
-};
+  return (
+    <Popover
+      open={isOpen}
+      onClose={onReject}
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        horizontal: 'left',
+        vertical: 'bottom',
+      }}
+    >
+      <MenuList>{renderListItems()}</MenuList>
+    </Popover>
+  );
+}
 
 export default PrioritizedList;
