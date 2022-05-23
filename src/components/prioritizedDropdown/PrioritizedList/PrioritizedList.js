@@ -1,51 +1,59 @@
+import { useMemo } from 'react';
 import PrioritizedListItem from '../PrioritizedListItem/PrioritizedListItem';
-import { Paper, MenuList, Popover } from '@mui/material';
+import { MenuList, Popover } from '@mui/material';
 
 function PrioritizedList(props) {
-	const {
-		isOpen, onResolve, onReject, anchorEl,
-		qualifiedMembers, //array of members {available, callsign, dutyCount}
-	} = props;
+  const {
+    isOpen,
+    onResolve,
+    onReject,
+    anchorEl,
+    qualifiedMembers, //array of members {available, callsign, dutyCount}
+  } = props;
 
-	function sortByDutyCount(members) {
-		return members.sort((a, b) => a.dutyCount - b.dutyCount);
-	}
+  const sortedMembers = useMemo(() => {
+    function sortByDutyCount(members) {
+      return [...members].sort((a, b) => a.dutyCount - b.dutyCount);
+    }
 
-	function sortByAvailability(members) {
-		return members.sort((a, b) => (a.available && !b.available ? -1 : 0));
-	}
+    function sortByAvailability(members) {
+      return [...members].sort((a, b) => a.available - b.available);
+    }
 
-	function sortMembers(members) {
-		console.log(sortByDutyCount(members));
-		return sortByAvailability(sortByDutyCount(members));
-	}
+    function sortMembers(members) {
+      return sortByAvailability(sortByDutyCount(members));
+    }
 
-	function renderListItems() {
-		return sortMembers(qualifiedMembers).map((qualifiedMember, i) => {
-			return (
-				<PrioritizedListItem
-					{...qualifiedMember}
-					onClick={() => {
-						onResolve(qualifiedMember);
-					}}
-					key={i}></PrioritizedListItem>
-			);
-		});
-	}
+    return sortMembers(qualifiedMembers);
+  }, [qualifiedMembers]);
 
-	return (
-		<Popover
-		open={isOpen}
-		anchorEl={anchorEl}
-		onClose={onReject}
-		anchorOrigin={{
-			vertical: 'bottom',
-			horizontal: 'left',
-		}}
-		>
-			<MenuList>{renderListItems()}</MenuList>
-		</Popover>
-	);
+  function renderListItems() {
+    return sortedMembers.map((qualifiedMember, i) => {
+      return (
+        <PrioritizedListItem
+          {...qualifiedMember}
+          key={i}
+          onClick={() => {
+            onResolve(qualifiedMember);
+          }}
+        ></PrioritizedListItem>
+      );
+    });
+  }
+
+  return (
+    <Popover
+      open={isOpen}
+      onClose={onReject}
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        horizontal: 'left',
+        vertical: 'bottom',
+      }}
+    >
+      <MenuList>{renderListItems()}</MenuList>
+    </Popover>
+  );
 }
 
 export default PrioritizedList;
