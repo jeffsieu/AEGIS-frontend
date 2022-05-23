@@ -77,7 +77,9 @@ function ScheduleHeader(props) {
         </IconButton>
       </Box>
       <Box display="flex" flexDirection="column" gap={1}>
-        <BorderLinearProgress variant="determinate" value={progress} />
+        <div class="progress-container">
+          <BorderLinearProgress variant="determinate" value={progress} />
+        </div>
         <Typography variant="h6" color={theme.palette.text.secondary}>
           {completionStatusString}
         </Typography>

@@ -3,3 +3,8 @@
   top: calc(50% - 24px);
   right: -72px
 }
+
+.progress-container {
+  width: min(max(40%, 30em), 100%);
+  margin: auto;
+}
