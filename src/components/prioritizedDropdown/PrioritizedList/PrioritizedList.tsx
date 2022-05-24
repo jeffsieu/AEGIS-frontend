@@ -8,6 +8,7 @@ import { QualifiedMember } from '@types';
 export type PrioritizedListProps = InstanceProps<QualifiedMember> &
   PopoverProps & {
     qualifiedMembers: QualifiedMember[];
+    selectedMember: QualifiedMember | null;
   };
 
 function PrioritizedList(props: PrioritizedListProps) {
@@ -36,6 +37,7 @@ function PrioritizedList(props: PrioritizedListProps) {
         <PrioritizedListItem
           {...qualifiedMember}
           key={i}
+          selected={qualifiedMember === props.selectedMember}
           onClick={() => {
             onResolve(qualifiedMember);
           }}

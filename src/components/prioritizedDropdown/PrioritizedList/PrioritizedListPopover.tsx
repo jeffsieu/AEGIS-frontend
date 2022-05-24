@@ -8,6 +8,7 @@ export type PrioritizedListPopoverProps = {
     openPopover: (event: React.MouseEvent<HTMLElement>) => void
   ) => React.ReactNode;
   qualifiedMembers: QualifiedMember[];
+  selectedMember: QualifiedMember | null;
 };
 
 function PrioritizedListPopover({

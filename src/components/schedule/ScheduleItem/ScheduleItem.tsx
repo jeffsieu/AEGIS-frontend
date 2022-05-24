@@ -45,7 +45,10 @@ function ScheduleItem(props: ScheduleItemProps) {
     const { qualifiedMembers, assignedMember } = props;
 
     return (
-      <PrioritizedListPopover qualifiedMembers={qualifiedMembers}>
+      <PrioritizedListPopover
+        qualifiedMembers={qualifiedMembers}
+        selectedMember={assignedMember}
+      >
         {(openPopover) => (
           <ThemeProvider theme={customButtonTheme}>
             {assignedMember !== null ? (
