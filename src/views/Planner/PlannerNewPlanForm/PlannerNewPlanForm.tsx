@@ -82,8 +82,8 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
           Roles
         </Typography>
         <Box display="flex" flexDirection="column" gap={2}>
-          {roles.map((role) => (
-            <Box display="flex" gap={8} alignItems="center">
+          {roles.map((role, index) => (
+            <Box key={index} display="flex" gap={8} alignItems="center">
               <Typography variant="h6">{role}</Typography>
               <MultiDatePicker
                 label="Dates"
