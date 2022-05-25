@@ -38,7 +38,8 @@ export type MultiDatePickerProps = {
 };
 
 function MultiDatePicker(
-  props: MultiDatePickerProps & DatePickerProps<Dayjs, Dayjs>
+  props: MultiDatePickerProps &
+    Partial<Omit<DatePickerProps<Dayjs, Dayjs>, 'value'>>
 ) {
   const { label, selection, onSelectionChanged, textFieldProps, ...restProps } =
     props;
