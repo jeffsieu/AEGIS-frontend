@@ -90,7 +90,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 minDate={minDate}
                 maxDate={maxDate}
                 defaultCalendarMonth={month}
-                onSelectionChanged={(selectedDates) => {
+                onSelectionChanged={(selectedDates: Dayjs[]) => {
                   setDateSelections({
                     ...dateSelections,
                     [role]: selectedDates,

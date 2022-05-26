@@ -4,7 +4,7 @@ import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';
 import { RequiredScheduleItemProps } from '@components/schedule/ScheduleItem/ScheduleItem';
-import { AvailableQualifiedMember, QualifiedMember, Role } from '@types';
+import { AvailableQualifiedMember, Role } from '@types';
 
 export type PlannerDraftsPageProps = {};
 

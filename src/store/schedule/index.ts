@@ -1,11 +1,10 @@
 import {
   RequiredScheduleItemProps,
-  ScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
-import { createNextState, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@store';
-import { AvailableQualifiedMember, QualifiedMember, Role } from '@types';
+import { AvailableQualifiedMember, Role } from '@types';
 import { iterateDates } from '@utils/helpers/schedule';
 
 export type DraftState = {
