@@ -22,3 +22,16 @@ export function toLongMonthString(date: Date): string {
     month: 'long',
   });
 }
+
+export function* iterateDates(
+  startDate: Date,
+  endDate: Date
+): IterableIterator<Date> {
+  for (
+    let currentDate = startDate;
+    currentDate <= endDate;
+    currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000)
+  ) {
+    yield currentDate;
+  }
+}

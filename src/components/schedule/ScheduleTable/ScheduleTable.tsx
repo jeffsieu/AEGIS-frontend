@@ -2,46 +2,46 @@ import { Box } from '@mui/material';
 import { useMemo } from 'react';
 import ScheduleColumns from '../ScheduleColumns/ScheduleColumns';
 import ScheduleRowHeaders from '../ScheduleRowHeaders/ScheduleRowHeaders';
-import { ScheduleItemProps } from '../ScheduleItem/ScheduleItem';
-import { Role } from '@types';
+import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
+import { AvailableQualifiedMember, Role } from '@types';
+import { iterateDates } from '@utils/helpers/schedule';
 
 export type ScheduleTableProps = {
   startDate: Date;
   endDate: Date;
   roles: Role[];
-  scheduleItemsByDay: ScheduleItemProps[][];
+  scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
+  onMemberSelected: (
+    date: Date,
+    role: Role,
+    member: AvailableQualifiedMember | null
+  ) => void;
 };
 
 function ScheduleTable(props: ScheduleTableProps) {
-  const { startDate, endDate, roles, scheduleItemsByDay } = props;
-
-  function* dateIterator(
-    startDate: Date,
-    endDate: Date
-  ): IterableIterator<Date> {
-    for (
-      let currentDate = startDate;
-      currentDate <= endDate;
-      currentDate = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000)
-    ) {
-      yield currentDate;
-    }
-  }
+  const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
+    props;
 
   const dates = useMemo(() => {
-    return [...dateIterator(startDate, endDate)];
+    return [...iterateDates(startDate, endDate)];
   }, [startDate, endDate]);
 
   return (
     <Box display="flex" gap={2}>
       <ScheduleRowHeaders roles={roles} />
-      <Box display="flex" gap={1}>
+      <Box display="flex" gap={1} sx={{ overflowX: 'auto' }}>
         {dates.map((date, index) => {
           return (
             <ScheduleColumns
               key={index}
               date={date}
-              scheduleItems={scheduleItemsByDay[index]}
+              scheduleItems={scheduleItemsByDay[index].map(
+                (scheduleItem, roleIndex) => ({
+                  ...scheduleItem,
+                  onMemberSelected: (member: AvailableQualifiedMember | null) =>
+                    onMemberSelected(date, roles[roleIndex], member),
+                })
+              )}
             />
           );
         })}

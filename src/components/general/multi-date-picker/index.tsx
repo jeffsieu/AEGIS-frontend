@@ -5,7 +5,7 @@ import {
   PickersDay,
   PickersDayProps,
 } from '@mui/x-date-pickers';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale';
 

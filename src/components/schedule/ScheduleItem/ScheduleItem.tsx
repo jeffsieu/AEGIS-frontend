@@ -7,15 +7,24 @@ import {
 import { AvailableQualifiedMember, QualifiedMember } from '@types';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
 
+export type RequiredScheduleItemProps = {
+  isRequired: true;
+  qualifiedMembers: QualifiedMember[];
+  assignedMember: AvailableQualifiedMember | null;
+  onMemberSelected: (member: AvailableQualifiedMember) => void;
+};
+
+export type NotRequiredScheduleItemProps = {
+  isRequired: false;
+};
+
 export type ScheduleItemProps =
-  | {
-      isRequired: true;
-      qualifiedMembers: QualifiedMember[];
-      assignedMember: AvailableQualifiedMember | null;
-    }
-  | {
-      isRequired: false;
-    };
+  | RequiredScheduleItemProps
+  | NotRequiredScheduleItemProps;
+
+export type ScheduleItemPropsWithoutCallback =
+  | Omit<RequiredScheduleItemProps, 'onMemberSelected'>
+  | NotRequiredScheduleItemProps;
 
 function ScheduleItem(props: ScheduleItemProps) {
   const { isRequired } = props;
@@ -42,10 +51,11 @@ function ScheduleItem(props: ScheduleItemProps) {
   });
 
   if (isRequired) {
-    const { qualifiedMembers, assignedMember } = props;
+    const { qualifiedMembers, assignedMember, onMemberSelected } = props;
 
     return (
       <PrioritizedListPopover
+        onMemberSelected={onMemberSelected}
         qualifiedMembers={qualifiedMembers}
         selectedMember={assignedMember}
       >

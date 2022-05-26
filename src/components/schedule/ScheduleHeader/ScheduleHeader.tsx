@@ -27,6 +27,18 @@ export type ScheduleHeaderProps = {
   progress: number;
 };
 
+const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 8,
+  borderRadius: 8,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: COLOR_SCHEDULE_PROGRESS_BACKGROUND,
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 8,
+    backgroundColor: COLOR_SCHEDULE_PROGRESS_BAR,
+  },
+}));
+
 function ScheduleHeader(props: ScheduleHeaderProps) {
   const { startDate, endDate, progress } = props;
 
@@ -46,18 +58,6 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
       : `${toShortenedMonthString(startDate)} - ${toShortenedMonthString(
           endDate
         )}`;
-
-  const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-    height: 16,
-    borderRadius: 16,
-    [`&.${linearProgressClasses.colorPrimary}`]: {
-      backgroundColor: COLOR_SCHEDULE_PROGRESS_BACKGROUND,
-    },
-    [`& .${linearProgressClasses.bar}`]: {
-      borderRadius: 16,
-      backgroundColor: COLOR_SCHEDULE_PROGRESS_BAR,
-    },
-  }));
 
   const completionStatusString = `${progress}% completed`;
 
@@ -83,7 +83,7 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
       </Box>
       <Box display="flex" flexDirection="column" gap={1}>
         <div className="progress-container">
-          <BorderLinearProgress variant="determinate" value={progress} />
+          <StyledLinearProgress variant="determinate" value={progress} />
         </div>
         <Typography variant="h6" color={theme.palette.text.secondary}>
           {completionStatusString}

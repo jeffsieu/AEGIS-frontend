@@ -1,35 +1,37 @@
 import { useCallback } from 'react';
 import PrioritizedList from './PrioritizedList';
 import ModalContainer, { create } from 'react-modal-promise';
-import { QualifiedMember } from '@types';
+import { AvailableQualifiedMember, QualifiedMember } from '@types';
 
 export type PrioritizedListPopoverProps = {
   children: (
     openPopover: (event: React.MouseEvent<HTMLElement>) => void
   ) => React.ReactNode;
   qualifiedMembers: QualifiedMember[];
-  selectedMember: QualifiedMember | null;
+  selectedMember: AvailableQualifiedMember | null;
+  onMemberSelected: (member: AvailableQualifiedMember) => void;
 };
 
 function PrioritizedListPopover({
   children,
+  onMemberSelected,
   ...restProps
 }: PrioritizedListPopoverProps) {
   const popover = create(PrioritizedList);
-
   const openPopover = useCallback(
     async (event: React.MouseEvent<HTMLElement>) => {
       try {
-        const res = await popover({
+        const selectedMember: AvailableQualifiedMember = await popover({
           ...restProps,
           anchorEl: event.currentTarget,
         });
-        return console.debug(res);
+        onMemberSelected(selectedMember);
+        return console.debug(selectedMember);
       } catch (rej) {
         return console.debug(rej);
       }
     },
-    [popover, restProps]
+    [popover, restProps, onMemberSelected]
   );
 
   return (

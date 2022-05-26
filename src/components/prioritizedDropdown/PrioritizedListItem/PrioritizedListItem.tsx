@@ -39,7 +39,6 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
       >
         <MenuItem
           sx={{ color: theme.palette.action.disabled }}
-          onClick={onClick}
           selected={selected}
         >
           <ListItemText
