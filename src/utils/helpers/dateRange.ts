@@ -34,7 +34,7 @@ export function displayDateRanges(dateRanges: DateRange[]) : string {
     }
 
     for (const [start, end] of dateRanges) {
-      if (start === end) {
+      if (start.isSame(end)) {
         displayString += start.format('D MMM YYYY');
       } else {
         const endString = end.format('D MMM YYYY');
