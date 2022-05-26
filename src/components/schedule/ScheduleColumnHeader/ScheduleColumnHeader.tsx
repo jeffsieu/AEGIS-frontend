@@ -1,8 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import {
-  toShortenedDateString,
-  toShortenedDayOfWeekString,
-} from '@utils/helpers/schedule';
+import { toShortenedDayOfWeekString } from '@utils/helpers/schedule';
 
 export type ScheduleColumnHeaderProps = {
   date: Date;
@@ -11,16 +8,14 @@ export type ScheduleColumnHeaderProps = {
 function ScheduleColumnHeader(props: ScheduleColumnHeaderProps) {
   const { date } = props;
 
-  const dayString = toShortenedDateString(date);
+  const dayString = date.getDate();
   const dayOfWeekString = toShortenedDayOfWeekString(date);
 
   return (
     <Box textAlign="center">
-      <Typography variant="subtitle2" gutterBottom>
+      <Typography variant="overline">{dayOfWeekString}</Typography>
+      <Typography variant="h6" gutterBottom>
         {dayString}
-      </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        ({dayOfWeekString})
       </Typography>
     </Box>
   );

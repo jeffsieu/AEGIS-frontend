@@ -13,7 +13,7 @@ function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
   return (
     <Box display="flex" flexDirection="column" justifyContent="end" gap={1}>
       <Box padding={1} display="flex" alignItems="center">
-        <Typography variant="subtitle1">Roles</Typography>
+        <Typography variant="overline">Roles</Typography>
         <IconButton>
           <FilterAltOutlinedIcon />
         </IconButton>
