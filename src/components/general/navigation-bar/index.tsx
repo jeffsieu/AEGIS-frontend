@@ -16,6 +16,7 @@ import './index.css';
 import { Close } from '@mui/icons-material';
 
 type NavigationBarProps = {
+  title: string;
   links: {
     label: string;
     onClick: () => void;
@@ -27,7 +28,7 @@ type NavigationBarProps = {
 };
 
 function NavigationBar(props: NavigationBarProps) {
-  const { links, actions } = props;
+  const { title, links, actions } = props;
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -45,19 +46,8 @@ function NavigationBar(props: NavigationBarProps) {
               }
             : undefined
         }
-        // color={theme.palette.mode === 'light' ? 'white' : undefined}
       >
-        {/* <Paper square> */}
-        <Toolbar
-          className="navigation-bar"
-          // display="flex"
-          // alignItems="center"
-          // justifyContent="space-between"
-          // paddingX={2}
-          // paddingY={1}
-          // className=".MuiPaper-elevation5"
-          // sx={{ backgroundColor: theme.palette.background.paper }}
-        >
+        <Toolbar className="navigation-bar">
           <Box
             display="flex"
             alignItems="center"
@@ -77,7 +67,7 @@ function NavigationBar(props: NavigationBarProps) {
                   <MenuIcon />
                 </IconButton>
               )}
-              <Typography variant="h6">AEGIS</Typography>
+              <Typography variant="h6">{title}</Typography>
             </Box>
             {isSmallScreen || (
               <div>
@@ -99,8 +89,6 @@ function NavigationBar(props: NavigationBarProps) {
             )}
           </Box>
         </Toolbar>
-
-        {/* </Paper> */}
       </AppBar>
       <CSSTransition
         in={isSmallScreen && open}
@@ -121,7 +109,6 @@ function NavigationBar(props: NavigationBarProps) {
               display="flex"
               flexDirection="column"
               alignItems="center"
-              // sx={{ backgroundColor: theme.palette.background.paper }}
               padding={2}
             >
               {links.map((link) => (
