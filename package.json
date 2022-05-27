@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3000",
-  "config-overrides-path": "node_modules/react-app-rewired/config-overrides.js",
   "dependencies": {
+    "@craco/craco": "^6.4.3",
     "@date-io/dayjs": "^2.14.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -29,10 +29,10 @@
     "**/@emotion/styled": "11.0.0"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-app-rewired eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
   },
@@ -81,8 +81,6 @@
     "@types/react-dom": "^18.0.4",
     "babel-plugin-named-exports-order": "0.0.2",
     "prop-types": "^15.8.1",
-    "react-app-rewire-alias": "^1.1.7",
-    "react-app-rewired": "^2.2.1",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.6.4",
     "webpack": "^5.72.1"
