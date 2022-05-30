@@ -56,7 +56,7 @@ function NavigationBar(props: NavigationBarProps) {
               justifyContent="space-between"
               flexGrow="1"
             >
-              <Box display="flex" alignItems="center">
+              <Box display="flex" alignItems="center" gap={6}>
                 {isSmallScreen && (
                   <IconButton
                     size="large"
@@ -70,16 +70,19 @@ function NavigationBar(props: NavigationBarProps) {
                   </IconButton>
                 )}
                 <Typography variant="h6">{title}</Typography>
+                {isSmallScreen || (
+                  <div>
+                    {links.map((link) => (
+                      <Button
+                        sx={{ fontWeight: 'bold' }}
+                        onClick={link.onClick}
+                      >
+                        {link.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
               </Box>
-              {isSmallScreen || (
-                <div>
-                  {links.map((link) => (
-                    <Button sx={{ fontWeight: 'bold' }} onClick={link.onClick}>
-                      {link.label}
-                    </Button>
-                  ))}
-                </div>
-              )}
               {isSmallScreen || (
                 <div>
                   {actions.map((action) => (
