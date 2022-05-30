@@ -20,6 +20,9 @@ export const args = { theme: 'light' };
 export const decorators = [
   (Story, context) => {
     const theme = context.args.theme === 'light' ? lightTheme : darkTheme;
+    theme.typography.button.textTransform = 'none';
+    theme.typography.button.fontWeight = 'bold';
+
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
