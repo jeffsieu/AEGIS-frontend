@@ -9,6 +9,10 @@
 	top: 10px;
 }
 
+.nav-bar .middle{
+	padding-top: 10px;
+}
+
 .nav-bar .left .title{
 	padding-left: 20px;
 }
