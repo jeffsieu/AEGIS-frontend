@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   Button,
+  Container,
   IconButton,
   Paper,
   Toolbar,
@@ -47,47 +48,49 @@ function NavigationBar(props: NavigationBarProps) {
             : undefined
         }
       >
-        <Toolbar className="navigation-bar">
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            flexGrow="1"
-          >
-            <Box display="flex" alignItems="center">
-              {isSmallScreen && (
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                  onClick={() => setOpen(!open)}
-                >
-                  <MenuIcon />
-                </IconButton>
+        <Toolbar className="navigation-bar" disableGutters>
+          <Container>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              flexGrow="1"
+            >
+              <Box display="flex" alignItems="center">
+                {isSmallScreen && (
+                  <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={() => setOpen(!open)}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                )}
+                <Typography variant="h6">{title}</Typography>
+              </Box>
+              {isSmallScreen || (
+                <div>
+                  {links.map((link) => (
+                    <Button sx={{ fontWeight: 'bold' }} onClick={link.onClick}>
+                      {link.label}
+                    </Button>
+                  ))}
+                </div>
               )}
-              <Typography variant="h6">{title}</Typography>
+              {isSmallScreen || (
+                <div>
+                  {actions.map((action) => (
+                    <Button variant="contained" onClick={action.onClick}>
+                      {action.label}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </Box>
-            {isSmallScreen || (
-              <div>
-                {links.map((link) => (
-                  <Button sx={{ fontWeight: 'bold' }} onClick={link.onClick}>
-                    {link.label}
-                  </Button>
-                ))}
-              </div>
-            )}
-            {isSmallScreen || (
-              <div>
-                {actions.map((action) => (
-                  <Button variant="contained" onClick={action.onClick}>
-                    {action.label}
-                  </Button>
-                ))}
-              </div>
-            )}
-          </Box>
+          </Container>
         </Toolbar>
       </AppBar>
       <CSSTransition
