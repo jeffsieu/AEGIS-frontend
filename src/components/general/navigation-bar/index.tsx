@@ -57,19 +57,21 @@ function NavigationBar(props: NavigationBarProps) {
               flexGrow="1"
             >
               <Box display="flex" alignItems="center" gap={6}>
-                {isSmallScreen && (
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                    onClick={() => setOpen(!open)}
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                )}
-                <Typography variant="h6">{title}</Typography>
+                <Box display="flex" alignItems="center">
+                  {isSmallScreen && (
+                    <IconButton
+                      size="large"
+                      edge="start"
+                      color="inherit"
+                      aria-label="menu"
+                      sx={{ mr: 2 }}
+                      onClick={() => setOpen(!open)}
+                    >
+                      <MenuIcon />
+                    </IconButton>
+                  )}
+                  <Typography variant="h6">{title}</Typography>
+                </Box>
                 {isSmallScreen || (
                   <div>
                     {links.map((link) => (
