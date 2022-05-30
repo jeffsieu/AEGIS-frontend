@@ -10,15 +10,33 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { RootState } from '@store';
+import {
+  getMonthsToPlan,
+  getNextMonthToPlan,
+  getRoles,
+} from '@store/schedule/general';
 import { Role } from '@types';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
+import { connect } from 'react-redux';
 
 export type PlannerNewPlanFormProps = {
   roles: Role[];
   defaultMonth: Dayjs;
   months: Dayjs[];
 };
+
+function mapStateToProps(state: RootState): PlannerNewPlanFormProps {
+  const defaultMonth = getNextMonthToPlan(state);
+  const months = getMonthsToPlan(state).map((date) => dayjs(date));
+  return {
+    roles: getRoles(state),
+    defaultMonth:
+      months.find((month) => month.isSame(defaultMonth, 'month')) ?? months[0],
+    months: months,
+  };
+}
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
   const { roles, defaultMonth, months } = props;
@@ -67,7 +85,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 key={index}
                 value={month as unknown as string /* Workaround */}
               >
-                {month.format('MMMM')}
+                {month.format('MMMM YYYY')}
               </MenuItem>
             ))}
           </Select>
@@ -109,4 +127,5 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
   );
 }
 
-export default PlannerNewPlanForm;
+export default connect(mapStateToProps)(PlannerNewPlanForm);
+export { PlannerNewPlanForm as PlannerNewPlanFormWithoutStore };

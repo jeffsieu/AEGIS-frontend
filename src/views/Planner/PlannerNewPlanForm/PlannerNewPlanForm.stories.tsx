@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import PlannerNewPlanForm from './PlannerNewPlanForm';
+import { PlannerNewPlanFormWithoutStore as PlannerNewPlanForm } from './PlannerNewPlanForm';
 import React from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

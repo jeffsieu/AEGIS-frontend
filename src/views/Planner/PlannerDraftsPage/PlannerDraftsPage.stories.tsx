@@ -1,7 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import { Provider } from 'react-redux';
 import PlannerDraftsPage from './PlannerDraftsPage';
-import { createDraftSlice, DraftState } from '@store/schedule';
+import { createDraftSlice, DraftState } from '@store/schedule/draft';
 import dayjs from 'dayjs';
 import { configureStore } from '@reduxjs/toolkit';
 import { iterateDates } from '@utils/helpers/schedule';

@@ -1,5 +1,6 @@
 import { darkTheme, lightTheme } from 'hummingbird-ui';
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { MemoryRouter } from 'react-router-dom';
 
 export const parameters = {
   chromatic: { disableSnapshot: false },
@@ -26,7 +27,9 @@ export const decorators = [
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Story />
+        <MemoryRouter>
+          <Story />
+        </MemoryRouter>
       </ThemeProvider>
     );
   },

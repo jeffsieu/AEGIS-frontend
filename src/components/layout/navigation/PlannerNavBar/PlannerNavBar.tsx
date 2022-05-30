@@ -1,31 +1,43 @@
+import { useNavigate } from 'react-router-dom';
 import NavigationBar from '@components/general/navigation-bar';
 
 function PlannerNavBar() {
+  const navigate = useNavigate();
   return (
     <NavigationBar
       title={'AEGIS | Planner'}
       links={[
         {
           label: 'Home',
-          onClick: () => {},
+          onClick: () => {
+            navigate('/planner');
+          },
         },
         {
           label: 'Published',
-          onClick: () => {},
+          onClick: () => {
+            navigate('/planner/published');
+          },
         },
         {
           label: 'Drafts',
-          onClick: () => {},
+          onClick: () => {
+            navigate('/planner/drafts');
+          },
         },
         {
           label: 'Members',
-          onClick: () => {},
+          onClick: () => {
+            navigate('/planner/members');
+          },
         },
       ]}
       actions={[
         {
           label: 'New plan',
-          onClick: () => {},
+          onClick: () => {
+            navigate('/planner/new-plan');
+          },
         },
       ]}
     ></NavigationBar>

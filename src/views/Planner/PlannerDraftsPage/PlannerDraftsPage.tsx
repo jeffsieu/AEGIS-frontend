@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { assign, getScheduleItemsByDay } from '@store/schedule';
+import { assign, getScheduleItemsByDay } from '@store/schedule/draft';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';

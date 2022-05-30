@@ -31,8 +31,6 @@ export const createDraftSlice = (initialState: DraftState) => {
     reducers: {
       assign: (state: DraftState, action: PayloadAction<AssignPayload>) => {
         const { date, role, member } = action.payload;
-        console.log(date.toDateString(), role, member);
-        console.log(state.scheduleItems);
         const roleMap = state.scheduleItems[date.toDateString()]!;
 
         if (!roleMap[role].isRequired) {
