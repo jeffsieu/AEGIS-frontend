@@ -89,6 +89,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 label="Dates"
                 minDate={minDate}
                 maxDate={maxDate}
+                views={['day']}
                 defaultCalendarMonth={month}
                 onSelectionChanged={(selectedDates: Dayjs[]) => {
                   setDateSelections({

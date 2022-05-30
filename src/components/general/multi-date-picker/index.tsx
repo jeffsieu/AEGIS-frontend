@@ -1,14 +1,30 @@
-import { styled, TextField, TextFieldProps } from '@mui/material';
 import {
-  DatePicker,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Popover,
+  styled,
+  TextField,
+  TextFieldProps,
+} from '@mui/material';
+import {
+  StaticDatePicker,
   DatePickerProps,
   PickersDay,
   PickersDayProps,
 } from '@mui/x-date-pickers';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { displayDateRanges, getDateRanges } from '@utils/helpers/dateRange';
+import {
+  DateRangeOutlined,
+  SelectAllOutlined,
+  Clear,
+} from '@mui/icons-material';
+import { iterateDates } from '@utils/helpers/schedule';
 
 dayjs.extend(updateLocale);
 dayjs.updateLocale('en', {
@@ -35,6 +51,8 @@ export type MultiDatePickerProps = {
   label: string;
   onSelectionChanged: (selectedDates: Dayjs[]) => void;
   selection: Dayjs[];
+  minDate: Dayjs;
+  maxDate: Dayjs;
   textFieldProps?: Partial<TextFieldProps>;
 };
 
@@ -42,8 +60,15 @@ function MultiDatePicker(
   props: MultiDatePickerProps &
     Partial<Omit<DatePickerProps<Dayjs, Dayjs>, 'value'>>
 ) {
-  const { label, selection, onSelectionChanged, textFieldProps, ...restProps } =
-    props;
+  const {
+    label,
+    selection,
+    onSelectionChanged,
+    textFieldProps,
+    minDate,
+    maxDate,
+    ...restProps
+  } = props;
 
   function onChange(newValue: Dayjs | null) {
     if (newValue) {
@@ -81,27 +106,113 @@ function MultiDatePicker(
 
   const dateRanges = useMemo(() => getDateRanges(selection), [selection]);
 
-  const displayString = useMemo(() => displayDateRanges(dateRanges), [dateRanges]);
+  const displayString = useMemo(
+    () => displayDateRanges(dateRanges),
+    [dateRanges]
+  );
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  function onDialogClose() {
+    setShowDialog(false);
+    setAnchorEl(null);
+  }
 
   return (
     <>
-      <DatePicker
-        {...restProps}
-        onChange={onChange}
-        value={null}
-        closeOnSelect={false}
-        renderInput={({ value, ...params }) => (
-          <TextField
-            {...params}
-            label={label}
-            value=""
-            error={false}
-            inputProps={{ value: displayString }}
-            {...textFieldProps}
-          />
-        )}
-        renderDay={renderPickerDay}
+      <TextField
+        aria-describedby="text-field"
+        label={label}
+        value=""
+        error={false}
+        inputProps={{ value: displayString }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                  setShowDialog(true);
+                  setAnchorEl(
+                    event.currentTarget.parentElement!.parentElement!
+                      .parentElement
+                  );
+                }}
+              >
+                <DateRangeOutlined />
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+        {...textFieldProps}
       />
+      <Popover
+        id="text-field"
+        open={showDialog}
+        anchorEl={anchorEl}
+        onClose={onDialogClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <StaticDatePicker
+          displayStaticWrapperAs="desktop"
+          {...restProps}
+          onChange={onChange}
+          value={null}
+          closeOnSelect={false}
+          renderInput={({ value, ...params }) => (
+            <TextField
+              {...params}
+              label={label}
+              value=""
+              error={false}
+              inputProps={{ value: displayString }}
+              {...textFieldProps}
+            />
+          )}
+          renderDay={renderPickerDay}
+        />
+        <Box display="flex" flexDirection="column" alignItems="end">
+          <Box display="flex" gap={1} padding={2}>
+            <Button
+              variant="outlined"
+              startIcon={<SelectAllOutlined />}
+              size="small"
+              onClick={() => {
+                onSelectionChanged(
+                  [...iterateDates(minDate.toDate(), maxDate.toDate())].map(
+                    (date) => dayjs(date)
+                  )
+                );
+              }}
+            >
+              Select all
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Clear />}
+              size="small"
+              onClick={() => {
+                onSelectionChanged([]);
+              }}
+            >
+              Clear
+            </Button>
+          </Box>
+          <Divider style={{ width: '100%' }} />
+          <Box display="flex" gap={1} padding={2}>
+            <Button variant="contained" onClick={onDialogClose}>
+              Ok
+            </Button>
+          </Box>
+        </Box>
+      </Popover>
     </>
   );
 }
