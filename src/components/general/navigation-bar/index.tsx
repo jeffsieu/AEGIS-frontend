@@ -35,6 +35,30 @@ function NavigationBar(props: NavigationBarProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const linkButtons = links.map((link) => (
+    <Button
+      sx={{ fontWeight: 'bold' }}
+      onClick={() => {
+        link.onClick();
+        setOpen(false);
+      }}
+    >
+      {link.label}
+    </Button>
+  ));
+
+  const actionButtons = actions.map((action) => (
+    <Button
+      variant="contained"
+      onClick={() => {
+        action.onClick();
+        setOpen(false);
+      }}
+    >
+      {action.label}
+    </Button>
+  ));
+
   return (
     <div>
       <AppBar
@@ -72,28 +96,9 @@ function NavigationBar(props: NavigationBarProps) {
                   )}
                   <Typography variant="h6">{title}</Typography>
                 </Box>
-                {isSmallScreen || (
-                  <div>
-                    {links.map((link) => (
-                      <Button
-                        sx={{ fontWeight: 'bold' }}
-                        onClick={link.onClick}
-                      >
-                        {link.label}
-                      </Button>
-                    ))}
-                  </div>
-                )}
+                {isSmallScreen || <div>{linkButtons}</div>}
               </Box>
-              {isSmallScreen || (
-                <div>
-                  {actions.map((action) => (
-                    <Button variant="contained" onClick={action.onClick}>
-                      {action.label}
-                    </Button>
-                  ))}
-                </div>
-              )}
+              {isSmallScreen || <div>{actionButtons}</div>}
             </Box>
           </Container>
         </Toolbar>
@@ -119,17 +124,9 @@ function NavigationBar(props: NavigationBarProps) {
               alignItems="center"
               padding={2}
             >
-              {links.map((link) => (
-                <Button sx={{ fontWeight: 'bold' }} onClick={link.onClick}>
-                  {link.label}
-                </Button>
-              ))}
+              {linkButtons}
               <Box mt={2} />
-              {actions.map((action) => (
-                <Button variant="contained" onClick={action.onClick}>
-                  {action.label}
-                </Button>
-              ))}
+              {actionButtons}
               <Box width="100%" textAlign="right">
                 <IconButton
                   onClick={() => {
