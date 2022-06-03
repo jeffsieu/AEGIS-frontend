@@ -1,0 +1,19 @@
+.landing-container{
+	min-height: 80vh;
+	width: calc(100vw - 50px) !important;
+	max-width: 1200px;
+	text-align: center;
+}
+
+.landing-container div{
+	width: 100%;
+}
+
+.landing-container h1{
+	font-size: 5em;
+	font-weight: 900;
+}
+
+.landing-container button{
+	font-size: large;
+}
