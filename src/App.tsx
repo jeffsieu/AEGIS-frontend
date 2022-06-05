@@ -3,13 +3,7 @@ import NavBar from '@components/layout/navigation/NavBar';
 import PlannerHomePage from '@views/Planner/PlannerHomePage/PlannerHomePage';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { lightTheme } from 'hummingbird-ui';
-import {
-  Box,
-  Container,
-  CssBaseline,
-  ThemeProvider,
-  Toolbar,
-} from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import PlannerNewPlanForm from '@views/Planner/PlannerNewPlanForm/PlannerNewPlanForm';
@@ -25,10 +19,7 @@ function AnimatedRoutes() {
 
   return (
     <>
-      <Box position="fixed" width="100%">
-        <NavBar />
-      </Box>
-      <Toolbar sx={{ pointerEvents: 'none' }} />
+      <NavBar />
       {/* Transparent toolbar to fix navbar overlap */}
       <TransitionGroup component={null}>
         <CSSTransition

@@ -4,7 +4,7 @@ import {
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@store';
-import { AvailableQualifiedMember, Role, Schedule } from '@typing';
+import { AvailableQualifiedMember, Role } from '@typing';
 import { iterateDates } from '@utils/helpers/schedule';
 
 export type DraftState = {

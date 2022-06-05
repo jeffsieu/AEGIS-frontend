@@ -7,7 +7,7 @@ import {
   TableRow,
   TableBody,
 } from '@mui/material';
-import { DateRange, displayDateRanges } from '@utils/helpers/dateRange';
+import { DateRange, dateRangesToString } from '@utils/helpers/dateRange';
 
 export type Request = {
   callsign: string;
@@ -45,7 +45,7 @@ export default function RequestsTable(props: RequestsTableProps) {
         {requests.map((request) => (
           <TableRow>
             <TableCell>{request.callsign}</TableCell>
-            <TableCell>{displayDateRanges(request.dates)}</TableCell>
+            <TableCell>{dateRangesToString(request.dates)}</TableCell>
             <TableCell>{request.reason}</TableCell>
           </TableRow>
         ))}

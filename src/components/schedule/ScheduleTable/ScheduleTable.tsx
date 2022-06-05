@@ -16,11 +16,18 @@ export type ScheduleTableProps = {
     role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
+  header?: React.ReactElement;
 };
 
 function ScheduleTable(props: ScheduleTableProps) {
-  const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
-    props;
+  const {
+    startDate,
+    endDate,
+    roles,
+    scheduleItemsByDay,
+    onMemberSelected,
+    header,
+  } = props;
 
   const dates = useMemo(() => {
     return [...iterateDates(startDate, endDate)];
@@ -29,22 +36,26 @@ function ScheduleTable(props: ScheduleTableProps) {
   return (
     <Box display="flex" gap={2}>
       <ScheduleRowHeaders roles={roles} />
-      <Box display="flex" gap={1} sx={{ overflowX: 'auto' }}>
-        {dates.map((date, index) => {
-          return (
-            <ScheduleColumns
-              key={index}
-              date={date}
-              scheduleItems={scheduleItemsByDay[index].map(
-                (scheduleItem, roleIndex) => ({
-                  ...scheduleItem,
-                  onMemberSelected: (member: AvailableQualifiedMember | null) =>
-                    onMemberSelected(date, roles[roleIndex], member),
-                })
-              )}
-            />
-          );
-        })}
+      <Box display="flex" flexDirection="column">
+        {header}
+        <Box display="flex" gap={1} sx={{ overflowX: 'auto' }}>
+          {dates.map((date, index) => {
+            return (
+              <ScheduleColumns
+                key={index}
+                date={date}
+                scheduleItems={scheduleItemsByDay[index].map(
+                  (scheduleItem, roleIndex) => ({
+                    ...scheduleItem,
+                    onMemberSelected: (
+                      member: AvailableQualifiedMember | null
+                    ) => onMemberSelected(date, roles[roleIndex], member),
+                  })
+                )}
+              />
+            );
+          })}
+        </Box>
       </Box>
     </Box>
   );

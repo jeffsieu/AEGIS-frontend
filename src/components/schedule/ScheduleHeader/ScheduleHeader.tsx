@@ -13,11 +13,7 @@ import {
   COLOR_SCHEDULE_PROGRESS_BACKGROUND,
   COLOR_SCHEDULE_PROGRESS_BAR,
 } from '../../../utils/constants/schedule';
-import {
-  toShortenedDateString,
-  toShortenedMonthString,
-  toLongMonthString,
-} from '../../../utils/helpers/schedule';
+import { toShortenedDateString } from '../../../utils/helpers/schedule';
 
 import './ScheduleHeader.css';
 import { dateRangeToString } from '@utils/helpers/dateRange';
@@ -48,9 +44,6 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
   const startDateString = toShortenedDateString(startDate);
   const endDateString = toShortenedDateString(endDate);
   const dateRangeString = `${startDateString} - ${endDateString}`;
-
-  const startMonthString = toLongMonthString(startDate);
-  const endMonthString = toLongMonthString(endDate);
 
   // Either show "January" or "Jan - Feb".
   const monthRangeString = dateRangeToString([startDate, endDate], 'MMM YYYY');

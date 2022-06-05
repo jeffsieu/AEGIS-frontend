@@ -27,12 +27,10 @@ export const createMockScheduleItems = (
   roles: Role[]
 ): ScheduleItemPropsWithoutCallback[][] => {
   const scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][] = [];
-  for (const [dayIndex, date] of [
-    ...iterateDates(startDate, endDate),
-  ].entries()) {
+  for (const [dayIndex] of [...iterateDates(startDate, endDate)].entries()) {
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
     scheduleItemsByDay.push(scheduleItemsForDate);
-    for (const [roleIndex, role] of roles.entries()) {
+    for (const [roleIndex] of roles.entries()) {
       scheduleItemsForDate.push({
         isRequired: roleIndex <= 1 || dayIndex % 3 === 0,
         qualifiedMembers: MOCK_QUALIFIED_MEMBERS,

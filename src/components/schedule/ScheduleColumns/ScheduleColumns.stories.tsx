@@ -33,6 +33,7 @@ Default.args = {
   scheduleItems: [
     {
       isRequired: false,
+      assignedMember: null,
     },
     {
       isRequired: true,

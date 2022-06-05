@@ -3,16 +3,17 @@ import { PlannerNewPlanFormWithProps } from './PlannerNewPlanForm';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { Decorators } from '@utils/storybook/decorators';
 
 export default {
   title: 'Planner/New Plan Form',
   component: PlannerNewPlanFormWithProps,
+  parameters: {
+    layout: 'fullscreen',
+  },
   decorators: [
-    (Story: any) => (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Story />
-      </LocalizationProvider>
-    ),
+    Decorators.dateLocalizationProvider,
+    Decorators.plannerContainerDecorator,
   ],
 };
 

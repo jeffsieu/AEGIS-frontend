@@ -3,7 +3,7 @@ import HomeLanding from '@components/general/home-landing';
 function PlannerHomePage() {
   return (
     <div>
-			<HomeLanding/>
+      <HomeLanding />
     </div>
   );
 }

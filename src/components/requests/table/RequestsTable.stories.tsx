@@ -1,7 +1,4 @@
 import { ComponentStory } from '@storybook/react';
-import { AvailableQualifiedMember } from '@typing';
-import { MOCK_QUALIFIED_MEMBERS } from '@utils/mock-data/schedule';
-import dayjs from 'dayjs';
 import RequestsTable from './RequestsTable';
 
 export default {
@@ -11,13 +8,27 @@ export default {
 };
 
 const Template: ComponentStory<typeof RequestsTable> = (args) => (
-  <RequestsTable {...args}/>
+  <RequestsTable {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-	requests: [
-		{callsign: "Upin", dates: [[dayjs('2022-05-01'),dayjs('2022-05-01')], [dayjs('2022-05-02'), dayjs('2022-05-05')]], reason: "Chao geng"},
-		{callsign: "Ipin", dates: [[dayjs('2022-05-01'),dayjs('2022-05-01')], [dayjs('2022-05-02'), dayjs('2022-05-05')]], reason: "Go back to village, approved by OC"}
-	]
+  requests: [
+    {
+      callsign: 'Upin',
+      dates: [
+        [new Date('2022-05-01'), new Date('2022-05-01')],
+        [new Date('2022-05-02'), new Date('2022-05-05')],
+      ],
+      reason: 'Chao geng',
+    },
+    {
+      callsign: 'Ipin',
+      dates: [
+        [new Date('2022-05-01'), new Date('2022-05-01')],
+        [new Date('2022-05-02'), new Date('2022-05-05')],
+      ],
+      reason: 'Go back to village, approved by OC',
+    },
+  ],
 };

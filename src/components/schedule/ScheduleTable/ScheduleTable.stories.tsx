@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import { AvailableQualifiedMember } from '@typing';
 import { MOCK_QUALIFIED_MEMBERS } from '@utils/mock-data/schedule';
+import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
 import ScheduleTable from './ScheduleTable';
 
 export default {
@@ -57,7 +58,7 @@ Default.args = {
                   member.isAvailable
               )!
             : null,
-      };
+      } as ScheduleItemPropsWithoutCallback;
     })
   ),
 };

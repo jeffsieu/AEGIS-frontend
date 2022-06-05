@@ -1,9 +1,11 @@
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { assign, getScheduleItemsByDay } from '@store/schedule/draft';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';
-import { RequiredScheduleItemProps, ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
+import {
+  RequiredScheduleItemProps,
+  ScheduleItemPropsWithoutCallback,
+} from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
 import { AppDispatch, RootState } from '@store';
 import { connect } from 'react-redux';
@@ -23,14 +25,15 @@ export type PlannerDraftsPageDispatchProps = {
   ) => void;
 };
 
-export type PlannerDraftsPageProps = PlannerDraftsPageStateProps & PlannerDraftsPageDispatchProps;
+export type PlannerDraftsPageProps = PlannerDraftsPageStateProps &
+  PlannerDraftsPageDispatchProps;
 
 function mapStateToProps(state: RootState): PlannerDraftsPageStateProps {
   const startDate = state.draft.startDate;
   const endDate = state.draft.endDate;
   const roles = state.draft.roles;
   const scheduleItemsByDay = getScheduleItemsByDay(state);
-  
+
   return {
     startDate,
     endDate,
@@ -39,16 +42,23 @@ function mapStateToProps(state: RootState): PlannerDraftsPageStateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: AppDispatch): PlannerDraftsPageDispatchProps {
+function mapDispatchToProps(
+  dispatch: AppDispatch
+): PlannerDraftsPageDispatchProps {
   return {
-    onMemberSelected: (date: Date, role: Role, member: AvailableQualifiedMember | null) => {
+    onMemberSelected: (
+      date: Date,
+      role: Role,
+      member: AvailableQualifiedMember | null
+    ) => {
       dispatch(assign({ date, role, member }));
     },
   };
 }
 
 function PlannerDraftsPage(props: PlannerDraftsPageProps) {
-  const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } = props;
+  const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
+    props;
 
   const totalRequiredItemsCount = scheduleItemsByDay.reduce(
     (acc, dayScheduleItems) =>
@@ -71,7 +81,7 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={8}>
-      <Box position="absolute" right={0} padding="16px" display="flex" gap={1}>
+      <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
         <Button
           variant="contained"

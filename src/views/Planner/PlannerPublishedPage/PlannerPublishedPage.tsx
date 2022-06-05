@@ -1,5 +1,13 @@
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
-import { Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  darken,
+  lighten,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { AppDispatch, RootState } from '@store';
 import { AvailableQualifiedMember, Schedule } from '@typing';
 import { dateRangeToString } from '@utils/helpers/dateRange';
@@ -7,10 +15,14 @@ import { connect } from 'react-redux';
 
 export type PlannerPublishedPageStateProps = {
   schedules: Schedule[];
-}
+};
 
 export type PlannerPublishedPageDispatchProps = {
-  onMemberSelected: (date: Date, role: string, member: AvailableQualifiedMember | null) => void;
+  onMemberSelected: (
+    date: Date,
+    role: string,
+    member: AvailableQualifiedMember | null
+  ) => void;
 };
 
 function mapStateToProps(state: RootState): PlannerPublishedPageStateProps {
@@ -19,32 +31,74 @@ function mapStateToProps(state: RootState): PlannerPublishedPageStateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: AppDispatch): PlannerPublishedPageDispatchProps {
+function mapDispatchToProps(
+  dispatch: AppDispatch
+): PlannerPublishedPageDispatchProps {
   return {
-    onMemberSelected: (date: Date, role: string, member: AvailableQualifiedMember | null) => {
-    }
-  }
+    onMemberSelected: (
+      date: Date,
+      role: string,
+      member: AvailableQualifiedMember | null
+    ) => {
+      // TODO: Add action
+    },
+  };
 }
 
-export type PlannerPublishedPageProps = PlannerPublishedPageStateProps & PlannerPublishedPageDispatchProps;
+export type PlannerPublishedPageProps = PlannerPublishedPageStateProps &
+  PlannerPublishedPageDispatchProps;
 
 function PlannerPublishedPage(props: PlannerPublishedPageProps) {
   const { schedules, onMemberSelected } = props;
 
+  const theme = useTheme();
+  const cardColor =
+    theme.palette.mode === 'light'
+      ? darken(theme.palette.background.paper, 0.05)
+      : lighten(theme.palette.background.paper, 0.1);
+
   return (
-    <div>
-      <Typography variant="h4">Published</Typography>
-      {
-        schedules.map(schedule => (
-          <>
-            <Typography variant="h5">{dateRangeToString([schedule.startDate, schedule.endDate], 'MMM YYYY')} </Typography>
-            <ScheduleTable {...schedule} onMemberSelected={onMemberSelected}/>
-          </>
-        ))
-      }
-    </div>
+    <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
+      <Typography variant="h4" gutterBottom>
+        Published
+      </Typography>
+      {schedules.map((schedule) => (
+        <div>
+          <Card variant="outlined" sx={{ backgroundColor: cardColor }}>
+            <CardActionArea>
+              <Box
+                p={2}
+                sx={{
+                  overflowX: 'clip',
+                  maskImage: 'linear-gradient(90deg, #000 60%, transparent);',
+                  pointerEvents: 'none',
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  color={theme.palette.text.secondary}
+                  gutterBottom
+                >
+                  {dateRangeToString(
+                    [schedule.startDate, schedule.endDate],
+                    'MMM YYYY'
+                  )}
+                </Typography>
+                <ScheduleTable
+                  {...schedule}
+                  onMemberSelected={onMemberSelected}
+                />
+              </Box>
+            </CardActionArea>
+          </Card>
+        </div>
+      ))}
+    </Box>
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlannerPublishedPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PlannerPublishedPage);
 export { PlannerPublishedPage as PlannerPublishedPageWithProps };
