@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import ScheduleColumns from '../ScheduleColumns/ScheduleColumns';
 import ScheduleRowHeaders from '../ScheduleRowHeaders/ScheduleRowHeaders';
 import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
-import { AvailableQualifiedMember, Role } from '@types';
+import { AvailableQualifiedMember, Role } from '@typing';
 import { iterateDates } from '@utils/helpers/schedule';
 
 export type ScheduleTableProps = {

@@ -1,5 +1,5 @@
 import { MenuItem, ListItemText, Typography, useTheme } from '@mui/material';
-import { QualifiedMember } from '@types';
+import { QualifiedMember } from '@typing';
 import PaperTooltip from '../../tooltips/PaperTooltip';
 
 export type PrioritizedListItemProps = QualifiedMember & {

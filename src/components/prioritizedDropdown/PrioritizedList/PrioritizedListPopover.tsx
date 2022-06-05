@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import PrioritizedList from './PrioritizedList';
 import ModalContainer, { create } from 'react-modal-promise';
-import { AvailableQualifiedMember, QualifiedMember } from '@types';
+import { AvailableQualifiedMember, QualifiedMember } from '@typing';
 
 export type PrioritizedListPopoverProps = {
   children: (

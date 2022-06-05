@@ -4,8 +4,8 @@ import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';
 import { RequiredScheduleItemProps, ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
-import { AvailableQualifiedMember, Role } from '@types';
-import { RootState } from '@store';
+import { AvailableQualifiedMember, Role } from '@typing';
+import { AppDispatch, RootState } from '@store';
 import { connect } from 'react-redux';
 
 export type PlannerDraftsPageStateProps = {
@@ -39,7 +39,7 @@ function mapStateToProps(state: RootState): PlannerDraftsPageStateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: any): PlannerDraftsPageDispatchProps {
+function mapDispatchToProps(dispatch: AppDispatch): PlannerDraftsPageDispatchProps {
   return {
     onMemberSelected: (date: Date, role: Role, member: AvailableQualifiedMember | null) => {
       dispatch(assign({ date, role, member }));
@@ -99,4 +99,4 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlannerDraftsPage);
-export { PlannerDraftsPage as PlannerDraftsPageWithoutStore };
+export { PlannerDraftsPage as PlannerDraftsPageWithProps };

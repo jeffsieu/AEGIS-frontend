@@ -20,6 +20,7 @@ import {
 } from '../../../utils/helpers/schedule';
 
 import './ScheduleHeader.css';
+import { dateRangeToString } from '@utils/helpers/dateRange';
 
 export type ScheduleHeaderProps = {
   startDate: Date;
@@ -52,12 +53,7 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
   const endMonthString = toLongMonthString(endDate);
 
   // Either show "January" or "Jan - Feb".
-  const monthRangeString =
-    startMonthString === endMonthString
-      ? startMonthString
-      : `${toShortenedMonthString(startDate)} - ${toShortenedMonthString(
-          endDate
-        )}`;
+  const monthRangeString = dateRangeToString([startDate, endDate], 'MMM YYYY');
 
   const completionStatusString = `${progress}% completed`;
 

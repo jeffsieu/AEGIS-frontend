@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import draftReducer from '@store/schedule/draft';
 import generalReducer from '@store/schedule/general';
+import publishedReducer from '@store/schedule/published';
 
 const store = configureStore({
   reducer: {
     draft: draftReducer,
     general: generalReducer,
+    published: publishedReducer,
   },
 });
 

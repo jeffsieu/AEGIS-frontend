@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import { AvailableQualifiedMember } from '@types';
+import { AvailableQualifiedMember } from '@typing';
 import { MOCK_QUALIFIED_MEMBERS } from '@utils/mock-data/schedule';
 import ScheduleItem from './ScheduleItem';
 

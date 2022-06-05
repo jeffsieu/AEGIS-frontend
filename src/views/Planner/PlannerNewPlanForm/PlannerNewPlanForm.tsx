@@ -16,7 +16,7 @@ import {
   getNextMonthToPlan,
   getRoles,
 } from '@store/schedule/general';
-import { Role } from '@types';
+import { Role } from '@typing';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
 import { connect } from 'react-redux';
@@ -128,4 +128,4 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
 }
 
 export default connect(mapStateToProps)(PlannerNewPlanForm);
-export { PlannerNewPlanForm as PlannerNewPlanFormWithoutStore };
+export { PlannerNewPlanForm as PlannerNewPlanFormWithProps };

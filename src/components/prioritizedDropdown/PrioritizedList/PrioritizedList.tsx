@@ -3,7 +3,7 @@ import PrioritizedListItem from '@components/prioritizedDropdown/PrioritizedList
 import { MenuList, Popover, PopoverProps } from '@mui/material';
 
 import { InstanceProps } from 'react-modal-promise';
-import { QualifiedMember } from '@types';
+import { QualifiedMember } from '@typing';
 
 export type PrioritizedListProps = InstanceProps<QualifiedMember> &
   PopoverProps & {

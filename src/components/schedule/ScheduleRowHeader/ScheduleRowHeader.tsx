@@ -5,7 +5,7 @@ import {
   ThemeProvider,
   useTheme,
 } from '@mui/material';
-import { Role } from '@types';
+import { Role } from '@typing';
 
 export type ScheduleRowHeaderProps = {
   role: Role;

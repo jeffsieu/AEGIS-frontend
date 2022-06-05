@@ -4,7 +4,7 @@ import {
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@store';
-import { AvailableQualifiedMember, Role } from '@types';
+import { AvailableQualifiedMember, Role, Schedule } from '@typing';
 import { iterateDates } from '@utils/helpers/schedule';
 
 export type DraftState = {
@@ -70,7 +70,7 @@ export const getScheduleItemsByDay = (
       if (scheduleItem) {
         scheduleItemsForDate.push(scheduleItem);
       } else {
-        scheduleItemsForDate.push({ isRequired: false });
+        scheduleItemsForDate.push({ isRequired: false, assignedMember: null });
       }
     }
     scheduleItemsByDay.push(scheduleItemsForDate);

@@ -1,6 +1,6 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import { Role } from '@types';
+import { Role } from '@typing';
 import ScheduleRowHeader from '../ScheduleRowHeader/ScheduleRowHeader';
 
 export type ScheduleRowHeadersProps = {

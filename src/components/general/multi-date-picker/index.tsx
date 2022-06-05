@@ -18,7 +18,7 @@ import {
 import { useMemo, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale';
-import { displayDateRanges, getDateRanges } from '@utils/helpers/dateRange';
+import { dateRangesToString, getDateRanges } from '@utils/helpers/dateRange';
 import {
   DateRangeOutlined,
   SelectAllOutlined,
@@ -104,10 +104,10 @@ function MultiDatePicker(
     );
   }
 
-  const dateRanges = useMemo(() => getDateRanges(selection), [selection]);
+  const dateRanges = useMemo(() => getDateRanges(selection.map(date => date.toDate())), [selection]);
 
   const displayString = useMemo(
-    () => displayDateRanges(dateRanges),
+    () => dateRangesToString(dateRanges),
     [dateRanges]
   );
 

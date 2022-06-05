@@ -1,3 +1,5 @@
+import { ScheduleItemPropsWithoutCallback } from "@components/schedule/ScheduleItem/ScheduleItem";
+
 type BaseQualifiedMember = {
   dutyCount: number;
   callSign: string;
@@ -17,3 +19,10 @@ export type QualifiedMember =
   | UnavailableQualifiedMember;
 
 export type Role = string;
+
+export type Schedule = {
+  startDate: Date;
+  endDate: Date;
+  roles: Role[];
+  scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
+};
