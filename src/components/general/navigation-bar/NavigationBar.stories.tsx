@@ -15,7 +15,10 @@ const Template: ComponentStory<typeof NavigationBar> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'AEGIS | Planner',
+  title: {
+    label: 'AEGIS | Planner',
+    onClick: () => {},
+  },
   links: [
     {
       label: 'Home',

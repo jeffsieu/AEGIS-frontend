@@ -5,7 +5,12 @@ function PlannerNavBar() {
   const navigate = useNavigate();
   return (
     <NavigationBar
-      title={'AEGIS | Planner'}
+      title={{
+        label: 'AEGIS | Planner',
+        onClick: () => {
+          navigate('/planner');
+        },
+      }}
       links={[
         {
           label: 'Home',
@@ -34,9 +39,21 @@ function PlannerNavBar() {
       ]}
       actions={[
         {
+          label: 'Switch to member',
+          onClick: () => {
+            navigate('/');
+          },
+          ButtonProps: {
+            variant: 'outlined',
+          },
+        },
+        {
           label: 'New plan',
           onClick: () => {
             navigate('/planner/new-plan');
+          },
+          ButtonProps: {
+            variant: 'contained',
           },
         },
       ]}

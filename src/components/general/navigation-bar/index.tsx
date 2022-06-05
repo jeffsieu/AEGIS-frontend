@@ -2,11 +2,12 @@ import {
   AppBar,
   Box,
   Button,
+  ButtonProps,
   Container,
   IconButton,
+  Link,
   Paper,
   Toolbar,
-  Typography,
   useMediaQuery,
   useScrollTrigger,
   useTheme,
@@ -18,14 +19,19 @@ import './index.css';
 import { Close } from '@mui/icons-material';
 
 type NavigationBarProps = {
-  title: string;
+  title: {
+    label: string;
+    onClick: () => void;
+  };
   links: {
     label: string;
     onClick: () => void;
+    ButtonProps?: Omit<ButtonProps, 'onClick'>;
   }[];
   actions: {
     label: string;
     onClick: () => void;
+    ButtonProps?: Omit<ButtonProps, 'onClick'>;
   }[];
 };
 
@@ -34,27 +40,30 @@ function NavigationBar(props: NavigationBarProps) {
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const linkButtons = links.map((link) => (
+  const linkButtons = links.map((link, index) => (
     <Button
+      key={index}
       sx={{ fontWeight: 'bold' }}
       onClick={() => {
         link.onClick();
         setOpen(false);
       }}
+      {...link.ButtonProps}
     >
       {link.label}
     </Button>
   ));
 
-  const actionButtons = actions.map((action) => (
+  const actionButtons = actions.map((action, index) => (
     <Button
-      variant="contained"
+      key={index}
       onClick={() => {
         action.onClick();
         setOpen(false);
       }}
+      {...action.ButtonProps}
     >
       {action.label}
     </Button>
@@ -102,11 +111,27 @@ function NavigationBar(props: NavigationBarProps) {
                         <MenuIcon />
                       </IconButton>
                     )}
-                    <Typography variant="h6">{title}</Typography>
+                    <Link
+                      component="button"
+                      color="inherit"
+                      underline="none"
+                      variant="h6"
+                      onClick={title.onClick}
+                    >
+                      {title.label}
+                    </Link>
                   </Box>
-                  {isSmallScreen || <div>{linkButtons}</div>}
+                  {isSmallScreen || (
+                    <Box display="flex" gap={1}>
+                      {linkButtons}
+                    </Box>
+                  )}
                 </Box>
-                {isSmallScreen || <div>{actionButtons}</div>}
+                {isSmallScreen || (
+                  <Box display="flex" gap={1}>
+                    {actionButtons}
+                  </Box>
+                )}
               </Box>
             </Container>
           </Toolbar>
@@ -132,9 +157,13 @@ function NavigationBar(props: NavigationBarProps) {
                 alignItems="center"
                 padding={2}
               >
-                {linkButtons}
+                <Box display="flex" flexDirection="column" gap={1}>
+                  {linkButtons}
+                </Box>
                 <Box mt={2} />
-                {actionButtons}
+                <Box display="flex" flexDirection="column" gap={1}>
+                  {actionButtons}
+                </Box>
                 <Box width="100%" textAlign="right">
                   <IconButton
                     onClick={() => {
