@@ -68,8 +68,8 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="start" gap={4}>
-      <div>
-        <Typography variant="h3" gutterBottom>
+      <Box display="flex" flexDirection="column" alignItems="start" gap={2}>
+        <Typography variant="h4" gutterBottom>
           Create new plan
         </Typography>
         <FormControl variant="filled">
@@ -90,7 +90,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
             ))}
           </Select>
         </FormControl>
-      </div>
+      </Box>
       <div>
         <Typography
           variant="h5"
