@@ -25,7 +25,7 @@ function AnimatedRoutes() {
         <CSSTransition
           key={location.pathname}
           classNames="fade"
-          timeout={300}
+          timeout={400}
           mountOnEnter={false}
           unmountOnExit={true}
         >
