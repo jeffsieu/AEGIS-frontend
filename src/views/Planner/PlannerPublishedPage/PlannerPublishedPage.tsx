@@ -1,3 +1,4 @@
+import EmptyHint from '@components/general/empty-hint';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import {
   Box,
@@ -10,6 +11,7 @@ import {
 } from '@mui/material';
 import { AppDispatch, RootState } from '@store';
 import { AvailableQualifiedMember, Schedule } from '@typing';
+import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
 import { dateRangeToString } from '@utils/helpers/dateRange';
 import { connect } from 'react-redux';
 
@@ -62,6 +64,9 @@ function PlannerPublishedPage(props: PlannerPublishedPageProps) {
       <Typography variant="h4" gutterBottom>
         Published
       </Typography>
+      {schedules.length === 0 && (
+        <EmptyHint>{ERROR_NO_PUBLISHED_SCHEDULES}</EmptyHint>
+      )}
       {schedules.map((schedule) => (
         <div>
           <Card variant="outlined" sx={{ backgroundColor: cardColor }}>

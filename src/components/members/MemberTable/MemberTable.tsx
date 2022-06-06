@@ -6,6 +6,8 @@ import {
 } from '@mui/material';
 import { Check, Close } from '@mui/icons-material';
 import { Role } from '@typing';
+import EmptyHint from '@components/general/empty-hint';
+import { ERROR_NO_MEMBERS } from '@utils/constants/string';
 
 export type MemberEntry = {
   callsign: string;
@@ -24,6 +26,7 @@ function MemberTable(props: MemberTableProps) {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
+      {members.length === 0 && <EmptyHint>{ERROR_NO_MEMBERS}</EmptyHint>}
       {members.map((member, index) => (
         <div key={index}>
           <Typography variant="h6" gutterBottom>

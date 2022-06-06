@@ -1,10 +1,11 @@
 import { ComponentStory } from '@storybook/react';
-import PlannerMembersPage from './PlannerMembersPage';
+import { PlannerMembersPageWithProps } from './PlannerMembersPage';
 import { Decorators } from '@utils/storybook/decorators';
+import { Default as MemberTableDefault } from '@components/members/MemberTable/MemberTable.stories';
 
 export default {
   title: 'Planner/Members Page',
-  component: PlannerMembersPage,
+  component: PlannerMembersPageWithProps,
   parameters: {
     layout: 'fullscreen',
   },
@@ -14,9 +15,15 @@ export default {
   ],
 };
 
-const Template: ComponentStory<typeof PlannerMembersPage> = (args) => (
-  <PlannerMembersPage {...args} />
+const Template: ComponentStory<typeof PlannerMembersPageWithProps> = (args) => (
+  <PlannerMembersPageWithProps {...args} />
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+// Reuse args from MemberTable
+Default.args = MemberTableDefault.args;
+
+export const Empty = Template.bind({});
+Empty.args = {
+  members: [],
+};

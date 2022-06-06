@@ -13,6 +13,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PlannerMembersPage from '@views/Planner/PlannerMembersPage/PlannerMembersPage';
 import PlannerPublishedPage from '@views/Planner/PlannerPublishedPage/PlannerPublishedPage';
 import MemberHomePage from '@views/Member/MemberHomePage/MemberHomePage';
+import PlannerDraftsPage from '@views/Planner/PlannerDraftsPage/PlannerDraftsPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -41,6 +42,10 @@ function AnimatedRoutes() {
                 <Route
                   path="/planner/published"
                   element={<PlannerPublishedPage />}
+                ></Route>
+                <Route
+                  path="/planner/drafts"
+                  element={<PlannerDraftsPage />}
                 ></Route>
                 <Route
                   path="/planner/members"
