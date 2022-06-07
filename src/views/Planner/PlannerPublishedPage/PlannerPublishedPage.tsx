@@ -1,18 +1,11 @@
 import EmptyHint from '@components/general/empty-hint';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
-import {
-  Box,
-  Card,
-  CardActionArea,
-  darken,
-  lighten,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 import { AppDispatch, RootState } from '@store';
 import { AvailableQualifiedMember, Schedule } from '@typing';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
 import { dateRangeToString } from '@utils/helpers/dateRange';
+import { getCardColor } from '@utils/theme';
 import { connect } from 'react-redux';
 
 export type PlannerPublishedPageStateProps = {
@@ -54,10 +47,7 @@ function PlannerPublishedPage(props: PlannerPublishedPageProps) {
   const { schedules, onMemberSelected } = props;
 
   const theme = useTheme();
-  const cardColor =
-    theme.palette.mode === 'light'
-      ? darken(theme.palette.background.paper, 0.05)
-      : lighten(theme.palette.background.paper, 0.1);
+  const cardColor = getCardColor(theme);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>

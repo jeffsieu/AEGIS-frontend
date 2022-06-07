@@ -76,7 +76,7 @@ function NavigationBar(props: NavigationBarProps) {
 
   return (
     <>
-      <Box position="fixed" width="100%" zIndex={1}>
+      <Box position="fixed" width="100%" zIndex={2}>
         <AppBar
           elevation={trigger ? 4 : 0}
           position="static"

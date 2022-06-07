@@ -1,4 +1,5 @@
-import { ScheduleItemPropsWithoutCallback } from "@components/schedule/ScheduleItem/ScheduleItem";
+import { ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
+import { Dayjs } from 'dayjs';
 
 type BaseQualifiedMember = {
   dutyCount: number;
@@ -25,4 +26,10 @@ export type Schedule = {
   endDate: Date;
   roles: Role[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
+};
+
+export type RequestPeriod = {
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
+  reason: string;
 };

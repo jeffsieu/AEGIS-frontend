@@ -17,7 +17,6 @@ import {
 } from '@mui/x-date-pickers';
 import { useMemo, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import { dateRangesToString, getDateRanges } from '@utils/helpers/dateRange';
 import {
   DateRangeOutlined,
@@ -25,11 +24,6 @@ import {
   Clear,
 } from '@mui/icons-material';
 import { iterateDates } from '@utils/helpers/schedule';
-
-dayjs.extend(updateLocale);
-dayjs.updateLocale('en', {
-  weekStart: 1,
-});
 
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== 'selected',
@@ -104,7 +98,10 @@ function MultiDatePicker(
     );
   }
 
-  const dateRanges = useMemo(() => getDateRanges(selection.map(date => date.toDate())), [selection]);
+  const dateRanges = useMemo(
+    () => getDateRanges(selection.map((date) => date.toDate())),
+    [selection]
+  );
 
   const displayString = useMemo(
     () => dateRangesToString(dateRanges),
