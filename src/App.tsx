@@ -17,6 +17,8 @@ import PlannerDraftsPage from '@views/Planner/PlannerDraftsPage/PlannerDraftsPag
 import MemberNewRequestForm from '@views/Member/MemberNewRequestForm/MemberNewRequestForm';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-sg';
+import MemberRequestPage from '@views/Member/MemberRequestsPage/MemberRequestsPage';
+import MemberPublishedPage from '@views/Member/MemberPublishedPage/MemberPublishedPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -44,6 +46,11 @@ function AnimatedRoutes() {
                   path="/new-request"
                   element={<MemberNewRequestForm />}
                 ></Route>
+                <Route
+                  path="/schedules"
+                  element={<MemberPublishedPage />}
+                ></Route>
+                <Route path="/requests" element={<MemberRequestPage />}></Route>
                 <Route path="/planner" element={<PlannerHomePage />}></Route>
                 <Route
                   path="/planner/new-plan"
