@@ -31,9 +31,8 @@ function RequestForm(props: RequestFormProps) {
     <Box display="flex" flexDirection="column" alignItems="flex-start" gap={2}>
       <Grid container spacing={2}>
         {requests.map((request, index) => (
-          <Grid item xs={12} md={6}>
+          <Grid key={index} item xs={12} md={6}>
             <RequestFormItem
-              key={index}
               onUpdate={() => {
                 setRequests([...requests]);
               }}
