@@ -19,7 +19,9 @@ export type QualifiedMember =
   | AvailableQualifiedMember
   | UnavailableQualifiedMember;
 
-export type Role = string;
+export type Role = {
+  name: string;
+};
 
 export type Schedule = {
   startDate: Date;

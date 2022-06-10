@@ -1,31 +1,54 @@
 import MemberTable, {
+  MemberEntry,
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
 import { Box, Typography } from '@mui/material';
-import { RootState } from '@store';
 import { Role } from '@typing';
-import { connect } from 'react-redux';
+import {
+  useGetMembersQuery,
+  useGetRolesQuery,
+  useUpdateMemberRolesMutation,
+} from '@services/backend';
+import { useMemo } from 'react';
 
-export type PlannerMembersPageStateProps = Pick<MemberTableProps, 'members'>;
-export type PlannerMembersPageDispatchProps = Pick<
-  MemberTableProps,
-  'onMemberRolesChange'
->;
-export type PlannerMembersPageProps = PlannerMembersPageStateProps &
-  PlannerMembersPageDispatchProps;
+export type PlannerMembersPageProps = MemberTableProps;
 
-function mapStateToProps(state: RootState): PlannerMembersPageStateProps {
-  return {
-    members: state.members.members,
-  };
-}
+function PlannerMembersPageWithAPI() {
+  const { data: members } = useGetMembersQuery();
+  const { data: roles } = useGetRolesQuery();
+  const [updateMemberRoles] = useUpdateMemberRolesMutation();
 
-function mapDispatchToProps(dispatch: any): PlannerMembersPageDispatchProps {
-  return {
+  const mappedMembers = useMemo(() => {
+    if (members === undefined || roles === undefined) {
+      return [];
+    }
+
+    return members.map((member) => {
+      const memberRoles = member.roles;
+      const rolesMap: MemberEntry['roles'] = {};
+      for (const role of roles) {
+        rolesMap[role.name] = memberRoles.some(
+          (memberRole) => memberRole.name === role.name
+        );
+      }
+      return {
+        ...member,
+        roles: rolesMap,
+      };
+    });
+  }, [members, roles]);
+
+  const props: PlannerMembersPageProps = {
+    members: mappedMembers,
     onMemberRolesChange: (callsign: string, roles: Role[]) => {
-      // TODO: Add action
+      updateMemberRoles({
+        callsign,
+        roleNames: roles.map((role) => role.name),
+      });
     },
   };
+
+  return <PlannerMembersPage {...props}></PlannerMembersPage>;
 }
 
 function PlannerMembersPage(props: PlannerMembersPageProps) {
@@ -39,5 +62,5 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlannerMembersPage);
+export default PlannerMembersPageWithAPI;
 export { PlannerMembersPage as PlannerMembersPageWithProps };

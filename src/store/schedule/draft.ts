@@ -13,7 +13,7 @@ export type DraftState = {
   roles: Role[];
   scheduleItems: {
     [key: string]: {
-      [key: Role]: ScheduleItemPropsWithoutCallback;
+      [key: Role['name']]: ScheduleItemPropsWithoutCallback;
     };
   };
 };
@@ -33,11 +33,14 @@ export const createDraftSlice = (initialState: DraftState) => {
         const { date, role, member } = action.payload;
         const roleMap = state.scheduleItems[date.toDateString()]!;
 
-        if (!roleMap[role].isRequired) {
+        if (!roleMap[role.name].isRequired) {
           throw new Error('Cannot assign to a non-required role');
         }
         (
-          roleMap[role] as Omit<RequiredScheduleItemProps, 'onMemberSelected'>
+          roleMap[role.name] as Omit<
+            RequiredScheduleItemProps,
+            'onMemberSelected'
+          >
         ).assignedMember = member;
         state.scheduleItems[date.toDateString()] = roleMap;
       },
@@ -48,7 +51,7 @@ export const createDraftSlice = (initialState: DraftState) => {
 export const draftSlice = createDraftSlice({
   startDate: new Date(),
   endDate: new Date(),
-  roles: ['A1'],
+  roles: [{ name: 'A1' }],
   scheduleItems: {},
 });
 
@@ -66,7 +69,7 @@ export const getScheduleItemsByDay = (
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
     const scheduleItemsMap = state.draft.scheduleItems[date.toDateString()];
     for (const role of roles) {
-      const scheduleItem = scheduleItemsMap?.[role];
+      const scheduleItem = scheduleItemsMap?.[role.name];
       if (scheduleItem) {
         scheduleItemsForDate.push(scheduleItem);
       } else {

@@ -102,7 +102,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
         <Box display="flex" flexDirection="column" gap={2}>
           {roles.map((role, index) => (
             <Box key={index} display="flex" gap={8} alignItems="center">
-              <Typography variant="h6">{role}</Typography>
+              <Typography variant="h6">{role.name}</Typography>
               <MultiDatePicker
                 label="Dates"
                 minDate={minDate}
@@ -112,10 +112,10 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 onSelectionChanged={(selectedDates: Dayjs[]) => {
                   setDateSelections({
                     ...dateSelections,
-                    [role]: selectedDates,
+                    [role.name]: selectedDates,
                   });
                 }}
-                selection={dateSelections[role] || []}
+                selection={dateSelections[role.name] || []}
                 textFieldProps={{ variant: 'filled' }}
               ></MultiDatePicker>
             </Box>

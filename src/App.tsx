@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/en-sg';
 import MemberRequestPage from '@views/Member/MemberRequestsPage/MemberRequestsPage';
 import MemberPublishedPage from '@views/Member/MemberPublishedPage/MemberPublishedPage';
+import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function AnimatedRoutes() {
   return (
     <>
       <NavBar />
+      <InitializeDataButton />
       {/* Transparent toolbar to fix navbar overlap */}
       <Container className="container" sx={{ position: 'relative' }}>
         <TransitionGroup component={null}>

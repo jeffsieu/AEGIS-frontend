@@ -34,8 +34,11 @@ function MemberTable(props: MemberTableProps) {
           </Typography>
           <ToggleButtonGroup
             color="primary"
-            onChange={(event, roles: Role[]) =>
-              onMemberRolesChange(member.callsign, roles)
+            onChange={(event, roles: string[]) =>
+              onMemberRolesChange(
+                member.callsign,
+                roles.map((role) => ({ name: role }))
+              )
             }
             value={Object.keys(member.roles).filter(
               (role) => member.roles[role]

@@ -2,7 +2,7 @@ import EmptyHint from '@components/general/empty-hint';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
 import { AppDispatch, RootState } from '@store';
-import { AvailableQualifiedMember, Schedule } from '@typing';
+import { AvailableQualifiedMember, Role, Schedule } from '@typing';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
 import { dateRangeToString } from '@utils/helpers/dateRange';
 import { getCardColor } from '@utils/theme';
@@ -15,7 +15,7 @@ export type PlannerPublishedPageStateProps = {
 export type PlannerPublishedPageDispatchProps = {
   onMemberSelected: (
     date: Date,
-    role: string,
+    role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
 };
@@ -32,7 +32,7 @@ function mapDispatchToProps(
   return {
     onMemberSelected: (
       date: Date,
-      role: string,
+      role: Role,
       member: AvailableQualifiedMember | null
     ) => {
       // TODO: Add action

@@ -10,4 +10,20 @@ export namespace Backend {
     isPublished: boolean;
     duties: Duty[];
   };
+
+  export type Role = {
+    name: string;
+  };
+
+  export type Member = {
+    callsign: string;
+    squadron: string;
+    type: string;
+  };
+
+  export type Entry<T> = {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+  } & T;
 }
