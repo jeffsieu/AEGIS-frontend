@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { api } from '@services/api';
 import draftReducer from '@store/schedule/draft';
 import generalReducer from '@store/schedule/general';
 import publishedReducer from '@store/schedule/published';
@@ -10,7 +11,9 @@ const store = configureStore({
     general: generalReducer,
     published: publishedReducer,
     members: membersReducer,
+		[api.reducerPath]: api.reducer
   },
+	middleware: ((getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware))
 });
 
 export type RootState = ReturnType<typeof store.getState>;

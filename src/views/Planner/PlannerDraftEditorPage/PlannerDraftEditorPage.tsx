@@ -9,6 +9,10 @@ import {
 import { AvailableQualifiedMember, Role } from '@typing';
 import { AppDispatch, RootState } from '@store';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useGetScheduleByMonthQuery } from '@services/api';
+import { useEffect } from 'react';
+import { createMockScheduleItems } from '@utils/mock-data/schedule';
 
 export type PlannerDraftEditorPageStateProps = {
   startDate: Date;
@@ -108,5 +112,40 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlannerDraftEditorPage);
+function PlannerDraftEditorPageWithAPI(props: PlannerDraftEditorPageDispatchProps) {
+
+	const { onMemberSelected } = props;
+	
+	const { month } = useParams();
+
+	const { data, error, isLoading } = useGetScheduleByMonthQuery(month!);
+
+	useEffect(()=>console.log(data), [data]);
+
+	if(isLoading) return <>Loading Draft...</>
+	if(error) return <>Error</>;
+	if(data == undefined) return <>Error</>;
+	if(data != undefined && data.length <= 0) return <>No records for {month} found</>
+
+	const draft = data[0];
+
+	const date = new Date(draft.month);
+
+	const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+	const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+	const roles = ["A1", "A2"];
+
+	const pageProps: PlannerDraftEditorPageProps = {
+		startDate,
+		endDate,
+		roles,
+		scheduleItemsByDay: createMockScheduleItems(startDate, endDate, roles),
+		onMemberSelected
+	}
+
+	return <PlannerDraftEditorPage {...pageProps}/>;
+}
+
+export default connect(null, mapDispatchToProps)(PlannerDraftEditorPageWithAPI);
 export { PlannerDraftEditorPage as PlannerDraftEditorPageWithProps };

@@ -28,6 +28,11 @@ export type Schedule = {
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
 };
 
+export type RawSchedule = {
+	month: string;
+	isPublished: boolean
+}
+
 export type RequestPeriod = {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
