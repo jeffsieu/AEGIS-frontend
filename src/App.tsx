@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/en-sg';
 import MemberRequestPage from '@views/Member/MemberRequestsPage/MemberRequestsPage';
 import MemberPublishedPage from '@views/Member/MemberPublishedPage/MemberPublishedPage';
+import PlannerDraftEditorPage from '@views/Planner/PlannerDraftEditorPage/PlannerDraftEditorPage';
 import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 
 function AnimatedRoutes() {
@@ -65,6 +66,10 @@ function AnimatedRoutes() {
                 <Route
                   path="/planner/drafts"
                   element={<PlannerDraftsPage />}
+                ></Route>
+								<Route
+                  path="/planner/drafts/:month"
+                  element={<PlannerDraftEditorPage />}
                 ></Route>
                 <Route
                   path="/planner/members"
