@@ -36,11 +36,7 @@ function ScheduleTable(props: ScheduleTableProps) {
   return (
     <Box display="flex" gap={2} sx={{ width: '100%' }}>
       <ScheduleRowHeaders roles={roles} />
-      <Box
-        display="flex"
-        flexDirection="column"
-        sx={{ width: '100%', overflowX: 'auto' }}
-      >
+      <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
         {header}
         <Box display="flex" gap={1}>
           {dates.map((date, index) => {
