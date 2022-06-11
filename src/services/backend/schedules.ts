@@ -3,17 +3,30 @@ import { baseApi } from './base';
 
 export const schedulesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSchedule: builder.query<Backend.Entry<Backend.Schedule>[], string>({
-      query: (month) => ({
-        url: `schedules/${month}`,
-      }),
+    getSchedules: builder.query<Backend.Entry<Backend.Schedule>[], void>({
+      query: () => 'schedules',
       providesTags: (result) => [
         ...(result ?? []).map(({ month }) => ({
           type: 'Schedules' as const,
-          id: month.getFullYear() + '-' + month.getMonth(),
+          id: month,
         })),
         { type: 'Schedules', id: 'LIST' },
       ],
+    }),
+    getSchedulesForMonth: builder.query<
+      Backend.Entry<Backend.Schedule>[],
+      string
+    >({
+      query: (month) => ({
+        url: `schedules/${month}`,
+      }),
+      providesTags: (result) =>
+        result
+          ? result.map((schedule) => ({
+              type: 'Schedules',
+              id: schedule.month,
+            }))
+          : [],
     }),
     getMonthsToPlan: builder.query<Date[], void>({
       query: () => 'schedules/months',
@@ -33,7 +46,8 @@ export const schedulesApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetScheduleQuery,
+  useGetSchedulesQuery,
+  useGetSchedulesForMonthQuery,
   useGetMonthsToPlanQuery,
   useAddScheduleMutation,
 } = schedulesApi;

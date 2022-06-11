@@ -1,64 +1,34 @@
-import { assign, getScheduleItemsByDay } from '@store/schedule/draft';
+import { assign } from '@store/schedule/draft';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
-import { Box, Button } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import {
   RequiredScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
-import { AppDispatch, RootState } from '@store';
-import { connect } from 'react-redux';
+import { useAppDispatch } from '@store/hooks';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { createMockScheduleItems } from '@utils/mock-data/schedule';
-import { useGetScheduleQuery } from '@services/backend';
+import {
+  useGetMemberAvailabilitiesForMonthQuery,
+  useGetRolesQuery,
+  useGetSchedulesForMonthQuery,
+} from '@services/backend';
+import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
+import EmptyHint from '@components/general/empty-hint';
+import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
 
-export type PlannerDraftEditorPageStateProps = {
+export type PlannerDraftEditorPageProps = {
   startDate: Date;
   endDate: Date;
   roles: Role[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
-};
-
-export type PlannerDraftEditorPageDispatchProps = {
   onMemberSelected: (
     date: Date,
     role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
 };
-
-export type PlannerDraftEditorPageProps = PlannerDraftEditorPageStateProps &
-  PlannerDraftEditorPageDispatchProps;
-
-function mapStateToProps(state: RootState): PlannerDraftEditorPageStateProps {
-  const startDate = state.draft.startDate;
-  const endDate = state.draft.endDate;
-  const roles = state.draft.roles;
-  const scheduleItemsByDay = getScheduleItemsByDay(state);
-
-  return {
-    startDate,
-    endDate,
-    roles,
-    scheduleItemsByDay,
-  };
-}
-
-function mapDispatchToProps(
-  dispatch: AppDispatch
-): PlannerDraftEditorPageDispatchProps {
-  return {
-    onMemberSelected: (
-      date: Date,
-      role: Role,
-      member: AvailableQualifiedMember | null
-    ) => {
-      dispatch(assign({ date, role, member }));
-    },
-  };
-}
 
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
@@ -112,42 +82,49 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 }
 
-function PlannerDraftEditorPageWithAPI(
-  props: PlannerDraftEditorPageDispatchProps
-) {
-  const { onMemberSelected } = props;
-
+function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
+  const dispatch = useAppDispatch();
+  const { data: schedules, isError } = useGetSchedulesForMonthQuery(month!);
+  const { data: roles } = useGetRolesQuery();
+  const { data: memberAvailabilities } =
+    useGetMemberAvailabilitiesForMonthQuery(month!);
 
-  const { data, error, isLoading } = useGetScheduleQuery(month!);
+  if (isError) {
+    return <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>;
+  }
 
-  useEffect(() => console.log(data), [data]);
+  if (
+    schedules === undefined ||
+    roles === undefined ||
+    memberAvailabilities === undefined
+  ) {
+    return <CircularProgress />;
+  }
+  const qualifiedMembers = memberAvailabilities.map((member) => {
+    return {
+      ...member,
+      isAvailable: true as const,
+    };
+  });
 
-  if (isLoading) return <>Loading Draft...</>;
-  if (error) return <>Error</>;
-  if (data === undefined) return <>Error</>;
-  if (data !== undefined && data.length <= 0)
-    return <>No records for {month} found</>;
+  if (schedules.length === 0) return <>No records for {month} found</>;
 
-  const draft = data[0];
-
-  const date = new Date(draft.month);
-
-  const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-  const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-  const roles = [{ name: 'A1' }, { name: 'A2' }];
+  const draft = schedules[0];
 
   const pageProps: PlannerDraftEditorPageProps = {
-    startDate,
-    endDate,
-    roles,
-    scheduleItemsByDay: createMockScheduleItems(startDate, endDate, roles),
-    onMemberSelected,
+    ...scheduleToScheduleTableProps(draft, roles, qualifiedMembers),
+    onMemberSelected: (
+      date: Date,
+      role: Role,
+      member: AvailableQualifiedMember | null
+    ) => {
+      dispatch(assign({ date, role, member }));
+    },
   };
 
   return <PlannerDraftEditorPage {...pageProps} />;
 }
 
-export default connect(null, mapDispatchToProps)(PlannerDraftEditorPageWithAPI);
+export default PlannerDraftEditorPageWithAPI;
 export { PlannerDraftEditorPage as PlannerDraftEditorPageWithProps };

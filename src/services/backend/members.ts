@@ -31,6 +31,24 @@ export const membersApi = baseApi.injectEndpoints({
         { type: 'Members', id: 'LIST' },
       ],
     }),
+    getMemberAvailabilitiesForMonth: builder.query<
+      Backend.Entry<Backend.MemberWithAvailability>[],
+      string
+    >({
+      query: (month) => ({
+        url: `members/availability/${month}`,
+        params: {
+          includeRoles: true,
+        },
+      }),
+      providesTags: (result) => [
+        ...(result ?? []).map(({ callsign }) => ({
+          type: 'Members' as const,
+          id: callsign,
+        })),
+        { type: 'Members', id: 'LIST' },
+      ],
+    }),
     addMember: builder.mutation<void, Backend.Member>({
       query: (member) => ({
         url: 'members',
@@ -65,6 +83,7 @@ export const membersApi = baseApi.injectEndpoints({
 export const {
   useGetMembersQuery,
   useAddMemberMutation,
+  useGetMemberAvailabilitiesForMonthQuery,
   useUpdateMemberMutation,
   useUpdateMemberRolesMutation,
 } = membersApi;

@@ -5,17 +5,17 @@ import { iterateDates } from '@utils/helpers/schedule';
 export const MOCK_QUALIFIED_MEMBERS: QualifiedMember[] = [
   {
     dutyCount: 1,
-    callSign: 'Alpha',
+    callsign: 'Alpha',
     isAvailable: true,
   },
   {
     dutyCount: 2,
-    callSign: 'Bravo',
+    callsign: 'Bravo',
     isAvailable: true,
   },
   {
     dutyCount: 10,
-    callSign: 'Charlie',
+    callsign: 'Charlie',
     isAvailable: false,
     unavailableReason: 'Too busy',
   },

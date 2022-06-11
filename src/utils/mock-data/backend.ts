@@ -29,3 +29,16 @@ export const ROLES: Backend.Role[] = [
     name: 'A3',
   },
 ];
+
+export const SCHEDULES: Backend.Schedule[] = [
+  {
+    month: '2022-01-01',
+    isPublished: false,
+    duties: [
+      {
+        roleId: 1,
+        date: '2022-01-03',
+      },
+    ],
+  },
+];

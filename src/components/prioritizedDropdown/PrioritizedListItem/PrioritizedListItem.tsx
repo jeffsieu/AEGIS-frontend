@@ -22,7 +22,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
         <ListItemText
           primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
         >
-          {member.callSign}{' '}
+          {member.callsign}{' '}
         </ListItemText>
         <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
       </MenuItem>
@@ -44,7 +44,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
           <ListItemText
             primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
           >
-            {member.callSign}{' '}
+            {member.callsign}{' '}
           </ListItemText>
           <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
         </MenuItem>

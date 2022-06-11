@@ -3,7 +3,7 @@ import { Dayjs } from 'dayjs';
 
 type BaseQualifiedMember = {
   dutyCount: number;
-  callSign: string;
+  callsign: string;
 };
 
 export type AvailableQualifiedMember = BaseQualifiedMember & {

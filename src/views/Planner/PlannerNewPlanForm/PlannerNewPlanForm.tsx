@@ -54,11 +54,11 @@ function PlannerNewPlanFormWithAPI() {
     months: monthsToPlan,
     onScheduleCreated: (month, roleDates) => {
       addSchedule({
-        month: month.toDate(),
+        month: month.format('YYYY-MM-DD'),
         isPublished: false,
         duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
           dates.map((date) => ({
-            date: date.toDate(),
+            date: date.format('YYYY-MM-DD'),
             roleId: roles.find((role) => role.name === roleName)!.id,
           }))
         ),

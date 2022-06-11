@@ -1,11 +1,9 @@
 import EmptyHint from '@components/general/empty-hint';
-import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
-import { Box, Card, CardActionArea, Typography, useTheme } from '@mui/material';
+import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
+import { Box, Typography } from '@mui/material';
 import { AppDispatch, RootState } from '@store';
 import { AvailableQualifiedMember, Role, Schedule } from '@typing';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
-import { dateRangeToString } from '@utils/helpers/dateRange';
-import { getCardColor } from '@utils/theme';
 import { connect } from 'react-redux';
 
 export type PlannerPublishedPageStateProps = {
@@ -46,9 +44,6 @@ export type PlannerPublishedPageProps = PlannerPublishedPageStateProps &
 function PlannerPublishedPage(props: PlannerPublishedPageProps) {
   const { schedules, onMemberSelected } = props;
 
-  const theme = useTheme();
-  const cardColor = getCardColor(theme);
-
   return (
     <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
       <Typography variant="h4" gutterBottom>
@@ -58,35 +53,11 @@ function PlannerPublishedPage(props: PlannerPublishedPageProps) {
         <EmptyHint>{ERROR_NO_PUBLISHED_SCHEDULES}</EmptyHint>
       )}
       {schedules.map((schedule) => (
-        <div>
-          <Card variant="outlined" sx={{ backgroundColor: cardColor }}>
-            <CardActionArea>
-              <Box
-                p={2}
-                sx={{
-                  overflowX: 'clip',
-                  maskImage: 'linear-gradient(90deg, #000 60%, transparent);',
-                  pointerEvents: 'none',
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  color={theme.palette.text.secondary}
-                  gutterBottom
-                >
-                  {dateRangeToString(
-                    [schedule.startDate, schedule.endDate],
-                    'MMM YYYY'
-                  )}
-                </Typography>
-                <ScheduleTable
-                  {...schedule}
-                  onMemberSelected={onMemberSelected}
-                />
-              </Box>
-            </CardActionArea>
-          </Card>
-        </div>
+        <ScheduleCard
+          {...schedule}
+          onClick={() => {}}
+          onMemberSelected={onMemberSelected}
+        />
       ))}
     </Box>
   );

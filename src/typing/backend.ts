@@ -1,13 +1,15 @@
 export namespace Backend {
+  export type Date = `${number}-${number}-${number}`;
+
   export type Duty = {
     memberId?: number;
     roleId: number;
     // scheduleId: number;
-    date: Date;
+    date: string;
   };
 
   export type Schedule = {
-    month: Date;
+    month: string;
     isPublished: boolean;
     duties: Duty[];
   };
@@ -20,6 +22,11 @@ export namespace Backend {
     callsign: string;
     squadron: string;
     type: string;
+  };
+
+  export type MemberWithAvailability = Member & {
+    dutyCount: number;
+    roles: Entry<Role>[];
   };
 
   export type Entry<T> = {
