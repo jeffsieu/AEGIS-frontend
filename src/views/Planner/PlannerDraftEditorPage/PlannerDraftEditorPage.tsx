@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { createMockScheduleItems } from '@utils/mock-data/schedule';
-import { useGetScheduleQuery } from '@services/backend/schedule';
+import { useGetScheduleQuery } from '@services/backend';
 
 export type PlannerDraftEditorPageStateProps = {
   startDate: Date;
@@ -112,42 +112,41 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 }
 
-function PlannerDraftEditorPageWithAPI(props: PlannerDraftEditorPageDispatchProps) {
+function PlannerDraftEditorPageWithAPI(
+  props: PlannerDraftEditorPageDispatchProps
+) {
+  const { onMemberSelected } = props;
 
-	const { onMemberSelected } = props;
-	
-	const { month } = useParams();
+  const { month } = useParams();
 
-	const { data, error, isLoading } = useGetScheduleQuery(month!);
+  const { data, error, isLoading } = useGetScheduleQuery(month!);
 
-	useEffect(()=>console.log(data), [data]);
+  useEffect(() => console.log(data), [data]);
 
-	if(isLoading) return <>Loading Draft...</>
-	if(error) return <>Error</>;
-	if(data == undefined) return <>Error</>;
-	if(data != undefined && data.length <= 0) return <>No records for {month} found</>
+  if (isLoading) return <>Loading Draft...</>;
+  if (error) return <>Error</>;
+  if (data === undefined) return <>Error</>;
+  if (data !== undefined && data.length <= 0)
+    return <>No records for {month} found</>;
 
-	const draft = data[0];
+  const draft = data[0];
 
-	const date = new Date(draft.month);
+  const date = new Date(draft.month);
 
-	const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-	const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+  const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-	const roles = [
-		{name: "A1"},
-		{name: "A2"}
-	];
+  const roles = [{ name: 'A1' }, { name: 'A2' }];
 
-	const pageProps: PlannerDraftEditorPageProps = {
-		startDate,
-		endDate,
-		roles,
-		scheduleItemsByDay: createMockScheduleItems(startDate, endDate, roles),
-		onMemberSelected
-	}
+  const pageProps: PlannerDraftEditorPageProps = {
+    startDate,
+    endDate,
+    roles,
+    scheduleItemsByDay: createMockScheduleItems(startDate, endDate, roles),
+    onMemberSelected,
+  };
 
-	return <PlannerDraftEditorPage {...pageProps}/>;
+  return <PlannerDraftEditorPage {...pageProps} />;
 }
 
 export default connect(null, mapDispatchToProps)(PlannerDraftEditorPageWithAPI);

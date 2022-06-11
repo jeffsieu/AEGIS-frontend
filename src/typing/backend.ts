@@ -1,7 +1,8 @@
 export namespace Backend {
   export type Duty = {
-    callsign: string;
-    duty_type: string;
+    memberId?: number;
+    roleId: number;
+    // scheduleId: number;
     date: Date;
   };
 

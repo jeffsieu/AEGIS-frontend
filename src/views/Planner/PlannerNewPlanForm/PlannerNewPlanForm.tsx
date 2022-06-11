@@ -2,6 +2,7 @@ import MultiDatePicker from '@components/general/multi-date-picker';
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -10,36 +11,67 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { RootState } from '@store';
 import {
-  getMonthsToPlan,
-  getNextMonthToPlan,
-  getRoles,
-} from '@store/schedule/general';
+  useGetRolesQuery,
+  useGetMonthsToPlanQuery,
+  useAddScheduleMutation,
+} from '@services/backend';
 import { Role } from '@typing';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
-import { connect } from 'react-redux';
 
 export type PlannerNewPlanFormProps = {
   roles: Role[];
   defaultMonth: Dayjs;
   months: Dayjs[];
+  onScheduleCreated: (
+    month: Dayjs,
+    roleDates: { [key: Role['name']]: Dayjs[] }
+  ) => void;
 };
 
-function mapStateToProps(state: RootState): PlannerNewPlanFormProps {
-  const defaultMonth = getNextMonthToPlan(state);
-  const months = getMonthsToPlan(state).map((date) => dayjs(date));
-  return {
-    roles: getRoles(state),
-    defaultMonth:
-      months.find((month) => month.isSame(defaultMonth, 'month')) ?? months[0],
-    months: months,
+function PlannerNewPlanFormWithAPI() {
+  const { data: roles } = useGetRolesQuery();
+  const { data: monthData } = useGetMonthsToPlanQuery();
+  const [addSchedule] = useAddScheduleMutation();
+
+  const monthsToPlan = useMemo(() => {
+    return monthData?.map((date) => dayjs(date)) ?? [];
+  }, [monthData]);
+
+  if (roles === undefined || monthData === undefined) {
+    return <CircularProgress />;
+  }
+
+  if (monthData.length === 0) {
+    return <Typography variant="h6">No months to plan.</Typography>;
+  }
+  const defaultMonth = monthsToPlan[0];
+
+  const props: PlannerNewPlanFormProps = {
+    roles,
+    defaultMonth,
+    months: monthsToPlan,
+    onScheduleCreated: (month, roleDates) => {
+      addSchedule({
+        month: month.toDate(),
+        isPublished: false,
+        duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
+          dates.map((date) => ({
+            date: date.toDate(),
+            roleId: roles.find((role) => role.name === roleName)!.id,
+          }))
+        ),
+      });
+      console.log(month, roleDates);
+    },
   };
+
+  return <PlannerNewPlanForm {...props} />;
 }
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
-  const { roles, defaultMonth, months } = props;
+  const { roles, defaultMonth, months, onScheduleCreated } = props;
 
   const theme = useTheme();
 
@@ -116,16 +148,29 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                   });
                 }}
                 selection={dateSelections[role.name] || []}
-                textFieldProps={{ variant: 'filled' }}
+                textFieldProps={{
+                  variant: 'filled',
+                  helperText:
+                    dateSelections[role.name]?.length > 0
+                      ? ''
+                      : 'Role will not be scheduled in entire month.',
+                }}
               ></MultiDatePicker>
             </Box>
           ))}
         </Box>
       </div>
-      <Button variant="contained">Create</Button>
+      <Button
+        variant="contained"
+        onClick={() => {
+          onScheduleCreated(month, dateSelections);
+        }}
+      >
+        Create
+      </Button>
     </Box>
   );
 }
 
-export default connect(mapStateToProps)(PlannerNewPlanForm);
+export default PlannerNewPlanFormWithAPI;
 export { PlannerNewPlanForm as PlannerNewPlanFormWithProps };
