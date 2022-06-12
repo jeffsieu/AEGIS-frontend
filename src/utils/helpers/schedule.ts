@@ -47,7 +47,7 @@ export const getScheduleItemsByDay = (
   endDate: Date,
   roles: Backend.Entry<Backend.Role>[],
   duties: Backend.Duty[],
-  qualifiedMembers: (Backend.MemberWithAvailability & QualifiedMember)[]
+  memberAvailabilities: Backend.MemberWithAvailability[]
 ): ScheduleItemPropsWithoutCallback[][] => {
   const scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][] = [];
 
@@ -65,14 +65,31 @@ export const getScheduleItemsByDay = (
       [role.name]: {
         isRequired: true,
         assignedMember: null,
-        qualifiedMembers: qualifiedMembers.filter(({ roles }) => {
+        qualifiedMembers: memberAvailabilities.filter(({ roles }) => {
           return roles.some((r) => r.id === role.id);
+        }).map((member) => {
+          const unavailableReason = member.requests.find((request) => {
+            return !(
+              dayjs(request.endDate).isBefore(duty.date, 'day')||
+              dayjs(request.startDate).isAfter(duty.date, 'day')
+            );
+          })
+          if (unavailableReason === undefined) {
+            return {
+              ...member,
+              isAvailable: true,
+            }
+          } else {
+            return {
+              ...member,
+              isAvailable: false,
+              unavailableReason: unavailableReason.reason,
+            }
+          }
         }),
       },
     };
   }
-
-  console.log(scheduleItems);
 
   for (const date of iterateDates(startDate, endDate)) {
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
@@ -88,15 +105,13 @@ export const getScheduleItemsByDay = (
     scheduleItemsByDay.push(scheduleItemsForDate);
   }
 
-  console.log(scheduleItemsByDay);
-
   return scheduleItemsByDay;
 };
 
 export function scheduleToScheduleTableProps(
   schedule: Backend.Schedule,
   roles: Backend.Entry<Backend.Role>[],
-  qualifiedMembers: (Backend.MemberWithAvailability & QualifiedMember)[] = []
+  memberAvailabilities: Backend.MemberWithAvailability[] = []
 ): ScheduleTableProps {
   const { month, duties } = schedule;
 
@@ -112,7 +127,7 @@ export function scheduleToScheduleTableProps(
       endDate,
       roles,
       duties,
-      qualifiedMembers
+      memberAvailabilities,
     ),
     onMemberSelected: function (
       date: Date,

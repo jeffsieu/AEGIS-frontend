@@ -47,11 +47,13 @@ export function dateRangeToString(dateRange: DateRange, formatString: string = '
     // Show only the different part of startString
     const startStringReversed = startString.split('').reverse();
     const endStringReversed = endString.split('').reverse();
+
     const index = startStringReversed.findIndex(
       (c, i) => c !== endStringReversed[i]
     );
+    const spaceIndex = startStringReversed.findIndex((c, i) => c === ' ' && i >= index);
     const startStringPart = startStringReversed
-      .slice(index, startStringReversed.length)
+      .slice(spaceIndex + 1, startStringReversed.length)
       .reverse()
       .join('');
     return startStringPart + ' - ' + endString;

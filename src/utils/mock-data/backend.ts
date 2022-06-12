@@ -30,6 +30,26 @@ export const ROLES: Backend.Role[] = [
   },
 ];
 
+export type MockQualification = {
+  memberId: number;
+  roles: string[];
+}
+
+export const QUALIFICATIONS: MockQualification[] = [
+  {
+    memberId: 1,
+    roles: ['A1', 'A2'],
+  },
+  {
+    memberId: 2,
+    roles: ['A1', 'A3'],
+  },
+  {
+    memberId: 3,
+    roles: ['A2', 'A3'],
+  },
+];
+
 export const SCHEDULES: Backend.Schedule[] = [
   {
     month: '2022-01-01',
@@ -42,3 +62,12 @@ export const SCHEDULES: Backend.Schedule[] = [
     ],
   },
 ];
+
+export const REQUESTS: Backend.Request[] = [
+  {
+    memberId: 1,
+    startDate: '2022-01-03',
+    endDate: '2022-01-03',
+    reason: 'sick',
+  }
+]
