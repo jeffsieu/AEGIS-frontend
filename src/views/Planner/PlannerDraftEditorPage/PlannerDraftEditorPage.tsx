@@ -1,4 +1,3 @@
-import { assign } from '@store/schedule/draft';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button, CircularProgress } from '@mui/material';
@@ -7,7 +6,6 @@ import {
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
-import { useAppDispatch } from '@store/hooks';
 import { useParams } from 'react-router-dom';
 import {
   useGetMemberAvailabilitiesForMonthQuery,
@@ -84,7 +82,6 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
-  const dispatch = useAppDispatch();
   const { data: schedules, isError } = useGetSchedulesForMonthQuery(month!);
   const { data: roles } = useGetRolesQuery();
   const { data: memberAvailabilities } =
@@ -114,13 +111,13 @@ function PlannerDraftEditorPageWithAPI() {
 
   const pageProps: PlannerDraftEditorPageProps = {
     ...scheduleToScheduleTableProps(draft, roles, qualifiedMembers),
-    onMemberSelected: (
-      date: Date,
-      role: Role,
-      member: AvailableQualifiedMember | null
-    ) => {
-      dispatch(assign({ date, role, member }));
-    },
+    // onMemberSelected: (
+    //   date: Date,
+    //   role: Role,
+    //   member: AvailableQualifiedMember | null
+    // ) => {
+    //   dispatch(assign({ date, role, member }));
+    // },
   };
 
   return <PlannerDraftEditorPage {...pageProps} />;

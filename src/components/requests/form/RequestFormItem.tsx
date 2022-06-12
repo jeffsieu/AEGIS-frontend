@@ -10,14 +10,20 @@ import {
   useTheme,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { RequestPeriod } from '@typing';
 import { ERROR_END_DATE_BEFORE_START_DATE } from '@utils/constants/string';
 import { getCardColor } from '@utils/theme';
+import { Dayjs } from 'dayjs';
+
+export type PartialRequestPeriod = {
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
+  reason: string;
+};
 
 export type RequestFormItemProps = {
   index: number;
   isPromptItem: boolean;
-  requestPeriod: RequestPeriod;
+  requestPeriod: PartialRequestPeriod;
   canDelete: boolean;
   onUpdate: () => void;
   onDelete: () => void;

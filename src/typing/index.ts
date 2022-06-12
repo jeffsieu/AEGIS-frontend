@@ -31,7 +31,7 @@ export type Schedule = {
 };
 
 export type RequestPeriod = {
-  startDate: Dayjs | null;
-  endDate: Dayjs | null;
+  startDate: Dayjs;
+  endDate: Dayjs;
   reason: string;
 };

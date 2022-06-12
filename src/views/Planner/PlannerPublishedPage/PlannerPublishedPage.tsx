@@ -20,7 +20,7 @@ export type PlannerPublishedPageDispatchProps = {
 
 function mapStateToProps(state: RootState): PlannerPublishedPageStateProps {
   return {
-    schedules: state.published.schedules,
+    schedules: [],
   };
 }
 

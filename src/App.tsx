@@ -3,7 +3,17 @@ import NavBar from '@components/layout/navigation/NavBar';
 import PlannerHomePage from '@views/Planner/PlannerHomePage/PlannerHomePage';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { lightTheme } from 'hummingbird-ui';
-import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
+import {
+  Box,
+  Container,
+  CssBaseline,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  ThemeProvider,
+} from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import PlannerNewPlanForm from '@views/Planner/PlannerNewPlanForm/PlannerNewPlanForm';
@@ -21,14 +31,43 @@ import MemberRequestPage from '@views/Member/MemberRequestsPage/MemberRequestsPa
 import MemberPublishedPage from '@views/Member/MemberPublishedPage/MemberPublishedPage';
 import PlannerDraftEditorPage from '@views/Planner/PlannerDraftEditorPage/PlannerDraftEditorPage';
 import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useGetMembersQuery } from '@services/backend';
+import { setUserId } from '@store/general';
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const userId = useAppSelector((state) => state.general.userId);
+  const { data: members } = useGetMembersQuery();
+  const dispatch = useAppDispatch();
+
+  const handleUserChange = (event: SelectChangeEvent) => {
+    dispatch(setUserId(+event.target.value));
+  };
 
   return (
     <>
       <NavBar />
-      <InitializeDataButton />
+      <div>
+        <InitializeDataButton />
+        {members !== undefined && (
+          <FormControl>
+            <InputLabel>Current user</InputLabel>
+            <Select
+              value={userId + ''}
+              label="Current user"
+              onChange={handleUserChange}
+            >
+              {members.map((member) => (
+                <MenuItem key={member.id} value={member.id}>
+                  {member.callsign}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+        <span>User id: {userId}</span>
+      </div>
       {/* Transparent toolbar to fix navbar overlap */}
       <Container className="container" sx={{ position: 'relative' }}>
         <TransitionGroup component={null}>
@@ -67,7 +106,7 @@ function AnimatedRoutes() {
                   path="/planner/drafts"
                   element={<PlannerDraftsPage />}
                 ></Route>
-								<Route
+                <Route
                   path="/planner/drafts/:month"
                   element={<PlannerDraftEditorPage />}
                 ></Route>

@@ -1,7 +1,7 @@
 import { Box, Button, Grid } from '@mui/material';
 import { RequestPeriod } from '@typing';
 import { useMemo, useRef, useState } from 'react';
-import RequestFormItem from './RequestFormItem';
+import RequestFormItem, { PartialRequestPeriod } from './RequestFormItem';
 
 export type RequestFormProps = {
   onRequestCreate: (requestPeriods: RequestPeriod[]) => void;
@@ -10,7 +10,7 @@ export type RequestFormProps = {
 function RequestForm(props: RequestFormProps) {
   const { onRequestCreate } = props;
   const form = useRef<HTMLFormElement>();
-  const [periods, setPeriods] = useState<RequestPeriod[]>([
+  const [periods, setPeriods] = useState<PartialRequestPeriod[]>([
     {
       startDate: null,
       endDate: null,
@@ -24,7 +24,7 @@ function RequestForm(props: RequestFormProps) {
   ]);
 
   const filledPeriods = useMemo(
-    () => periods.slice(0, periods.length - 1),
+    () => periods.slice(0, periods.length - 1) as RequestPeriod[],
     [periods]
   );
 

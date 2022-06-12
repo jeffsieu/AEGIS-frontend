@@ -29,6 +29,13 @@ export namespace Backend {
     roles: Entry<Role>[];
   };
 
+  export type Request = {
+    startDate: string;
+    endDate: string;
+    reason: string;
+    memberId: number;
+  };
+
   export type Entry<T> = {
     id: number;
     createdAt: string;

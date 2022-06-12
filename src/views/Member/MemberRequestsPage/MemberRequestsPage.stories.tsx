@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import MemberRequestsPage from './MemberRequestsPage';
+import { MemberRequestPageWithProps as MemberRequestsPage } from './MemberRequestsPage';
 import { Decorators } from '@utils/storybook/decorators';
 
 export default {
