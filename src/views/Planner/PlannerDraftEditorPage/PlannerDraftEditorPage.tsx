@@ -52,7 +52,13 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={8}>
+    <Box
+      display="flex"
+      position="relative"
+      flexDirection="column"
+      alignItems="center"
+      gap={8}
+    >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
         <Button
@@ -69,13 +75,15 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           progress={progress}
         />
       </Box>
-      <ScheduleTable
-        startDate={startDate}
-        endDate={endDate}
-        roles={roles}
-        scheduleItemsByDay={scheduleItemsByDay}
-        onMemberSelected={onMemberSelected}
-      />
+      <Box width="100vw" position="relative" overflow="auto">
+        <ScheduleTable
+          startDate={startDate}
+          endDate={endDate}
+          roles={roles}
+          scheduleItemsByDay={scheduleItemsByDay}
+          onMemberSelected={onMemberSelected}
+        />
+      </Box>
     </Box>
   );
 }

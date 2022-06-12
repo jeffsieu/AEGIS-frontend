@@ -81,40 +81,45 @@ function AnimatedRoutes() {
             mountOnEnter={false}
             unmountOnExit={true}
           >
-            <Box pt={4} position="absolute" width="100%">
-              <Routes location={location}>
-                <Route path="/" element={<MemberHomePage />}></Route>
-                <Route
-                  path="/new-request"
-                  element={<MemberNewRequestForm />}
-                ></Route>
-                <Route
-                  path="/schedules"
-                  element={<MemberPublishedPage />}
-                ></Route>
-                <Route path="/requests" element={<MemberRequestPage />}></Route>
-                <Route path="/planner" element={<PlannerHomePage />}></Route>
-                <Route
-                  path="/planner/new-plan"
-                  element={<PlannerNewPlanForm />}
-                ></Route>
-                <Route
-                  path="/planner/published"
-                  element={<PlannerPublishedPage />}
-                ></Route>
-                <Route
-                  path="/planner/drafts"
-                  element={<PlannerDraftsPage />}
-                ></Route>
-                <Route
-                  path="/planner/drafts/:month"
-                  element={<PlannerDraftEditorPage />}
-                ></Route>
-                <Route
-                  path="/planner/members"
-                  element={<PlannerMembersPage />}
-                ></Route>
-              </Routes>
+            <Box pt={4} position="absolute" width="100%" left={0}>
+              <Container>
+                <Routes location={location}>
+                  <Route path="/" element={<MemberHomePage />}></Route>
+                  <Route
+                    path="/new-request"
+                    element={<MemberNewRequestForm />}
+                  ></Route>
+                  <Route
+                    path="/schedules"
+                    element={<MemberPublishedPage />}
+                  ></Route>
+                  <Route
+                    path="/requests"
+                    element={<MemberRequestPage />}
+                  ></Route>
+                  <Route path="/planner" element={<PlannerHomePage />}></Route>
+                  <Route
+                    path="/planner/new-plan"
+                    element={<PlannerNewPlanForm />}
+                  ></Route>
+                  <Route
+                    path="/planner/published"
+                    element={<PlannerPublishedPage />}
+                  ></Route>
+                  <Route
+                    path="/planner/drafts"
+                    element={<PlannerDraftsPage />}
+                  ></Route>
+                  <Route
+                    path="/planner/drafts/:month"
+                    element={<PlannerDraftEditorPage />}
+                  ></Route>
+                  <Route
+                    path="/planner/members"
+                    element={<PlannerMembersPage />}
+                  ></Route>
+                </Routes>
+              </Container>
             </Box>
           </CSSTransition>
         </TransitionGroup>
