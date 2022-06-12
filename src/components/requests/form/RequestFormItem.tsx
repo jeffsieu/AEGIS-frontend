@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { RequestPeriod } from '@typing';
+import { ERROR_END_DATE_BEFORE_START_DATE } from '@utils/constants/string';
 import { getCardColor } from '@utils/theme';
 
 export type RequestFormItemProps = {
@@ -118,17 +119,22 @@ function RequestFormItem(props: RequestFormItemProps) {
                   onUpdate();
                 }}
                 value={request.endDate}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    onFocus={() => {
-                      onInputFocus();
-                    }}
-                    variant="filled"
-                    required={!isPromptItem}
-                    fullWidth
-                  />
-                )}
+                renderInput={(params) => {
+                  const hasError = request.endDate?.isBefore(request.startDate);
+                  return (
+                    <TextField
+                      {...params}
+                      onFocus={() => {
+                        onInputFocus();
+                      }}
+                      error={hasError}
+                      helperText={hasError && ERROR_END_DATE_BEFORE_START_DATE}
+                      variant="filled"
+                      required={!isPromptItem}
+                      fullWidth
+                    />
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={12}>
