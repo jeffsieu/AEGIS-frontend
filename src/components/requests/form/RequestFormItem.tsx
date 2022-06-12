@@ -109,6 +109,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                     variant="filled"
                     required={!isPromptItem}
                     fullWidth
+                    autoComplete="off"
                   />
                 )}
               />
@@ -138,6 +139,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                       variant="filled"
                       required={!isPromptItem}
                       fullWidth
+                      autoComplete="off"
                     />
                   );
                 }}
