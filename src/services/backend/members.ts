@@ -2,12 +2,11 @@ import { Backend } from '@typing/backend';
 import { baseApi } from './base';
 
 type UpdateMemberArgs = {
-  callsign: string;
-  member: Backend.Member;
+  member: Backend.Entry<Backend.Member>;
 };
 
 type UpdateMemberRolesArgs = {
-  callsign: string;
+  memberId: number;
   roleNames: string[];
 };
 
@@ -24,9 +23,9 @@ export const membersApi = baseApi.injectEndpoints({
         },
       }),
       providesTags: (result) => [
-        ...(result ?? []).map(({ callsign }) => ({
+        ...(result ?? []).map(({ id }) => ({
           type: 'Members' as const,
-          id: callsign,
+          id: id,
         })),
         { type: 'Members', id: 'LIST' },
       ],
@@ -37,14 +36,11 @@ export const membersApi = baseApi.injectEndpoints({
     >({
       query: (month) => ({
         url: `members/availability/${month}`,
-        params: {
-          includeRoles: true,
-        },
       }),
       providesTags: (result) => [
-        ...(result ?? []).map(({ callsign }) => ({
+        ...(result ?? []).map(({ id }) => ({
           type: 'Members' as const,
-          id: callsign,
+          id: id,
         })),
         { type: 'Members', id: 'LIST' },
       ],
@@ -58,23 +54,23 @@ export const membersApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: 'Members', id: 'LIST' }],
     }),
     updateMember: builder.mutation<void, UpdateMemberArgs>({
-      query: ({ callsign, member }) => ({
-        url: `members/${callsign}`,
+      query: ({ member }) => ({
+        url: `members/${member.id}`,
         method: 'PUT',
         body: member,
       }),
-      invalidatesTags: (result, error, { callsign }) => [
-        { type: 'Members', id: callsign },
+      invalidatesTags: (result, error, { member }) => [
+        { type: 'Members', id: member.id },
       ],
     }),
     updateMemberRoles: builder.mutation<void, UpdateMemberRolesArgs>({
-      query: ({ callsign, roleNames }) => ({
-        url: `members/${callsign}/roles`,
+      query: ({ memberId, roleNames }) => ({
+        url: `members/${memberId}/roles`,
         method: 'PUT',
         body: roleNames,
       }),
-      invalidatesTags: (result, error, { callsign }) => [
-        { type: 'Members', id: callsign },
+      invalidatesTags: (result, error, { memberId }) => [
+        { type: 'Members', id: memberId },
       ],
     }),
   }),

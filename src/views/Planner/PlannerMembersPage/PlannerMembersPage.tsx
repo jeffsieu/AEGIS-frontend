@@ -42,7 +42,7 @@ function PlannerMembersPageWithAPI() {
     members: mappedMembers,
     onMemberRolesChange: (callsign: string, roles: Role[]) => {
       updateMemberRoles({
-        callsign,
+        memberId: mappedMembers.find((member) => member.callsign === callsign)!.id,
         roleNames: roles.map((role) => role.name),
       });
     },

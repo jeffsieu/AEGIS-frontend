@@ -28,6 +28,49 @@ export type PlannerDraftEditorPageProps = {
   ) => void;
 };
 
+function PlannerDraftEditorPageWithAPI() {
+  const { month } = useParams();
+  const { data: schedules, isError } = useGetSchedulesForMonthQuery(month!);
+  const { data: roles } = useGetRolesQuery();
+  const { data: memberAvailabilities } =
+    useGetMemberAvailabilitiesForMonthQuery(month!);
+
+  if (isError) {
+    return <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>;
+  }
+
+  if (
+    schedules === undefined ||
+    roles === undefined ||
+    memberAvailabilities === undefined
+  ) {
+    return <CircularProgress />;
+  }
+  const qualifiedMembers = memberAvailabilities.map((member) => {
+    return {
+      ...member,
+      isAvailable: true as const,
+    };
+  });
+
+  if (schedules.length === 0) return <>No records for {month} found</>;
+
+  const draft = schedules[0];
+
+  const pageProps: PlannerDraftEditorPageProps = {
+    ...scheduleToScheduleTableProps(draft, roles, memberAvailabilities),
+    // onMemberSelected: (
+    //   date: Date,
+    //   role: Role,
+    //   member: AvailableQualifiedMember | null
+    // ) => {
+    //   dispatch(assign({ date, role, member }));
+    // },
+  };
+
+  return <PlannerDraftEditorPage {...pageProps} />;
+}
+
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
     props;
@@ -86,49 +129,6 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
       </Box>
     </Box>
   );
-}
-
-function PlannerDraftEditorPageWithAPI() {
-  const { month } = useParams();
-  const { data: schedules, isError } = useGetSchedulesForMonthQuery(month!);
-  const { data: roles } = useGetRolesQuery();
-  const { data: memberAvailabilities } =
-    useGetMemberAvailabilitiesForMonthQuery(month!);
-
-  if (isError) {
-    return <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>;
-  }
-
-  if (
-    schedules === undefined ||
-    roles === undefined ||
-    memberAvailabilities === undefined
-  ) {
-    return <CircularProgress />;
-  }
-  const qualifiedMembers = memberAvailabilities.map((member) => {
-    return {
-      ...member,
-      isAvailable: true as const,
-    };
-  });
-
-  if (schedules.length === 0) return <>No records for {month} found</>;
-
-  const draft = schedules[0];
-
-  const pageProps: PlannerDraftEditorPageProps = {
-    ...scheduleToScheduleTableProps(draft, roles, qualifiedMembers),
-    // onMemberSelected: (
-    //   date: Date,
-    //   role: Role,
-    //   member: AvailableQualifiedMember | null
-    // ) => {
-    //   dispatch(assign({ date, role, member }));
-    // },
-  };
-
-  return <PlannerDraftEditorPage {...pageProps} />;
 }
 
 export default PlannerDraftEditorPageWithAPI;
