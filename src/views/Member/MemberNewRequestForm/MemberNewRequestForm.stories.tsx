@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import MemberNewRequestForm from './MemberNewRequestForm';
+import { MemberNewRequestFormWithProps as MemberNewRequestForm } from './MemberNewRequestForm';
 import { Decorators } from '@utils/storybook/decorators';
 
 export default {

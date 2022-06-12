@@ -16,15 +16,23 @@ import { getCardColor } from '@utils/theme';
 export type RequestFormItemProps = {
   index: number;
   isPromptItem: boolean;
-  request: RequestPeriod;
+  requestPeriod: RequestPeriod;
+  canDelete: boolean;
   onUpdate: () => void;
   onDelete: () => void;
   onInputFocus: () => void;
 };
 
 function RequestFormItem(props: RequestFormItemProps) {
-  const { request, index, isPromptItem, onUpdate, onInputFocus, onDelete } =
-    props;
+  const {
+    requestPeriod: request,
+    canDelete,
+    index,
+    isPromptItem,
+    onUpdate,
+    onInputFocus,
+    onDelete,
+  } = props;
   const theme = useTheme();
   const cardColor = getCardColor(theme);
 
@@ -58,7 +66,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                 {isPromptItem ? 'Add period...' : `Period ${index + 1}`}
               </Typography>
             </Box>
-            {!isPromptItem && (
+            {canDelete && (
               <IconButton
                 aria-label="delete"
                 onClick={() => {
@@ -92,7 +100,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                       onInputFocus();
                     }}
                     variant="filled"
-                    required
+                    required={!isPromptItem}
                     fullWidth
                   />
                 )}
@@ -117,7 +125,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                       onInputFocus();
                     }}
                     variant="filled"
-                    required
+                    required={!isPromptItem}
                     fullWidth
                   />
                 )}
@@ -128,7 +136,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                 fullWidth
                 label="Reason"
                 variant="filled"
-                required
+                required={!isPromptItem}
                 value={request.reason}
                 onFocus={() => {
                   onInputFocus();

@@ -1,7 +1,19 @@
-import RequestForm from '@components/requests/form/RequestForm';
+import RequestForm, {
+  RequestFormProps,
+} from '@components/requests/form/RequestForm';
 import { Box, Typography } from '@mui/material';
+import { RequestPeriod } from '@typing';
 
-export type MemberNewRequestFormProps = {};
+export type MemberNewRequestFormProps = RequestFormProps;
+
+function MemberNewRequestFormWithAPI() {
+  const props: MemberNewRequestFormProps = {
+    onRequestCreate: (requestPeriods: RequestPeriod[]) => {
+      console.log(requestPeriods);
+    },
+  };
+  return <MemberNewRequestForm {...props} />;
+}
 
 function MemberNewRequestForm(props: MemberNewRequestFormProps) {
   return (
@@ -9,9 +21,10 @@ function MemberNewRequestForm(props: MemberNewRequestFormProps) {
       <Typography variant="h4" gutterBottom>
         Create new request
       </Typography>
-      <RequestForm />
+      <RequestForm {...props} />
     </Box>
   );
 }
 
-export default MemberNewRequestForm;
+export default MemberNewRequestFormWithAPI;
+export { MemberNewRequestForm as MemberNewRequestFormWithProps };

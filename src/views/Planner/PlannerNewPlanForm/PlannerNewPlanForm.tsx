@@ -19,18 +19,20 @@ import {
 import { Role } from '@typing';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export type PlannerNewPlanFormProps = {
   roles: Role[];
   defaultMonth: Dayjs;
   months: Dayjs[];
-  onScheduleCreated: (
+  onScheduleCreate: (
     month: Dayjs,
     roleDates: { [key: Role['name']]: Dayjs[] }
   ) => void;
 };
 
 function PlannerNewPlanFormWithAPI() {
+  const navigate = useNavigate();
   const { data: roles } = useGetRolesQuery();
   const { data: monthData } = useGetMonthsToPlanQuery();
   const [addSchedule] = useAddScheduleMutation();
@@ -52,8 +54,8 @@ function PlannerNewPlanFormWithAPI() {
     roles,
     defaultMonth,
     months: monthsToPlan,
-    onScheduleCreated: (month, roleDates) => {
-      addSchedule({
+    onScheduleCreate: async (month, roleDates) => {
+      await addSchedule({
         month: month.format('YYYY-MM-DD'),
         isPublished: false,
         duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
@@ -63,7 +65,8 @@ function PlannerNewPlanFormWithAPI() {
           }))
         ),
       });
-      console.log(month, roleDates);
+
+      navigate(`/planner/drafts/${month.format('YYYY-MM')}`);
     },
   };
 
@@ -71,7 +74,7 @@ function PlannerNewPlanFormWithAPI() {
 }
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
-  const { roles, defaultMonth, months, onScheduleCreated } = props;
+  const { roles, defaultMonth, months, onScheduleCreate: onScheduleCreated } = props;
 
   const theme = useTheme();
 

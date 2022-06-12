@@ -6,7 +6,7 @@ import { Backend } from '@typing/backend';
 import { ERROR_NO_DRAFTS_SCHEDULES } from '@utils/constants/string';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 export type PlannerDraftsPageProps = {
   drafts: Backend.Schedule[];
