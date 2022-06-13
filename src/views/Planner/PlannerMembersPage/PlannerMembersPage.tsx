@@ -9,46 +9,48 @@ import {
   useGetRolesQuery,
   useUpdateMemberRolesMutation,
 } from '@services/backend';
-import { useMemo } from 'react';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 
 export type PlannerMembersPageProps = MemberTableProps;
 
 function PlannerMembersPageWithAPI() {
-  const { data: members } = useGetMembersQuery();
-  const { data: roles } = useGetRolesQuery();
   const [updateMemberRoles] = useUpdateMemberRolesMutation();
 
-  const mappedMembers = useMemo(() => {
-    if (members === undefined || roles === undefined) {
-      return [];
-    }
-
-    return members.map((member) => {
-      const memberRoles = member.roles;
-      const rolesMap: MemberEntry['roles'] = {};
-      for (const role of roles) {
-        rolesMap[role.name] = memberRoles.some(
-          (memberRole) => memberRole.name === role.name
-        );
-      }
-      return {
-        ...member,
-        roles: rolesMap,
-      };
-    });
-  }, [members, roles]);
-
-  const props: PlannerMembersPageProps = {
-    members: mappedMembers,
-    onMemberRolesChange: (callsign: string, roles: Role[]) => {
-      updateMemberRoles({
-        memberId: mappedMembers.find((member) => member.callsign === callsign)!.id,
-        roleNames: roles.map((role) => role.name),
-      });
+  return buildWithApiQueries({
+    queries: {
+      members: useGetMembersQuery(),
+      roles: useGetRolesQuery(),
     },
-  };
+    onSuccess: ({ members, roles }) => {
+      const mappedMembers = members.map((member) => {
+        const memberRoles = member.roles;
+        const rolesMap: MemberEntry['roles'] = {};
+        for (const role of roles) {
+          rolesMap[role.name] = memberRoles.some(
+            (memberRole) => memberRole.name === role.name
+          );
+        }
+        return {
+          ...member,
+          roles: rolesMap,
+        };
+      });
 
-  return <PlannerMembersPage {...props}></PlannerMembersPage>;
+      const props: PlannerMembersPageProps = {
+        members: mappedMembers,
+        onMemberRolesChange: (callsign: string, roles: Role[]) => {
+          updateMemberRoles({
+            memberId: mappedMembers.find(
+              (member) => member.callsign === callsign
+            )!.id,
+            roleNames: roles.map((role) => role.name),
+          });
+        },
+      };
+
+      return <PlannerMembersPage {...props}></PlannerMembersPage>;
+    },
+  });
 }
 
 function PlannerMembersPage(props: PlannerMembersPageProps) {

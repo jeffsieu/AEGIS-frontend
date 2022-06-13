@@ -2,7 +2,6 @@ import MultiDatePicker from '@components/general/multi-date-picker';
 import {
   Box,
   Button,
-  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -17,6 +16,7 @@ import {
   useAddScheduleMutation,
 } from '@services/backend';
 import { Role } from '@typing';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -33,48 +33,53 @@ export type PlannerNewPlanFormProps = {
 
 function PlannerNewPlanFormWithAPI() {
   const navigate = useNavigate();
-  const { data: roles } = useGetRolesQuery();
-  const { data: monthData } = useGetMonthsToPlanQuery();
   const [addSchedule] = useAddScheduleMutation();
 
-  const monthsToPlan = useMemo(() => {
-    return monthData?.map((date) => dayjs(date)) ?? [];
-  }, [monthData]);
-
-  if (roles === undefined || monthData === undefined) {
-    return <CircularProgress />;
-  }
-
-  if (monthData.length === 0) {
-    return <Typography variant="h6">No months to plan.</Typography>;
-  }
-  const defaultMonth = monthsToPlan[0];
-
-  const props: PlannerNewPlanFormProps = {
-    roles,
-    defaultMonth,
-    months: monthsToPlan,
-    onScheduleCreate: async (month, roleDates) => {
-      await addSchedule({
-        month: month.format('YYYY-MM-DD'),
-        isPublished: false,
-        duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
-          dates.map((date) => ({
-            date: date.format('YYYY-MM-DD'),
-            roleId: roles.find((role) => role.name === roleName)!.id,
-          }))
-        ),
-      });
-
-      navigate(`/planner/drafts/${month.format('YYYY-MM')}`);
+  return buildWithApiQueries({
+    queries: {
+      roles: useGetRolesQuery(),
+      monthData: useGetMonthsToPlanQuery(),
     },
-  };
+    onSuccess: ({ monthData, roles }) => {
+      if (monthData.length === 0) {
+        return <Typography variant="h6">No months to plan.</Typography>;
+      }
 
-  return <PlannerNewPlanForm {...props} />;
+      const monthsToPlan = monthData.map((date) => dayjs(date));
+      const defaultMonth = monthsToPlan[0];
+
+      const props: PlannerNewPlanFormProps = {
+        roles,
+        defaultMonth,
+        months: monthsToPlan,
+        onScheduleCreate: async (month, roleDates) => {
+          await addSchedule({
+            month: month.format('YYYY-MM-DD'),
+            isPublished: false,
+            duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
+              dates.map((date) => ({
+                date: date.format('YYYY-MM-DD'),
+                roleId: roles.find((role) => role.name === roleName)!.id,
+              }))
+            ),
+          });
+
+          navigate(`/planner/drafts/${month.format('YYYY-MM')}`);
+        },
+      };
+
+      return <PlannerNewPlanForm {...props} />;
+    },
+  });
 }
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
-  const { roles, defaultMonth, months, onScheduleCreate: onScheduleCreated } = props;
+  const {
+    roles,
+    defaultMonth,
+    months,
+    onScheduleCreate: onScheduleCreated,
+  } = props;
 
   const theme = useTheme();
 

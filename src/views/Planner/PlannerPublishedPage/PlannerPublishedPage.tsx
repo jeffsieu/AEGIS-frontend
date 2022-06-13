@@ -1,16 +1,11 @@
 import EmptyHint from '@components/general/empty-hint';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
 import { Box, Typography } from '@mui/material';
-import { AppDispatch, RootState } from '@store';
 import { AvailableQualifiedMember, Role, Schedule } from '@typing';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
-import { connect } from 'react-redux';
 
-export type PlannerPublishedPageStateProps = {
+export type PlannerPublishedPageProps = {
   schedules: Schedule[];
-};
-
-export type PlannerPublishedPageDispatchProps = {
   onMemberSelected: (
     date: Date,
     role: Role,
@@ -18,16 +13,9 @@ export type PlannerPublishedPageDispatchProps = {
   ) => void;
 };
 
-function mapStateToProps(state: RootState): PlannerPublishedPageStateProps {
-  return {
+function PlannerPublishedPageWithAPI() {
+  const props: PlannerPublishedPageProps = {
     schedules: [],
-  };
-}
-
-function mapDispatchToProps(
-  dispatch: AppDispatch
-): PlannerPublishedPageDispatchProps {
-  return {
     onMemberSelected: (
       date: Date,
       role: Role,
@@ -36,10 +24,8 @@ function mapDispatchToProps(
       // TODO: Add action
     },
   };
+  return <PlannerPublishedPage {...props} />;
 }
-
-export type PlannerPublishedPageProps = PlannerPublishedPageStateProps &
-  PlannerPublishedPageDispatchProps;
 
 function PlannerPublishedPage(props: PlannerPublishedPageProps) {
   const { schedules, onMemberSelected } = props;
@@ -63,8 +49,5 @@ function PlannerPublishedPage(props: PlannerPublishedPageProps) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PlannerPublishedPage);
+export default PlannerPublishedPageWithAPI;
 export { PlannerPublishedPage as PlannerPublishedPageWithProps };

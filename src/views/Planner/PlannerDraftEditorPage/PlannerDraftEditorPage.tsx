@@ -1,6 +1,6 @@
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
-import { Box, Button, CircularProgress } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import {
   RequiredScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
@@ -15,6 +15,7 @@ import {
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import EmptyHint from '@components/general/empty-hint';
 import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 
 export type PlannerDraftEditorPageProps = {
   startDate: Date;
@@ -30,45 +31,25 @@ export type PlannerDraftEditorPageProps = {
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
-  const { data: schedules, isError } = useGetSchedulesForMonthQuery(month!);
-  const { data: roles } = useGetRolesQuery();
-  const { data: memberAvailabilities } =
-    useGetMemberAvailabilitiesForMonthQuery(month!);
 
-  if (isError) {
-    return <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>;
-  }
+  return buildWithApiQueries({
+    queries: {
+      roles: useGetRolesQuery(),
+      schedules: useGetSchedulesForMonthQuery(month!),
+      memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(month!),
+    },
+    onSuccess: ({ roles, memberAvailabilities, schedules }) => {
+      if (schedules.length === 0) return <>No records for {month} found</>;
 
-  if (
-    schedules === undefined ||
-    roles === undefined ||
-    memberAvailabilities === undefined
-  ) {
-    return <CircularProgress />;
-  }
-  const qualifiedMembers = memberAvailabilities.map((member) => {
-    return {
-      ...member,
-      isAvailable: true as const,
-    };
+      const draft = schedules[0];
+      const props: PlannerDraftEditorPageProps = {
+        ...scheduleToScheduleTableProps(draft, roles, memberAvailabilities),
+      };
+
+      return <PlannerDraftEditorPage {...props} />;
+    },
+    onError: () => <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>,
   });
-
-  if (schedules.length === 0) return <>No records for {month} found</>;
-
-  const draft = schedules[0];
-
-  const pageProps: PlannerDraftEditorPageProps = {
-    ...scheduleToScheduleTableProps(draft, roles, memberAvailabilities),
-    // onMemberSelected: (
-    //   date: Date,
-    //   role: Role,
-    //   member: AvailableQualifiedMember | null
-    // ) => {
-    //   dispatch(assign({ date, role, member }));
-    // },
-  };
-
-  return <PlannerDraftEditorPage {...pageProps} />;
 }
 
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {

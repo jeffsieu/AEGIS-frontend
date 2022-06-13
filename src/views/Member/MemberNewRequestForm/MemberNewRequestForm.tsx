@@ -5,16 +5,18 @@ import { Box, Typography } from '@mui/material';
 import { useAddRequestsMutation } from '@services/backend';
 import { useAppSelector } from '@store/hooks';
 import { RequestPeriod } from '@typing';
+import { useNavigate } from 'react-router-dom';
 
 export type MemberNewRequestFormProps = RequestFormProps;
 
 function MemberNewRequestFormWithAPI() {
+  const navigate = useNavigate();
   const userId = useAppSelector((state) => state.general.userId);
   const [addRequests] = useAddRequestsMutation();
 
   const props: MemberNewRequestFormProps = {
-    onRequestCreate: (requestPeriods: RequestPeriod[]) => {
-      addRequests(
+    onRequestCreate: async (requestPeriods: RequestPeriod[]) => {
+      await addRequests(
         requestPeriods.map(({ startDate, endDate, reason }) => ({
           startDate: startDate.format('YYYY-MM-DD'),
           endDate: endDate.format('YYYY-MM-DD'),
@@ -22,6 +24,7 @@ function MemberNewRequestFormWithAPI() {
           memberId: userId,
         }))
       );
+      navigate('/requests');
     },
   };
   return <MemberNewRequestForm {...props} />;

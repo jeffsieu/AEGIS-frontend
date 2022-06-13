@@ -1,35 +1,36 @@
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import EmptyHint from '@components/general/empty-hint';
 import RequestsTable from '@components/requests/table/RequestsTable';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useGetRequestsQuery } from '@services/backend';
 import { RequestPeriod } from '@typing';
 import { ERROR_NO_REQUESTS } from '@utils/constants/string';
 import dayjs from 'dayjs';
 
-export type MemberRequestPageProps = {
+export type MemberRequestsPageProps = {
   periods: (RequestPeriod & { callsign: string })[];
 };
 
-function MemberRequestPageWithAPI() {
-  const { data: periods } = useGetRequestsQuery();
-
-  if (periods === undefined) {
-    return <CircularProgress />;
-  }
-
-  const props: MemberRequestPageProps = {
-    periods: periods.map((period) => ({
-      ...period,
-      startDate: dayjs(period.startDate),
-      endDate: dayjs(period.endDate),
-      callsign: period.member.callsign,
-    })),
-  };
-
-  return <MemberRequestPage {...props} />;
+function MemberRequestsPageWithAPI() {
+  return buildWithApiQueries({
+    queries: {
+      periods: useGetRequestsQuery(),
+    },
+    onSuccess: ({ periods }) => {
+      const props: MemberRequestsPageProps = {
+        periods: periods.map((period) => ({
+          ...period,
+          startDate: dayjs(period.startDate),
+          endDate: dayjs(period.endDate),
+          callsign: period.member.callsign,
+        })),
+      };
+      return <MemberRequestsPage {...props} />;
+    },
+  });
 }
 
-function MemberRequestPage(props: MemberRequestPageProps) {
+function MemberRequestsPage(props: MemberRequestsPageProps) {
   const { periods } = props;
 
   return (
@@ -51,5 +52,5 @@ function MemberRequestPage(props: MemberRequestPageProps) {
   );
 }
 
-export default MemberRequestPageWithAPI;
-export { MemberRequestPage as MemberRequestPageWithProps };
+export default MemberRequestsPageWithAPI;
+export { MemberRequestsPage as MemberRequestPageWithProps };

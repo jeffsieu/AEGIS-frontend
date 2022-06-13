@@ -4,6 +4,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useGetRolesQuery, useGetSchedulesQuery } from '@services/backend';
 import { Backend } from '@typing/backend';
 import { ERROR_NO_DRAFTS_SCHEDULES } from '@utils/constants/string';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -15,22 +16,24 @@ export type PlannerDraftsPageProps = {
 };
 
 function PlannerDraftsPageWithAPI() {
-  const { data: schedules } = useGetSchedulesQuery();
-  const { data: roles } = useGetRolesQuery();
   const navigate = useNavigate();
 
-  if (schedules === undefined || roles === undefined) {
-    return <CircularProgress />;
-  }
-
-  const props: PlannerDraftsPageProps = {
-    drafts: schedules,
-    roles: roles,
-    onDraftClick: (draft) => {
-      navigate(`/planner/drafts/${dayjs(draft.month).format('YYYY-MM')}`);
+  return buildWithApiQueries({
+    queries: {
+      schedules: useGetSchedulesQuery(),
+      roles: useGetRolesQuery(),
     },
-  };
-  return <PlannerDraftsPage {...props} />;
+    onSuccess: ({ schedules, roles }) => {
+      const props: PlannerDraftsPageProps = {
+        drafts: schedules,
+        roles: roles,
+        onDraftClick: (draft) => {
+          navigate(`/planner/drafts/${dayjs(draft.month).format('YYYY-MM')}`);
+        },
+      };
+      return <PlannerDraftsPage {...props} />;
+    },
+  });
 }
 
 function PlannerDraftsPage(props: PlannerDraftsPageProps) {
