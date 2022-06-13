@@ -20,5 +20,7 @@ const Template: ComponentStory<typeof ScheduleRowHeader> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  role: 'A1',
+  role: {
+    name: 'A1',
+  },
 };

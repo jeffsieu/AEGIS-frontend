@@ -21,5 +21,5 @@ const Template: ComponentStory<typeof ScheduleRowHeaders> = (args) => (
 export const Default = Template.bind({});
 
 Default.args = {
-  roles: ['A1', 'A2', 'A3', 'B1', 'B2', 'B3'],
+  roles: ['A1', 'A2', 'A3', 'B1', 'B2', 'B3'].map((name) => ({ name })),
 };

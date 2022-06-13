@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof PlannerPublishedPageWithProps> = (
 const mockSchedules = Array.from({ length: 3 }, (_, i) => {
   const startDate = dayjs('2022-01-01').month(i).toDate();
   const endDate = dayjs('2022-01-14').month(i).toDate();
-  const roles = ['A1', 'A2', 'A3', 'A4', 'A5'];
+  const roles = ['A1', 'A2', 'A3', 'A4', 'A5'].map((name) => ({ name }));
   return {
     startDate,
     endDate,

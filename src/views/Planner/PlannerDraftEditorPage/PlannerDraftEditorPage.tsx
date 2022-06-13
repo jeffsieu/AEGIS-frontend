@@ -1,4 +1,3 @@
-import { assign, getScheduleItemsByDay } from '@store/schedule/draft';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';
@@ -7,17 +6,22 @@ import {
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
-import { AppDispatch, RootState } from '@store';
-import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import {
+  useGetMemberAvailabilitiesForMonthQuery,
+  useGetRolesQuery,
+  useGetSchedulesForMonthQuery,
+} from '@services/backend';
+import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
+import EmptyHint from '@components/general/empty-hint';
+import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 
-export type PlannerDraftEditorPageStateProps = {
+export type PlannerDraftEditorPageProps = {
   startDate: Date;
   endDate: Date;
   roles: Role[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
-};
-
-export type PlannerDraftEditorPageDispatchProps = {
   onMemberSelected: (
     date: Date,
     role: Role,
@@ -25,35 +29,27 @@ export type PlannerDraftEditorPageDispatchProps = {
   ) => void;
 };
 
-export type PlannerDraftEditorPageProps = PlannerDraftEditorPageStateProps &
-  PlannerDraftEditorPageDispatchProps;
+function PlannerDraftEditorPageWithAPI() {
+  const { month } = useParams();
 
-function mapStateToProps(state: RootState): PlannerDraftEditorPageStateProps {
-  const startDate = state.draft.startDate;
-  const endDate = state.draft.endDate;
-  const roles = state.draft.roles;
-  const scheduleItemsByDay = getScheduleItemsByDay(state);
-
-  return {
-    startDate,
-    endDate,
-    roles,
-    scheduleItemsByDay,
-  };
-}
-
-function mapDispatchToProps(
-  dispatch: AppDispatch
-): PlannerDraftEditorPageDispatchProps {
-  return {
-    onMemberSelected: (
-      date: Date,
-      role: Role,
-      member: AvailableQualifiedMember | null
-    ) => {
-      dispatch(assign({ date, role, member }));
+  return buildWithApiQueries({
+    queries: {
+      roles: useGetRolesQuery(),
+      schedules: useGetSchedulesForMonthQuery(month!),
+      memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(month!),
     },
-  };
+    onSuccess: ({ roles, memberAvailabilities, schedules }) => {
+      if (schedules.length === 0) return <>No records for {month} found</>;
+
+      const draft = schedules[0];
+      const props: PlannerDraftEditorPageProps = {
+        ...scheduleToScheduleTableProps(draft, roles, memberAvailabilities),
+      };
+
+      return <PlannerDraftEditorPage {...props} />;
+    },
+    onError: () => <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>,
+  });
 }
 
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
@@ -80,7 +76,13 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={8}>
+    <Box
+      display="flex"
+      position="relative"
+      flexDirection="column"
+      alignItems="center"
+      gap={8}
+    >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
         <Button
@@ -97,16 +99,18 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           progress={progress}
         />
       </Box>
-      <ScheduleTable
-        startDate={startDate}
-        endDate={endDate}
-        roles={roles}
-        scheduleItemsByDay={scheduleItemsByDay}
-        onMemberSelected={onMemberSelected}
-      />
+      <Box width="100vw" position="relative" overflow="auto">
+        <ScheduleTable
+          startDate={startDate}
+          endDate={endDate}
+          roles={roles}
+          scheduleItemsByDay={scheduleItemsByDay}
+          onMemberSelected={onMemberSelected}
+        />
+      </Box>
     </Box>
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlannerDraftEditorPage);
+export default PlannerDraftEditorPageWithAPI;
 export { PlannerDraftEditorPage as PlannerDraftEditorPageWithProps };

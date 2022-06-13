@@ -1,13 +1,45 @@
 export namespace Backend {
+  export type Date = `${number}-${number}-${number}`;
+
   export type Duty = {
-    callsign: string;
-    duty_type: string;
-    date: Date;
+    memberId?: number;
+    roleId: number;
+    // scheduleId: number;
+    date: string;
   };
 
   export type Schedule = {
-    month: Date;
+    month: string;
     isPublished: boolean;
     duties: Duty[];
   };
+
+  export type Role = {
+    name: string;
+  };
+
+  export type Member = {
+    callsign: string;
+    squadron: string;
+    type: string;
+  };
+
+  export type MemberWithAvailability = Member & {
+    dutyCount: number;
+    roles: Entry<Role>[];
+    requests: Entry<Request>[];
+  };
+
+  export type Request = {
+    startDate: string;
+    endDate: string;
+    reason: string;
+    memberId: number;
+  };
+
+  export type Entry<T> = {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+  } & T;
 }

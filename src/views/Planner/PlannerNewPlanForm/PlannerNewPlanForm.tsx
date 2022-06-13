@@ -10,36 +10,76 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { RootState } from '@store';
 import {
-  getMonthsToPlan,
-  getNextMonthToPlan,
-  getRoles,
-} from '@store/schedule/general';
+  useGetRolesQuery,
+  useGetMonthsToPlanQuery,
+  useAddScheduleMutation,
+} from '@services/backend';
 import { Role } from '@typing';
+import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
-import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export type PlannerNewPlanFormProps = {
   roles: Role[];
   defaultMonth: Dayjs;
   months: Dayjs[];
+  onScheduleCreate: (
+    month: Dayjs,
+    roleDates: { [key: Role['name']]: Dayjs[] }
+  ) => void;
 };
 
-function mapStateToProps(state: RootState): PlannerNewPlanFormProps {
-  const defaultMonth = getNextMonthToPlan(state);
-  const months = getMonthsToPlan(state).map((date) => dayjs(date));
-  return {
-    roles: getRoles(state),
-    defaultMonth:
-      months.find((month) => month.isSame(defaultMonth, 'month')) ?? months[0],
-    months: months,
-  };
+function PlannerNewPlanFormWithAPI() {
+  const navigate = useNavigate();
+  const [addSchedule] = useAddScheduleMutation();
+
+  return buildWithApiQueries({
+    queries: {
+      roles: useGetRolesQuery(),
+      monthData: useGetMonthsToPlanQuery(),
+    },
+    onSuccess: ({ monthData, roles }) => {
+      if (monthData.length === 0) {
+        return <Typography variant="h6">No months to plan.</Typography>;
+      }
+
+      const monthsToPlan = monthData.map((date) => dayjs(date));
+      const defaultMonth = monthsToPlan[0];
+
+      const props: PlannerNewPlanFormProps = {
+        roles,
+        defaultMonth,
+        months: monthsToPlan,
+        onScheduleCreate: async (month, roleDates) => {
+          await addSchedule({
+            month: month.format('YYYY-MM-DD'),
+            isPublished: false,
+            duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
+              dates.map((date) => ({
+                date: date.format('YYYY-MM-DD'),
+                roleId: roles.find((role) => role.name === roleName)!.id,
+              }))
+            ),
+          });
+
+          navigate(`/planner/drafts/${month.format('YYYY-MM')}`);
+        },
+      };
+
+      return <PlannerNewPlanForm {...props} />;
+    },
+  });
 }
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
-  const { roles, defaultMonth, months } = props;
+  const {
+    roles,
+    defaultMonth,
+    months,
+    onScheduleCreate: onScheduleCreated,
+  } = props;
 
   const theme = useTheme();
 
@@ -102,7 +142,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
         <Box display="flex" flexDirection="column" gap={2}>
           {roles.map((role, index) => (
             <Box key={index} display="flex" gap={8} alignItems="center">
-              <Typography variant="h6">{role}</Typography>
+              <Typography variant="h6">{role.name}</Typography>
               <MultiDatePicker
                 label="Dates"
                 minDate={minDate}
@@ -112,20 +152,33 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 onSelectionChanged={(selectedDates: Dayjs[]) => {
                   setDateSelections({
                     ...dateSelections,
-                    [role]: selectedDates,
+                    [role.name]: selectedDates,
                   });
                 }}
-                selection={dateSelections[role] || []}
-                textFieldProps={{ variant: 'filled' }}
+                selection={dateSelections[role.name] || []}
+                textFieldProps={{
+                  variant: 'filled',
+                  helperText:
+                    dateSelections[role.name]?.length > 0
+                      ? ''
+                      : 'Role will not be scheduled in entire month.',
+                }}
               ></MultiDatePicker>
             </Box>
           ))}
         </Box>
       </div>
-      <Button variant="contained">Create</Button>
+      <Button
+        variant="contained"
+        onClick={() => {
+          onScheduleCreated(month, dateSelections);
+        }}
+      >
+        Create
+      </Button>
     </Box>
   );
 }
 
-export default connect(mapStateToProps)(PlannerNewPlanForm);
+export default PlannerNewPlanFormWithAPI;
 export { PlannerNewPlanForm as PlannerNewPlanFormWithProps };

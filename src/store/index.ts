@@ -1,16 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
-import draftReducer from '@store/schedule/draft';
-import generalReducer from '@store/schedule/general';
-import publishedReducer from '@store/schedule/published';
-import membersReducer from '@store/users';
+import { backendApi } from '@services/backend';
+import generalReducer from '@store/general';
 
 const store = configureStore({
   reducer: {
-    draft: draftReducer,
+    [backendApi.reducerPath]: backendApi.reducer,
     general: generalReducer,
-    published: publishedReducer,
-    members: membersReducer,
+    // published: publishedReducer,
+    // members: membersReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // Workaround for Date being in draft slice
+    }).concat(backendApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -6,7 +6,7 @@ import { Decorators } from '@utils/storybook/decorators';
 
 const mockStartDate = dayjs('2022-04-01').toDate();
 const mockEndDate = dayjs('2022-04-14').toDate();
-const mockRoles = ['A1', 'A2', 'A3', 'A4', 'A5'];
+const mockRoles = ['A1', 'A2', 'A3', 'A4', 'A5'].map((name) => ({ name }));
 
 export default {
   title: 'Planner/Draft Editor',

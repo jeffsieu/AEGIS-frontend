@@ -19,21 +19,21 @@ const Template: ComponentStory<typeof PrioritizedListPopover> = (args) => {
 export const Main = Template.bind({});
 Main.args = {
   qualifiedMembers: [
-    { isAvailable: true, callSign: 'Abang', dutyCount: 1 },
-    { isAvailable: true, callSign: 'Upin', dutyCount: 7 },
+    { isAvailable: true, callsign: 'Abang', dutyCount: 1 },
+    { isAvailable: true, callsign: 'Upin', dutyCount: 7 },
     {
       isAvailable: false,
-      callSign: 'Ipin',
+      callsign: 'Ipin',
       dutyCount: 3,
       unavailableReason: 'Medical Leave',
     },
     {
       isAvailable: false,
-      callSign: 'Oof',
+      callsign: 'Oof',
       dutyCount: 2,
       unavailableReason: 'Medical Leave',
     },
-    { isAvailable: true, callSign: 'Yed', dutyCount: 4 },
-    { isAvailable: true, callSign: 'Ym', dutyCount: 6 },
+    { isAvailable: true, callsign: 'Yed', dutyCount: 4 },
+    { isAvailable: true, callsign: 'Ym', dutyCount: 6 },
   ],
 };

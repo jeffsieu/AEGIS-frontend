@@ -31,7 +31,9 @@ function ScheduleRowHeader(props: ScheduleRowHeaderProps) {
         disabled
         sx={{ justifyContent: 'left' }}
       >
-        <Typography color={theme.palette.text.secondary}>{role}</Typography>
+        <Typography color={theme.palette.text.secondary}>
+          {role.name}
+        </Typography>
       </Button>
     </ThemeProvider>
   );

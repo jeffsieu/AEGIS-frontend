@@ -1,9 +1,9 @@
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from 'dayjs';
 
 export type DateRange = [Date, Date];
 
 export function getDateRanges(dates: Date[]): DateRange[] {
-  const dayjsDates = dates.map(date => dayjs(date));
+  const dayjsDates = dates.map((date) => dayjs(date));
   const dateRanges: DateRange[] = [];
   let start: Dayjs | null = null;
   let end: Dayjs | null = null;
@@ -30,7 +30,10 @@ export function getDateRanges(dates: Date[]): DateRange[] {
 
 /// Formats the date range using the given formatString to format each of the dates.
 /// Only the unique part of the formatted start date is included in the formatted range.
-export function dateRangeToString(dateRange: DateRange, formatString: string = 'D MMM YYYY'): string {
+export function dateRangeToString(
+  dateRange: DateRange,
+  formatString: string = 'D MMM YYYY'
+): string {
   const [startDate, endDate] = dateRange;
   const start = dayjs(startDate);
   const end = dayjs(endDate);
@@ -47,11 +50,15 @@ export function dateRangeToString(dateRange: DateRange, formatString: string = '
     // Show only the different part of startString
     const startStringReversed = startString.split('').reverse();
     const endStringReversed = endString.split('').reverse();
+
     const index = startStringReversed.findIndex(
       (c, i) => c !== endStringReversed[i]
     );
+    const spaceIndex = startStringReversed.findIndex(
+      (c, i) => c === ' ' && i >= index
+    );
     const startStringPart = startStringReversed
-      .slice(index, startStringReversed.length)
+      .slice(spaceIndex + 1, startStringReversed.length)
       .reverse()
       .join('');
     return startStringPart + ' - ' + endString;

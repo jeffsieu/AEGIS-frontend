@@ -3,7 +3,7 @@ import { Dayjs } from 'dayjs';
 
 type BaseQualifiedMember = {
   dutyCount: number;
-  callSign: string;
+  callsign: string;
 };
 
 export type AvailableQualifiedMember = BaseQualifiedMember & {
@@ -19,7 +19,9 @@ export type QualifiedMember =
   | AvailableQualifiedMember
   | UnavailableQualifiedMember;
 
-export type Role = string;
+export type Role = {
+  name: string;
+};
 
 export type Schedule = {
   startDate: Date;
@@ -29,7 +31,7 @@ export type Schedule = {
 };
 
 export type RequestPeriod = {
-  startDate: Dayjs | null;
-  endDate: Dayjs | null;
+  startDate: Dayjs;
+  endDate: Dayjs;
   reason: string;
 };

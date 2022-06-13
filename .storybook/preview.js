@@ -2,7 +2,6 @@ import { darkTheme, lightTheme } from 'hummingbird-ui';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { MemoryRouter } from 'react-router-dom';
 import dayjs from 'dayjs';
-import updateLocale from 'dayjs/plugin/updateLocale';
 
 export const parameters = {
   chromatic: { disableSnapshot: false },

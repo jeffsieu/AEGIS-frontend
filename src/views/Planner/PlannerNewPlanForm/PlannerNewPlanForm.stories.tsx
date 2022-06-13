@@ -25,7 +25,7 @@ const months = Array.from({ length: 12 }, (_, i) =>
 
 export const Default = Template.bind({});
 Default.args = {
-  roles: ['A1', 'A2'],
+  roles: ['A1', 'A2'].map((name) => ({ name })),
   months: months,
   defaultMonth: months[0],
 };

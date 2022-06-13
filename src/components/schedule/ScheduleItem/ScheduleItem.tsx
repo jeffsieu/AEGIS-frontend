@@ -7,7 +7,10 @@ import {
 import { AvailableQualifiedMember, QualifiedMember } from '@typing';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
 
-export type ReadonlyScheduleItemProps = Pick<ScheduleItemProps, 'isRequired' | 'assignedMember'>;
+export type ReadonlyScheduleItemProps = Pick<
+  ScheduleItemProps,
+  'isRequired' | 'assignedMember'
+>;
 
 export type RequiredScheduleItemProps = {
   isRequired: true;
@@ -71,7 +74,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 disableElevation
                 onClick={openPopover}
               >
-                {assignedMember.callSign}
+                {assignedMember.callsign}
               </Button>
             ) : (
               <Button

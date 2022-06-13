@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof RequestFormItem> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   index: 0,
-  request: {
+  requestPeriod: {
     startDate: null,
     endDate: null,
     reason: '',
@@ -25,7 +25,7 @@ Default.args = {
 export const Prompt = Template.bind({});
 Prompt.args = {
   index: 0,
-  request: {
+  requestPeriod: {
     startDate: null,
     endDate: null,
     reason: '',

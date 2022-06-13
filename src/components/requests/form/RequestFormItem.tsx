@@ -10,21 +10,36 @@ import {
   useTheme,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { RequestPeriod } from '@typing';
+import { ERROR_END_DATE_BEFORE_START_DATE } from '@utils/constants/string';
 import { getCardColor } from '@utils/theme';
+import { Dayjs } from 'dayjs';
+
+export type PartialRequestPeriod = {
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
+  reason: string;
+};
 
 export type RequestFormItemProps = {
   index: number;
   isPromptItem: boolean;
-  request: RequestPeriod;
+  requestPeriod: PartialRequestPeriod;
+  canDelete: boolean;
   onUpdate: () => void;
   onDelete: () => void;
   onInputFocus: () => void;
 };
 
 function RequestFormItem(props: RequestFormItemProps) {
-  const { request, index, isPromptItem, onUpdate, onInputFocus, onDelete } =
-    props;
+  const {
+    requestPeriod: request,
+    canDelete,
+    index,
+    isPromptItem,
+    onUpdate,
+    onInputFocus,
+    onDelete,
+  } = props;
   const theme = useTheme();
   const cardColor = getCardColor(theme);
 
@@ -58,7 +73,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                 {isPromptItem ? 'Add period...' : `Period ${index + 1}`}
               </Typography>
             </Box>
-            {!isPromptItem && (
+            {canDelete && (
               <IconButton
                 aria-label="delete"
                 onClick={() => {
@@ -92,8 +107,9 @@ function RequestFormItem(props: RequestFormItemProps) {
                       onInputFocus();
                     }}
                     variant="filled"
-                    required
+                    required={!isPromptItem}
                     fullWidth
+                    autoComplete="off"
                   />
                 )}
               />
@@ -110,17 +126,23 @@ function RequestFormItem(props: RequestFormItemProps) {
                   onUpdate();
                 }}
                 value={request.endDate}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    onFocus={() => {
-                      onInputFocus();
-                    }}
-                    variant="filled"
-                    required
-                    fullWidth
-                  />
-                )}
+                renderInput={(params) => {
+                  const hasError = request.endDate?.isBefore(request.startDate);
+                  return (
+                    <TextField
+                      {...params}
+                      onFocus={() => {
+                        onInputFocus();
+                      }}
+                      error={hasError}
+                      helperText={hasError && ERROR_END_DATE_BEFORE_START_DATE}
+                      variant="filled"
+                      required={!isPromptItem}
+                      fullWidth
+                      autoComplete="off"
+                    />
+                  );
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,7 +150,7 @@ function RequestFormItem(props: RequestFormItemProps) {
                 fullWidth
                 label="Reason"
                 variant="filled"
-                required
+                required={!isPromptItem}
                 value={request.reason}
                 onFocus={() => {
                   onInputFocus();
