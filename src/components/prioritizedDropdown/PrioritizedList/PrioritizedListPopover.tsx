@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import { useState } from 'react';
 import PrioritizedList from './PrioritizedList';
-import ModalContainer, { create } from 'react-modal-promise';
 import { AvailableQualifiedMember, QualifiedMember } from '@typing';
+import { Popover } from '@mui/material';
 
 export type PrioritizedListPopoverProps = {
   children: (
@@ -15,28 +15,40 @@ export type PrioritizedListPopoverProps = {
 function PrioritizedListPopover({
   children,
   onMemberSelected,
-  ...restProps
+  ...listProps
 }: PrioritizedListPopoverProps) {
-  const popover = create(PrioritizedList);
-  const openPopover = useCallback(
-    async (event: React.MouseEvent<HTMLElement>) => {
-      try {
-        const selectedMember: AvailableQualifiedMember = await popover({
-          ...restProps,
-          anchorEl: event.currentTarget,
-        });
-        onMemberSelected(selectedMember);
-        return console.debug(selectedMember);
-      } catch (rej) {
-        return console.debug(rej);
-      }
-    },
-    [popover, restProps, onMemberSelected]
-  );
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const openPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setOpen(true);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+    setAnchorEl(null);
+  };
 
   return (
     <>
-      <ModalContainer />
+      <Popover
+        open={open}
+        onClose={onClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <PrioritizedList
+          {...listProps}
+          onMemberSelected={(member) => {
+            onMemberSelected(member);
+            onClose();
+          }}
+        />
+      </Popover>
       {children(openPopover)}
     </>
   );

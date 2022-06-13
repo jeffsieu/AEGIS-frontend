@@ -1,19 +1,17 @@
 import { useMemo } from 'react';
 import PrioritizedListItem from '@components/prioritizedDropdown/PrioritizedListItem/PrioritizedListItem';
-import { MenuList, Popover, PopoverProps } from '@mui/material';
+import { MenuList } from '@mui/material';
 
-import { InstanceProps } from 'react-modal-promise';
-import { QualifiedMember } from '@typing';
+import { AvailableQualifiedMember, QualifiedMember } from '@typing';
 
-export type PrioritizedListProps = InstanceProps<QualifiedMember> &
-  PopoverProps & {
-    qualifiedMembers: QualifiedMember[];
-    selectedMember: QualifiedMember | null;
-  };
+export type PrioritizedListProps = {
+  qualifiedMembers: QualifiedMember[];
+  selectedMember: QualifiedMember | null;
+  onMemberSelected: (member: AvailableQualifiedMember) => void;
+};
 
 function PrioritizedList(props: PrioritizedListProps) {
-  const { qualifiedMembers, isOpen, onResolve, onReject, ...popoverProps } =
-    props;
+  const { qualifiedMembers, onMemberSelected } = props;
 
   const sortedMembers = useMemo(() => {
     function sortByDutyCount(members: QualifiedMember[]) {
@@ -39,27 +37,16 @@ function PrioritizedList(props: PrioritizedListProps) {
           key={i}
           selected={qualifiedMember === props.selectedMember}
           onClick={() => {
-            onResolve(qualifiedMember);
+            if (qualifiedMember.isAvailable) {
+              onMemberSelected(qualifiedMember);
+            }
           }}
         ></PrioritizedListItem>
       );
     });
   }
 
-  return (
-    <Popover
-      {...popoverProps}
-      onClose={() => {
-        onReject(undefined);
-      }}
-      anchorOrigin={{
-        horizontal: 'left',
-        vertical: 'bottom',
-      }}
-    >
-      <MenuList>{renderListItems()}</MenuList>
-    </Popover>
-  );
+  return <MenuList>{renderListItems()}</MenuList>;
 }
 
 export default PrioritizedList;
