@@ -11,11 +11,15 @@ import {
   useGetMemberAvailabilitiesForMonthQuery,
   useGetRolesQuery,
   useGetSchedulesForMonthQuery,
+  useUpdateScheduleMutation,
 } from '@services/backend';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import EmptyHint from '@components/general/empty-hint';
 import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useState } from 'react';
+import dayjs from 'dayjs';
+import { Backend } from '@typing/backend';
 
 export type PlannerDraftEditorPageProps = {
   startDate: Date;
@@ -27,34 +31,128 @@ export type PlannerDraftEditorPageProps = {
     role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
+  onPublished: () => void;
 };
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
+  const [publishDraft] = useUpdateScheduleMutation();
 
   return buildWithApiQueries({
     queries: {
+      schedules: useGetSchedulesForMonthQuery({
+        month: month!,
+        isPublished: false,
+      }),
       roles: useGetRolesQuery(),
-      schedules: useGetSchedulesForMonthQuery(month!),
       memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(month!),
     },
     onSuccess: ({ roles, memberAvailabilities, schedules }) => {
       if (schedules.length === 0) return <>No records for {month} found</>;
 
-      const draft = schedules[0];
-      const props: PlannerDraftEditorPageProps = {
-        ...scheduleToScheduleTableProps(draft, roles, memberAvailabilities),
+      const onPublished = (
+        scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]
+      ) => {
+        const duties: Backend.Duty[] = scheduleItemsByDay
+          .flatMap((scheduleItems, dayIndex) => {
+            const date = dayjs(month)
+              .date(dayIndex + 1)
+              .format('YYYY-MM-DD');
+            return scheduleItems.map((scheduleItem, roleIndex) => ({
+              ...scheduleItem,
+              date: date,
+              roleId: roles[roleIndex].id,
+            }));
+          })
+          .filter((scheduleItem) => scheduleItem.assignedMember !== null)
+          .map((scheduleItem) => ({
+            memberId: memberAvailabilities.find(
+              (member) =>
+                member.callsign === scheduleItem.assignedMember!.callsign
+            )!.id,
+            roleId: scheduleItem.roleId,
+            date: scheduleItem.date,
+          }));
+
+        publishDraft({
+          month: dayjs(month).format('YYYY-MM'),
+          isPublished: true,
+          duties,
+        });
       };
 
-      return <PlannerDraftEditorPage {...props} />;
+      const draft = schedules[0];
+      const props = {
+        ...scheduleToScheduleTableProps(
+          draft,
+          roles,
+          memberAvailabilities,
+          memberAvailabilities
+        ),
+        onPublished,
+      };
+
+      return <PlannerDraftEditorPageWithState {...props} />;
     },
     onError: () => <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>,
   });
 }
 
+function PlannerDraftEditorPageWithState(
+  props: Pick<
+    PlannerDraftEditorPageProps,
+    'startDate' | 'endDate' | 'roles' | 'scheduleItemsByDay'
+  > & {
+    onPublished: (
+      scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
+    ) => void;
+  }
+) {
+  const {
+    startDate,
+    roles,
+    scheduleItemsByDay: serverScheduleItemsByDay,
+    onPublished,
+  } = props;
+  const [scheduleItemsByDay, setScheduleItemsByDay] = useState(
+    serverScheduleItemsByDay
+  );
+
+  const onMemberSelected = (
+    date: Date,
+    role: Role,
+    member: AvailableQualifiedMember | null
+  ) => {
+    const dayIndex = dayjs(date).diff(dayjs(startDate), 'day');
+    const roleIndex = roles.findIndex((r) => r.name === role.name);
+    const newScheduleItemsByDay = [...scheduleItemsByDay];
+    newScheduleItemsByDay[dayIndex][roleIndex].assignedMember = member;
+    setScheduleItemsByDay(newScheduleItemsByDay);
+  };
+
+  const onPublishedClick = () => {
+    onPublished(scheduleItemsByDay);
+  };
+
+  return (
+    <PlannerDraftEditorPage
+      {...props}
+      scheduleItemsByDay={scheduleItemsByDay}
+      onMemberSelected={onMemberSelected}
+      onPublished={onPublishedClick}
+    />
+  );
+}
+
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
-  const { startDate, endDate, roles, scheduleItemsByDay, onMemberSelected } =
-    props;
+  const {
+    startDate,
+    endDate,
+    roles,
+    scheduleItemsByDay,
+    onMemberSelected,
+    onPublished,
+  } = props;
 
   const totalRequiredItemsCount = scheduleItemsByDay.reduce(
     (acc, dayScheduleItems) =>
@@ -88,6 +186,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
         <Button
           variant="contained"
           disabled={filledRequiredItemsCount < totalRequiredItemsCount}
+          onClick={onPublished}
         >
           Publish
         </Button>

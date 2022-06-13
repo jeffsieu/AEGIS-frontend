@@ -1,17 +1,27 @@
 import { useMemo } from 'react';
 import PrioritizedListItem from '@components/prioritizedDropdown/PrioritizedListItem/PrioritizedListItem';
-import { MenuList } from '@mui/material';
+import {
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  useTheme,
+} from '@mui/material';
 
 import { AvailableQualifiedMember, QualifiedMember } from '@typing';
+import { RemoveCircleOutline } from '@mui/icons-material';
 
 export type PrioritizedListProps = {
   qualifiedMembers: QualifiedMember[];
   selectedMember: QualifiedMember | null;
-  onMemberSelected: (member: AvailableQualifiedMember) => void;
+  onMemberSelected: (member: AvailableQualifiedMember | null) => void;
 };
 
 function PrioritizedList(props: PrioritizedListProps) {
-  const { qualifiedMembers, onMemberSelected } = props;
+  const { qualifiedMembers, onMemberSelected, selectedMember } = props;
+
+  const theme = useTheme();
 
   const sortedMembers = useMemo(() => {
     function sortByDutyCount(members: QualifiedMember[]) {
@@ -29,24 +39,39 @@ function PrioritizedList(props: PrioritizedListProps) {
     return sortMembers(qualifiedMembers);
   }, [qualifiedMembers]);
 
-  function renderListItems() {
-    return sortedMembers.map((qualifiedMember, i) => {
-      return (
-        <PrioritizedListItem
-          {...qualifiedMember}
-          key={i}
-          selected={qualifiedMember === props.selectedMember}
-          onClick={() => {
-            if (qualifiedMember.isAvailable) {
-              onMemberSelected(qualifiedMember);
-            }
-          }}
-        ></PrioritizedListItem>
-      );
-    });
-  }
-
-  return <MenuList>{renderListItems()}</MenuList>;
+  return (
+    <MenuList>
+      <MenuItem
+        key={-1}
+        disabled={selectedMember === null}
+        onClick={() => {
+          onMemberSelected(null);
+        }}
+      >
+        <ListItemIcon>
+          <RemoveCircleOutline />
+        </ListItemIcon>
+        <ListItemText color={theme.palette.text.secondary}>
+          Unassign
+        </ListItemText>
+      </MenuItem>
+      <Divider />
+      {sortedMembers.map((qualifiedMember, i) => {
+        return (
+          <PrioritizedListItem
+            {...qualifiedMember}
+            key={i}
+            selected={qualifiedMember === selectedMember}
+            onClick={() => {
+              if (qualifiedMember.isAvailable) {
+                onMemberSelected(qualifiedMember);
+              }
+            }}
+          ></PrioritizedListItem>
+        );
+      })}
+    </MenuList>
+  );
 }
 
 export default PrioritizedList;

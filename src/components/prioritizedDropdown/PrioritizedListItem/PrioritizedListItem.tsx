@@ -22,7 +22,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
         <ListItemText
           primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
         >
-          {member.callsign}{' '}
+          {member.callsign}
         </ListItemText>
         <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
       </MenuItem>
@@ -32,7 +32,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
       <PaperTooltip
         title={
           <>
-            Unavailable due to <b>{member.unavailableReason}</b>{' '}
+            Unavailable due to <b>{member.unavailableReason}</b>
           </>
         }
         placement="right"
@@ -44,7 +44,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
           <ListItemText
             primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
           >
-            {member.callsign}{' '}
+            {member.callsign}
           </ListItemText>
           <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
         </MenuItem>

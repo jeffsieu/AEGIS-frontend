@@ -1,23 +1,24 @@
 import { ComponentStory } from '@storybook/react';
-import { PlannerPublishedPageWithProps } from './PlannerPublishedPage';
+import { PlannerSchedulesPageWithProps } from './PlannerSchedulesPage';
 import dayjs from 'dayjs';
 import { createMockScheduleItems } from '@utils/mock-data/schedule';
 import { Decorators } from '@utils/storybook/decorators';
+import { Backend } from '@typing/backend';
 
 export default {
-  title: 'Planner/Published',
-  component: PlannerPublishedPageWithProps,
+  title: 'Planner/Published Schedules',
+  component: PlannerSchedulesPageWithProps,
   parameters: {
     layout: 'fullscreen',
   },
   decorators: [Decorators.plannerContainerDecorator],
 };
 
-const Template: ComponentStory<typeof PlannerPublishedPageWithProps> = (
+const Template: ComponentStory<typeof PlannerSchedulesPageWithProps> = (
   args
-) => <PlannerPublishedPageWithProps {...args} />;
+) => <PlannerSchedulesPageWithProps {...args} />;
 
-const mockSchedules = Array.from({ length: 3 }, (_, i) => {
+const mockSchedules: Backend.Schedule[] = Array.from({ length: 3 }, (_, i) => {
   const startDate = dayjs('2022-01-01').month(i).toDate();
   const endDate = dayjs('2022-01-14').month(i).toDate();
   const roles = ['A1', 'A2', 'A3', 'A4', 'A5'].map((name) => ({ name }));
@@ -26,6 +27,9 @@ const mockSchedules = Array.from({ length: 3 }, (_, i) => {
     endDate,
     roles,
     scheduleItemsByDay: createMockScheduleItems(startDate, endDate, roles),
+    month: dayjs(startDate).format('YYYY-MM'),
+    isPublished: true,
+    duties: [],
   };
 }).reverse();
 

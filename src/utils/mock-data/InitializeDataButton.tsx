@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import {
   useClearDataMutation,
   useAddMemberMutation,
@@ -7,9 +7,11 @@ import {
   useAddRequestsMutation,
   useUpdateMemberRolesMutation,
 } from '@services/backend';
+import { useState } from 'react';
 import { MEMBERS, QUALIFICATIONS, ROLES, SCHEDULES, REQUESTS } from './backend';
 
 export default function InitializeDataButton() {
+  const [loading, setLoading] = useState(false);
   const [clearData] = useClearDataMutation();
   const [addMember] = useAddMemberMutation();
   const [addRole] = useAddRoleMutation();
@@ -18,6 +20,7 @@ export default function InitializeDataButton() {
   const [addRequests] = useAddRequestsMutation();
 
   async function onClick() {
+    setLoading(true);
     await clearData();
     await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -31,8 +34,11 @@ export default function InitializeDataButton() {
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
 
-    for (const qualification of QUALIFICATIONS) { 
-      await updateMemberRoles({memberId: qualification.memberId, roleNames: qualification.roles});
+    for (const qualification of QUALIFICATIONS) {
+      await updateMemberRoles({
+        memberId: qualification.memberId,
+        roleNames: qualification.roles,
+      });
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
 
@@ -42,7 +48,21 @@ export default function InitializeDataButton() {
     }
 
     await addRequests(REQUESTS);
+    setLoading(false);
   }
 
-  return <Button onClick={onClick}>Set backend data</Button>;
+  if (loading) {
+    return (
+      <>
+        <CircularProgress />
+        Populating backend...
+      </>
+    );
+  }
+
+  return (
+    <Button variant="outlined" onClick={onClick}>
+      Set backend data
+    </Button>
+  );
 }

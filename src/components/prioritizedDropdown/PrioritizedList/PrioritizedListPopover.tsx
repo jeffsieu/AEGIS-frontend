@@ -9,7 +9,7 @@ export type PrioritizedListPopoverProps = {
   ) => React.ReactNode;
   qualifiedMembers: QualifiedMember[];
   selectedMember: AvailableQualifiedMember | null;
-  onMemberSelected: (member: AvailableQualifiedMember) => void;
+  onMemberSelected: (member: AvailableQualifiedMember | null) => void;
 };
 
 function PrioritizedListPopover({

@@ -1,6 +1,6 @@
 import { ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { ScheduleTableProps } from '@components/schedule/ScheduleTable/ScheduleTable';
-import { AvailableQualifiedMember, QualifiedMember, Role } from '@typing';
+import { AvailableQualifiedMember } from '@typing';
 import { Backend } from '@typing/backend';
 import dayjs from 'dayjs';
 
@@ -47,7 +47,8 @@ export const getScheduleItemsByDay = (
   endDate: Date,
   roles: Backend.Entry<Backend.Role>[],
   duties: Backend.Duty[],
-  memberAvailabilities: Backend.MemberWithAvailability[]
+  members: Backend.Entry<Backend.Member>[],
+  memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[]
 ): ScheduleItemPropsWithoutCallback[][] => {
   const scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][] = [];
 
@@ -60,33 +61,42 @@ export const getScheduleItemsByDay = (
   for (const duty of duties) {
     const role = roles.find((r) => r.id === duty.roleId)!;
     const dateString = dayjs(duty.date).startOf('day').format('YYYY-MM-DD');
+
     scheduleItems[dateString] = {
       ...scheduleItems[dateString],
       [role.name]: {
         isRequired: true,
-        assignedMember: null,
-        qualifiedMembers: memberAvailabilities.filter(({ roles }) => {
-          return roles.some((r) => r.id === role.id);
-        }).map((member) => {
-          const unavailableReason = member.requests.find((request) => {
-            return !(
-              dayjs(request.endDate).isBefore(duty.date, 'day')||
-              dayjs(request.startDate).isAfter(duty.date, 'day')
-            );
-          })
-          if (unavailableReason === undefined) {
-            return {
-              ...member,
+        assignedMember: duty.memberId
+          ? ({
               isAvailable: true,
+              ...members.find((m) => m.id === duty.memberId)!,
+              dutyCount: 0,
+            } as AvailableQualifiedMember)
+          : null,
+        qualifiedMembers: memberAvailabilities
+          .filter(({ roles }) => {
+            return roles.some((r) => r.id === role.id);
+          })
+          .map((member) => {
+            const unavailableReason = member.requests.find((request) => {
+              return !(
+                dayjs(request.endDate).isBefore(duty.date, 'day') ||
+                dayjs(request.startDate).isAfter(duty.date, 'day')
+              );
+            });
+            if (unavailableReason === undefined) {
+              return {
+                ...member,
+                isAvailable: true,
+              };
+            } else {
+              return {
+                ...member,
+                isAvailable: false,
+                unavailableReason: unavailableReason.reason,
+              };
             }
-          } else {
-            return {
-              ...member,
-              isAvailable: false,
-              unavailableReason: unavailableReason.reason,
-            }
-          }
-        }),
+          }),
       },
     };
   }
@@ -111,14 +121,18 @@ export const getScheduleItemsByDay = (
 export function scheduleToScheduleTableProps(
   schedule: Backend.Schedule,
   roles: Backend.Entry<Backend.Role>[],
-  memberAvailabilities: Backend.MemberWithAvailability[] = []
-): ScheduleTableProps {
+  members: Backend.Entry<Backend.Member>[],
+  memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[] = []
+): Pick<
+  ScheduleTableProps,
+  'startDate' | 'endDate' | 'roles' | 'scheduleItemsByDay'
+> {
   const { month, duties } = schedule;
 
   const startDate = dayjs(month).startOf('month').toDate();
   const endDate = dayjs(month).endOf('month').toDate();
 
-  const scheduleTableProps: ScheduleTableProps = {
+  return {
     startDate,
     endDate,
     roles,
@@ -127,14 +141,8 @@ export function scheduleToScheduleTableProps(
       endDate,
       roles,
       duties,
-      memberAvailabilities,
+      members,
+      memberAvailabilities
     ),
-    onMemberSelected: function (
-      date: Date,
-      role: Role,
-      member: AvailableQualifiedMember | null
-    ): void {},
   };
-
-  return scheduleTableProps;
 }

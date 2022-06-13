@@ -5,7 +5,6 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { lightTheme } from 'hummingbird-ui';
 import {
   Box,
-  Button,
   Container,
   CssBaseline,
   FormControl,
@@ -14,6 +13,8 @@ import {
   Select,
   SelectChangeEvent,
   ThemeProvider,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -22,7 +23,8 @@ import { Provider } from 'react-redux';
 import store from '@store';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PlannerMembersPage from '@views/Planner/PlannerMembersPage/PlannerMembersPage';
-import PlannerPublishedPage from '@views/Planner/PlannerPublishedPage/PlannerPublishedPage';
+import PlannerSchedulesPage from '@views/Planner/PlannerSchedulesPage/PlannerSchedulesPage';
+import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
 import MemberHomePage from '@views/Member/MemberHomePage/MemberHomePage';
 import PlannerDraftsPage from '@views/Planner/PlannerDraftsPage/PlannerDraftsPage';
 import MemberNewRequestForm from '@views/Member/MemberNewRequestForm/MemberNewRequestForm';
@@ -35,7 +37,6 @@ import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useGetMembersQuery } from '@services/backend';
 import { setUserId } from '@store/general';
-import { dateRangeToString } from '@utils/helpers/dateRange';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -50,26 +51,31 @@ function AnimatedRoutes() {
   return (
     <>
       <NavBar />
-      <div>
-        <InitializeDataButton />
-        {members !== undefined && (
-          <FormControl>
-            <InputLabel>Current user</InputLabel>
-            <Select
-              value={userId + ''}
-              label="Current user"
-              onChange={handleUserChange}
-            >
-              {members.map((member) => (
-                <MenuItem key={member.id} value={member.id}>
-                  {member.callsign}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-        <span>User id: {userId}</span>
-      </div>
+      <Toolbar sx={{ background: 'lightgray' }} disableGutters>
+        <Container>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography sx={{ fontWeight: 'bold' }}>Debug tools</Typography>
+            <InitializeDataButton />
+            {members !== undefined && (
+              <FormControl>
+                <InputLabel>Current user</InputLabel>
+                <Select
+                  value={userId + ''}
+                  label="Current user"
+                  onChange={handleUserChange}
+                >
+                  {members.map((member) => (
+                    <MenuItem key={member.id} value={member.id}>
+                      {member.callsign}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+            <span>User id: {userId}</span>
+          </Box>
+        </Container>
+      </Toolbar>
       {/* Transparent toolbar to fix navbar overlap */}
       <Container className="container" sx={{ position: 'relative' }}>
         <TransitionGroup component={null}>
@@ -90,36 +96,34 @@ function AnimatedRoutes() {
                   <Route
                     path="/new-request"
                     element={<MemberNewRequestForm />}
-                  ></Route>
-                  <Route
-                    path="/schedules"
-                    element={<MemberPublishedPage />}
-                  ></Route>
-                  <Route
-                    path="/requests"
-                    element={<MemberRequestPage />}
-                  ></Route>
+                  />
+                  <Route path="/schedules" element={<MemberPublishedPage />} />
+                  <Route path="/requests" element={<MemberRequestPage />} />
                   <Route path="/planner" element={<PlannerHomePage />}></Route>
                   <Route
                     path="/planner/new-plan"
                     element={<PlannerNewPlanForm />}
-                  ></Route>
+                  />
                   <Route
                     path="/planner/published"
-                    element={<PlannerPublishedPage />}
-                  ></Route>
+                    element={<PlannerSchedulesPage />}
+                  />
+                  <Route
+                    path="/planner/published/:month"
+                    element={<PlannerSchedulePage />}
+                  />
                   <Route
                     path="/planner/drafts"
                     element={<PlannerDraftsPage />}
-                  ></Route>
+                  />
                   <Route
                     path="/planner/drafts/:month"
                     element={<PlannerDraftEditorPage />}
-                  ></Route>
+                  />
                   <Route
                     path="/planner/members"
                     element={<PlannerMembersPage />}
-                  ></Route>
+                  />
                 </Routes>
               </Container>
             </Box>

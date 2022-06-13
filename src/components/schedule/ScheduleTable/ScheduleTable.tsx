@@ -11,7 +11,7 @@ export type ScheduleTableProps = {
   endDate: Date;
   roles: Role[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
-  onMemberSelected: (
+  onMemberSelected?: (
     date: Date,
     role: Role,
     member: AvailableQualifiedMember | null
@@ -47,9 +47,10 @@ function ScheduleTable(props: ScheduleTableProps) {
                 scheduleItems={scheduleItemsByDay[index].map(
                   (scheduleItem, roleIndex) => ({
                     ...scheduleItem,
-                    onMemberSelected: (
-                      member: AvailableQualifiedMember | null
-                    ) => onMemberSelected(date, roles[roleIndex], member),
+                    onMemberSelected: onMemberSelected
+                      ? (member: AvailableQualifiedMember | null) =>
+                          onMemberSelected(date, roles[roleIndex], member)
+                      : undefined,
                   })
                 )}
               />

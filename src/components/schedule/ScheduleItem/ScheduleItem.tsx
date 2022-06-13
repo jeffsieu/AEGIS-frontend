@@ -16,7 +16,7 @@ export type RequiredScheduleItemProps = {
   isRequired: true;
   qualifiedMembers: QualifiedMember[];
   assignedMember: AvailableQualifiedMember | null;
-  onMemberSelected: (member: AvailableQualifiedMember) => void;
+  onMemberSelected?: (member: AvailableQualifiedMember | null) => void;
 };
 
 export type NotRequiredScheduleItemProps = {
@@ -61,7 +61,7 @@ function ScheduleItem(props: ScheduleItemProps) {
 
     return (
       <PrioritizedListPopover
-        onMemberSelected={onMemberSelected}
+        onMemberSelected={onMemberSelected ?? (() => {})}
         qualifiedMembers={qualifiedMembers}
         selectedMember={assignedMember}
       >
@@ -72,7 +72,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 variant="contained"
                 color="success"
                 disableElevation
-                onClick={openPopover}
+                onClick={onMemberSelected && openPopover}
               >
                 {assignedMember.callsign}
               </Button>
@@ -81,7 +81,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 variant="contained"
                 color="warning"
                 disableElevation
-                onClick={openPopover}
+                onClick={onMemberSelected && openPopover}
               >
                 Pending
               </Button>

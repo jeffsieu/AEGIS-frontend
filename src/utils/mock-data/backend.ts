@@ -1,4 +1,6 @@
 import { Backend } from '@typing/backend';
+import { iterateDates } from '@utils/helpers/schedule';
+import dayjs from 'dayjs';
 
 export const MEMBERS: Backend.Member[] = [
   {
@@ -33,7 +35,7 @@ export const ROLES: Backend.Role[] = [
 export type MockQualification = {
   memberId: number;
   roles: string[];
-}
+};
 
 export const QUALIFICATIONS: MockQualification[] = [
   {
@@ -53,11 +55,36 @@ export const QUALIFICATIONS: MockQualification[] = [
 export const SCHEDULES: Backend.Schedule[] = [
   {
     month: '2022-01-01',
+    isPublished: true,
+    duties: [
+      ...[
+        ...iterateDates(new Date('2022-01-01'), new Date('2022-01-31')),
+      ].flatMap((date, index) => [
+        {
+          roleId: 1,
+          memberId: index % 2 === 0 ? 1 : 2,
+          date: dayjs(date).format('YYYY-MM-DD'),
+        },
+        {
+          roleId: 2,
+          memberId: index % 2 === 0 ? 1 : 3,
+          date: dayjs(date).format('YYYY-MM-DD'),
+        },
+        {
+          roleId: 3,
+          memberId: index % 2 === 0 ? 2 : 3,
+          date: dayjs(date).format('YYYY-MM-DD'),
+        },
+      ]),
+    ],
+  },
+  {
+    month: '2022-02-01',
     isPublished: false,
     duties: [
       {
         roleId: 1,
-        date: '2022-01-03',
+        date: '2022-02-03',
       },
     ],
   },
@@ -66,8 +93,8 @@ export const SCHEDULES: Backend.Schedule[] = [
 export const REQUESTS: Backend.Request[] = [
   {
     memberId: 1,
-    startDate: '2022-01-03',
-    endDate: '2022-01-03',
+    startDate: '2022-02-03',
+    endDate: '2022-02-03',
     reason: 'sick',
-  }
-]
+  },
+];
