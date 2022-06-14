@@ -45,7 +45,7 @@ export const membersApi = baseApi.injectEndpoints({
         { type: 'Members', id: 'LIST' },
       ],
     }),
-    addMember: builder.mutation<void, Backend.Member>({
+    addMember: builder.mutation<number, Backend.Member>({
       query: (member) => ({
         url: 'members',
         method: 'POST',

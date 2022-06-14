@@ -19,10 +19,11 @@ export type MemberEntry = {
 export type MemberTableProps = {
   members: MemberEntry[];
   onMemberRolesChange: (callsign: string, roles: Role[]) => void;
+  disabled?: boolean;
 };
 
 function MemberTable(props: MemberTableProps) {
-  const { members, onMemberRolesChange } = props;
+  const { members, onMemberRolesChange, disabled = false } = props;
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
@@ -33,6 +34,7 @@ function MemberTable(props: MemberTableProps) {
             {member.callsign}
           </Typography>
           <ToggleButtonGroup
+            disabled={disabled}
             color="primary"
             onChange={(event, roles: string[]) =>
               onMemberRolesChange(
@@ -45,7 +47,7 @@ function MemberTable(props: MemberTableProps) {
             )}
           >
             {[...Object.entries(member.roles)].map(([role, isSelected]) => (
-              <ToggleButton key={role} value={role}>
+              <ToggleButton key={role} value={role} disabled={disabled}>
                 <Box display="flex" gap={1}>
                   {isSelected ? <Check /> : <Close />}
                   {role}
