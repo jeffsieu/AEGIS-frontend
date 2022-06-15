@@ -7,7 +7,7 @@ import {
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   useGetMemberAvailabilitiesForMonthQuery,
   useGetRolesQuery,
@@ -38,6 +38,7 @@ export type PlannerDraftEditorPageProps = {
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
+  const navigate = useNavigate();
   const [publishDraft] = useUpdateScheduleMutation();
 
   return buildWithApiQueries({
@@ -56,7 +57,7 @@ function PlannerDraftEditorPageWithAPI() {
 
       const updateDraft =
         (isPublished: boolean) =>
-        (scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]) => {
+        async (scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]) => {
           const duties: Backend.Duty[] = scheduleItemsByDay
             .flatMap((scheduleItems, dayIndex) => {
               const date = dayjs(month)
@@ -78,11 +79,15 @@ function PlannerDraftEditorPageWithAPI() {
               date: scheduleItem.date,
             }));
 
-          publishDraft({
-            month: dayjs(month).format('YYYY-MM-DD'),
+          await publishDraft({
+            month: dayjs(month).date(1).format('YYYY-MM-DD'),
             isPublished: isPublished,
             duties,
           });
+
+          if (isPublished) {
+            navigate('/planner/published');
+          }
         };
 
       const draft = schedules[0];
