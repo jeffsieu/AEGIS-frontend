@@ -2,7 +2,7 @@ import MemberTable, {
   MemberEntry,
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
@@ -131,7 +131,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       onMemberRolesChange={onMemberRolesChange}
       onSaveClick={async () => {
         setEditing(false);
-        await updateMemberEntries(members);
+        updateMemberEntries(members);
       }}
       onEditClick={() => setEditing(true)}
       onCancelClick={() => {
@@ -150,6 +150,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
             roles: newMemberRoles,
           },
         ]);
+        setCallsignFieldText('');
       }}
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
@@ -172,7 +173,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4" gutterBottom>
           Members
         </Typography>
@@ -189,22 +190,30 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
       />
       {isEditing && (
         <>
-          <Box display="flex" alignItems="center" gap={2}>
-            <TextField
-              label="Callsign"
-              variant="filled"
-              value={callsignFieldText}
-              onChange={(event) => {
-                onCallsignChange(event.target.value);
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={() => onAddMemberClick(callsignFieldText)}
-            >
-              Add member
-            </Button>
-          </Box>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
+          >
+            <Box display="flex" alignItems="center" gap={2}>
+              <TextField
+                autoComplete="off"
+                label="Callsign"
+                variant="filled"
+                value={callsignFieldText}
+                onChange={(event) => {
+                  onCallsignChange(event.target.value);
+                }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                onClick={() => onAddMemberClick(callsignFieldText)}
+              >
+                Add member
+              </Button>
+            </Box>
+          </form>
           <div>
             <Button onClick={onCancelClick}>Cancel</Button>
             <Button variant="contained" onClick={onSaveClick}>

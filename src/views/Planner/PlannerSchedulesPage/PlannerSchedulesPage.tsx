@@ -31,8 +31,12 @@ function PlannerSchedulesPageWithAPI() {
       members: useGetMembersQuery(),
     },
     onSuccess: ({ roles, schedules, members }) => {
+      const sortedSchedules = [...schedules];
+      sortedSchedules.sort((a, b) => {
+        return -dayjs(a.month).diff(dayjs(b.month));
+      });
       const props: PlannerSchedulesPageProps = {
-        schedules,
+        schedules: sortedSchedules,
         roles,
         members,
         onScheduleClick: (schedule: Backend.Schedule) => {

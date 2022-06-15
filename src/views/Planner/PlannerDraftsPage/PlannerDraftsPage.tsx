@@ -30,8 +30,12 @@ function PlannerDraftsPageWithAPI() {
       members: useGetMembersQuery(),
     },
     onSuccess: ({ schedules, roles, members }) => {
+      const sortedSchedules = [...schedules];
+      sortedSchedules.sort((a, b) => {
+        return -dayjs(a.month).diff(dayjs(b.month));
+      });
       const props: PlannerDraftsPageProps = {
-        drafts: schedules,
+        drafts: sortedSchedules,
         roles: roles,
         members: members,
         onDraftClick: (draft) => {
@@ -59,7 +63,6 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
           <ScheduleCard
             {...scheduleToScheduleTableProps(draft, roles, members)}
             onClick={() => onDraftClick(draft)}
-            onMemberSelected={() => {}}
           />
         </div>
       ))}

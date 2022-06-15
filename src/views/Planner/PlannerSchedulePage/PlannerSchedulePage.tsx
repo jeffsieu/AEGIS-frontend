@@ -10,7 +10,7 @@ import {
   useGetSchedulesForMonthQuery,
 } from '@services/backend';
 import { dateRangeToString } from '@utils/helpers/dateRange';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 function PlannerSchedulePageWithAPI() {
   const { month } = useParams();
@@ -42,10 +42,20 @@ function PlannerSchedulePage(props: PlannerSchedulePageProps) {
   const title = dateRangeToString([props.startDate, props.endDate], 'MMM YYYY');
 
   return (
-    <div>
+    <Box
+      display="flex"
+      position="relative"
+      flexDirection="column"
+      alignItems="center"
+      gap={8}
+    >
       <Typography variant="h4">{title}</Typography>
-      <ScheduleTable {...props} />
-    </div>
+      <Box width="100vw" position="relative" overflow="auto">
+        <Box display="flex" marginX={4}>
+          <ScheduleTable {...props} />
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
