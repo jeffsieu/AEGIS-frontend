@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { baseApi } from './base';
 
@@ -32,7 +33,7 @@ export const schedulesApi = baseApi.injectEndpoints({
       GetSchedulesForMonthArgs
     >({
       query: ({ month, isPublished }) => ({
-        url: `schedules/${month}`,
+        url: `schedules/${dayjs(month).format('YYYY-MM-DD')}`,
         params: isPublished !== undefined ? { isPublished } : undefined,
       }),
       providesTags: (result) =>
@@ -62,7 +63,7 @@ export const schedulesApi = baseApi.injectEndpoints({
       Backend.Schedule & { duties: Backend.Duty[] }
     >({
       query: (schedule) => ({
-        url: `schedules/${schedule.month}`,
+        url: `schedules/${dayjs(schedule.month).format('YYYY-MM-DD')}`,
         method: 'PUT',
         body: schedule,
       }),

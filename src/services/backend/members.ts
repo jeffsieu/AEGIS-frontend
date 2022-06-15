@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { baseApi } from './base';
 
@@ -32,10 +33,10 @@ export const membersApi = baseApi.injectEndpoints({
     }),
     getMemberAvailabilitiesForMonth: builder.query<
       Backend.Entry<Backend.MemberWithAvailability>[],
-      string
+      Date
     >({
       query: (month) => ({
-        url: `members/availability/${month}`,
+        url: `members/availability/${dayjs(month).format('YYYY-MM-DD')}`,
       }),
       providesTags: (result) => [
         ...(result ?? []).map(({ id }) => ({

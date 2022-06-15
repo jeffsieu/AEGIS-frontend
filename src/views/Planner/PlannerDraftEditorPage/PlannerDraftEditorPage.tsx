@@ -32,7 +32,8 @@ export type PlannerDraftEditorPageProps = {
     role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
-  onPublished: () => void;
+  onPublishClick: () => void;
+  onSaveClick: () => void;
 };
 
 function PlannerDraftEditorPageWithAPI() {
@@ -46,41 +47,43 @@ function PlannerDraftEditorPageWithAPI() {
         isPublished: false,
       }),
       roles: useGetRolesQuery(),
-      memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(month!),
+      memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(
+        dayjs(`${month}-01`).toDate()
+      ),
     },
     onSuccess: ({ roles, memberAvailabilities, schedules }) => {
       if (schedules.length === 0) return <>No records for {month} found</>;
 
-      const onPublished = (
-        scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]
-      ) => {
-        const duties: Backend.Duty[] = scheduleItemsByDay
-          .flatMap((scheduleItems, dayIndex) => {
-            const date = dayjs(month)
-              .date(dayIndex + 1)
-              .format('YYYY-MM-DD');
-            return scheduleItems.map((scheduleItem, roleIndex) => ({
-              ...scheduleItem,
-              date: date,
-              roleId: roles[roleIndex].id,
+      const updateDraft =
+        (isPublished: boolean) =>
+        (scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]) => {
+          const duties: Backend.Duty[] = scheduleItemsByDay
+            .flatMap((scheduleItems, dayIndex) => {
+              const date = dayjs(month)
+                .date(dayIndex + 1)
+                .format('YYYY-MM-DD');
+              return scheduleItems.map((scheduleItem, roleIndex) => ({
+                ...scheduleItem,
+                date: date,
+                roleId: roles[roleIndex].id,
+              }));
+            })
+            .filter((scheduleItem) => scheduleItem.assignedMember !== null)
+            .map((scheduleItem) => ({
+              memberId: memberAvailabilities.find(
+                (member) =>
+                  member.callsign === scheduleItem.assignedMember!.callsign
+              )!.id,
+              roleId: scheduleItem.roleId,
+              date: scheduleItem.date,
             }));
-          })
-          .filter((scheduleItem) => scheduleItem.assignedMember !== null)
-          .map((scheduleItem) => ({
-            memberId: memberAvailabilities.find(
-              (member) =>
-                member.callsign === scheduleItem.assignedMember!.callsign
-            )!.id,
-            roleId: scheduleItem.roleId,
-            date: scheduleItem.date,
-          }));
 
-        publishDraft({
-          month: dayjs(month).format('YYYY-MM'),
-          isPublished: true,
-          duties,
-        });
-      };
+          publishDraft({
+            month: dayjs(month).format('YYYY-MM-DD'),
+            isPublished: isPublished,
+            duties,
+          });
+        };
 
       const draft = schedules[0];
       const props = {
@@ -90,7 +93,8 @@ function PlannerDraftEditorPageWithAPI() {
           memberAvailabilities,
           memberAvailabilities
         ),
-        onPublished,
+        onPublished: updateDraft(true),
+        onSaved: updateDraft(false),
       };
 
       return <PlannerDraftEditorPageWithState {...props} />;
@@ -107,12 +111,16 @@ function PlannerDraftEditorPageWithState(
     onPublished: (
       scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
     ) => void;
+    onSaved: (
+      scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
+    ) => void;
   }
 ) {
   const {
     startDate,
     roles,
     scheduleItemsByDay: serverScheduleItemsByDay,
+    onSaved,
     onPublished,
   } = props;
   const [scheduleItemsByDay, setScheduleItemsByDay] = useState(
@@ -140,8 +148,6 @@ function PlannerDraftEditorPageWithState(
       return;
     }
 
-    console.log(updatedMember?.dutyCount);
-
     const newScheduleItemsByDay = scheduleItemsByDay.map(
       (scheduleItems, dayIndex) =>
         scheduleItems.map((scheduleItem, roleIndex) => {
@@ -151,7 +157,6 @@ function PlannerDraftEditorPageWithState(
 
           const getUpdatedScheduleItemMember = () => {
             if (isSelectedField) {
-              console.log(updatedMember);
               return updatedMember;
             }
             if (scheduleItemMember === null) {
@@ -189,8 +194,12 @@ function PlannerDraftEditorPageWithState(
     setScheduleItemsByDay(newScheduleItemsByDay);
   };
 
-  const onPublishedClick = () => {
+  const onPublishClick = () => {
     onPublished(scheduleItemsByDay);
+  };
+
+  const onSaveClick = () => {
+    onSaved(scheduleItemsByDay);
   };
 
   return (
@@ -198,7 +207,8 @@ function PlannerDraftEditorPageWithState(
       {...props}
       scheduleItemsByDay={scheduleItemsByDay}
       onMemberSelected={onMemberSelected}
-      onPublished={onPublishedClick}
+      onPublishClick={onPublishClick}
+      onSaveClick={onSaveClick}
     />
   );
 }
@@ -210,7 +220,8 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     roles,
     scheduleItemsByDay,
     onMemberSelected,
-    onPublished,
+    onPublishClick,
+    onSaveClick,
   } = props;
 
   const totalRequiredItemsCount = scheduleItemsByDay.reduce(
@@ -242,10 +253,13 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
+        <Button variant="contained" onClick={onSaveClick}>
+          Save
+        </Button>
         <Button
           variant="contained"
           disabled={filledRequiredItemsCount < totalRequiredItemsCount}
-          onClick={onPublished}
+          onClick={onPublishClick}
         >
           Publish
         </Button>

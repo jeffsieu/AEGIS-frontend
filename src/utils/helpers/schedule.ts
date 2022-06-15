@@ -83,7 +83,10 @@ export const getScheduleItemsByDay = (
           ? ({
               isAvailable: true,
               ...members.find((m) => m.id === duty.memberId)!,
-              dutyCount: 0,
+              dutyCount:
+                duty.memberId !== undefined
+                  ? dutyCounts.get(duty.memberId) || 0
+                  : 0,
             } as AvailableQualifiedMember)
           : null,
         qualifiedMembers: memberAvailabilities
