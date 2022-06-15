@@ -58,6 +58,19 @@ export const getScheduleItemsByDay = (
     };
   } = {};
 
+  const dutyCounts: Map<number, number> = new Map();
+  for (const duty of duties) {
+    if (duty.memberId === undefined) {
+      continue;
+    }
+    const dutyCount = dutyCounts.get(duty.memberId);
+    if (dutyCount) {
+      dutyCounts.set(duty.memberId, dutyCount + 1);
+    } else {
+      dutyCounts.set(duty.memberId, 1);
+    }
+  }
+
   for (const duty of duties) {
     const role = roles.find((r) => r.id === duty.roleId)!;
     const dateString = dayjs(duty.date).startOf('day').format('YYYY-MM-DD');
@@ -88,12 +101,14 @@ export const getScheduleItemsByDay = (
               return {
                 ...member,
                 isAvailable: true,
+                dutyCount: dutyCounts.get(member.id) || 0,
               };
             } else {
               return {
                 ...member,
                 isAvailable: false,
                 unavailableReason: unavailableReason.reason,
+                dutyCount: dutyCounts.get(member.id) || 0,
               };
             }
           }),

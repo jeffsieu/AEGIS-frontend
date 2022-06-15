@@ -3,6 +3,7 @@ import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button } from '@mui/material';
 import {
   RequiredScheduleItemProps,
+  ScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
@@ -123,10 +124,68 @@ function PlannerDraftEditorPageWithState(
     role: Role,
     member: AvailableQualifiedMember | null
   ) => {
-    const dayIndex = dayjs(date).diff(dayjs(startDate), 'day');
-    const roleIndex = roles.findIndex((r) => r.name === role.name);
-    const newScheduleItemsByDay = [...scheduleItemsByDay];
-    newScheduleItemsByDay[dayIndex][roleIndex].assignedMember = member;
+    const memberDayIndex = dayjs(date).diff(dayjs(startDate), 'day');
+    const memberRoleIndex = roles.findIndex((r) => r.name === role.name);
+    const oldMember =
+      scheduleItemsByDay[memberDayIndex][memberRoleIndex].assignedMember;
+    const oldMemberDutyCount = oldMember?.dutyCount;
+    const updatedOldMember: AvailableQualifiedMember | null =
+      oldMember !== null
+        ? { ...oldMember, dutyCount: oldMemberDutyCount! - 1 }
+        : null;
+    const updatedMember =
+      member !== null ? { ...member, dutyCount: member.dutyCount + 1 } : null;
+
+    if (updatedOldMember?.callsign === updatedMember?.callsign) {
+      return;
+    }
+
+    console.log(updatedMember?.dutyCount);
+
+    const newScheduleItemsByDay = scheduleItemsByDay.map(
+      (scheduleItems, dayIndex) =>
+        scheduleItems.map((scheduleItem, roleIndex) => {
+          const scheduleItemMember = scheduleItem.assignedMember;
+          const isSelectedField =
+            dayIndex === memberDayIndex && roleIndex === memberRoleIndex;
+
+          const getUpdatedScheduleItemMember = () => {
+            if (isSelectedField) {
+              console.log(updatedMember);
+              return updatedMember;
+            }
+            if (scheduleItemMember === null) {
+              return null;
+            }
+            if (scheduleItemMember.callsign === updatedOldMember?.callsign) {
+              return updatedOldMember;
+            }
+            if (scheduleItemMember.callsign === updatedMember?.callsign) {
+              return updatedMember;
+            }
+            return scheduleItemMember;
+          };
+
+          const updatedScheduleItemMember = getUpdatedScheduleItemMember();
+
+          return {
+            ...scheduleItem,
+            ...(scheduleItem.isRequired
+              ? {
+                  qualifiedMembers: scheduleItem.qualifiedMembers?.map(
+                    (qualifiedMember) =>
+                      qualifiedMember.callsign === updatedOldMember?.callsign
+                        ? updatedOldMember
+                        : qualifiedMember.callsign === updatedMember?.callsign
+                        ? updatedMember
+                        : qualifiedMember
+                  ),
+                }
+              : {}),
+            assignedMember: updatedScheduleItemMember,
+          } as ScheduleItemProps;
+        })
+    );
     setScheduleItemsByDay(newScheduleItemsByDay);
   };
 

@@ -25,7 +25,7 @@ export namespace Backend {
   };
 
   export type MemberWithAvailability = Member & {
-    dutyCount: number;
+    // dutyCount: number;
     roles: Entry<Role>[];
     requests: Entry<Request>[];
   };
