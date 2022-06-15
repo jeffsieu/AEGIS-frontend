@@ -17,6 +17,7 @@ export type ScheduleTableProps = {
     member: AvailableQualifiedMember | null
   ) => void;
   header?: React.ReactElement;
+  stickyHeader?: boolean;
 };
 
 function ScheduleTable(props: ScheduleTableProps) {
@@ -27,6 +28,7 @@ function ScheduleTable(props: ScheduleTableProps) {
     scheduleItemsByDay,
     onMemberSelected,
     header,
+    stickyHeader = false,
   } = props;
 
   const dates = useMemo(() => {
@@ -34,9 +36,9 @@ function ScheduleTable(props: ScheduleTableProps) {
   }, [startDate, endDate]);
 
   return (
-    <Box display="flex" gap={2} sx={{ width: '100%' }}>
-      <ScheduleRowHeaders roles={roles} />
-      <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
+    <Box display="flex" margin="auto" gap={2}>
+      <ScheduleRowHeaders roles={roles} sticky={stickyHeader} />
+      <Box display="flex" flexDirection="column" flexBasis={0}>
         {header}
         <Box display="flex" gap={1}>
           {dates.map((date, index) => {

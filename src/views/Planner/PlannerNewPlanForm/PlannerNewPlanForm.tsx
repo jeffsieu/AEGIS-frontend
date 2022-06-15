@@ -110,7 +110,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
     <Box display="flex" flexDirection="column" alignItems="start" gap={4}>
       <Box display="flex" flexDirection="column" alignItems="start" gap={2}>
         <Typography variant="h4" gutterBottom>
-          Create new plan
+          Draft new plan
         </Typography>
         <FormControl variant="filled">
           <InputLabel>Month</InputLabel>
@@ -157,10 +157,11 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                 }}
                 selection={dateSelections[role.name] || []}
                 textFieldProps={{
+                  fullWidth: true,
                   variant: 'filled',
                   helperText:
                     dateSelections[role.name]?.length > 0
-                      ? ''
+                      ? ' '
                       : 'Role will not be scheduled in entire month.',
                 }}
               ></MultiDatePicker>

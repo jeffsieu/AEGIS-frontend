@@ -199,13 +199,16 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
         />
       </Box>
       <Box width="100vw" position="relative" overflow="auto">
-        <ScheduleTable
-          startDate={startDate}
-          endDate={endDate}
-          roles={roles}
-          scheduleItemsByDay={scheduleItemsByDay}
-          onMemberSelected={onMemberSelected}
-        />
+        <Box display="flex" marginX={4}>
+          <ScheduleTable
+            startDate={startDate}
+            endDate={endDate}
+            roles={roles}
+            scheduleItemsByDay={scheduleItemsByDay}
+            onMemberSelected={onMemberSelected}
+            stickyHeader={true}
+          />
+        </Box>
       </Box>
     </Box>
   );

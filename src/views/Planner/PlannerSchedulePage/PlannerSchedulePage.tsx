@@ -9,6 +9,8 @@ import {
   useGetRolesQuery,
   useGetSchedulesForMonthQuery,
 } from '@services/backend';
+import { dateRangeToString } from '@utils/helpers/dateRange';
+import { Typography } from '@mui/material';
 
 function PlannerSchedulePageWithAPI() {
   const { month } = useParams();
@@ -37,8 +39,11 @@ function PlannerSchedulePageWithAPI() {
 export type PlannerSchedulePageProps = ScheduleTableProps;
 
 function PlannerSchedulePage(props: PlannerSchedulePageProps) {
+  const title = dateRangeToString([props.startDate, props.endDate], 'MMM YYYY');
+
   return (
     <div>
+      <Typography variant="h4">{title}</Typography>
       <ScheduleTable {...props} />
     </div>
   );
