@@ -75,7 +75,7 @@ function PlannerDraftEditorPageWithAPI() {
           }));
 
         publishDraft({
-          month: dayjs(month).format('YYYY-MM'),
+          month: dayjs(month).format('YYYY-MM-DD'),
           isPublished: true,
           duties,
         });
