@@ -22,6 +22,7 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
+import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
@@ -295,18 +296,16 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           progress={progress}
         />
       </Box>
-      <Box width="100vw" position="relative" overflow="auto">
-        <Box display="flex" marginX={4}>
-          <ScheduleTable
-            startDate={startDate}
-            endDate={endDate}
-            roles={roles}
-            scheduleItemsByDay={scheduleItemsByDay}
-            onMemberSelected={onMemberSelected}
-            stickyHeader={true}
-          />
-        </Box>
-      </Box>
+      <FullWidthScheduleContainer>
+        <ScheduleTable
+          startDate={startDate}
+          endDate={endDate}
+          roles={roles}
+          scheduleItemsByDay={scheduleItemsByDay}
+          onMemberSelected={onMemberSelected}
+          stickyHeader={true}
+        />
+      </FullWidthScheduleContainer>
     </Box>
   );
 }

@@ -1,0 +1,10 @@
+.full-width-container {
+  overflow: auto;
+  visibility: hidden;
+}
+
+.full-width-container > *,
+.full-width-container:hover,
+.full-width-container:focus {
+  visibility: visible;
+}

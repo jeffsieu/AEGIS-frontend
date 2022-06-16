@@ -11,6 +11,7 @@ import {
 } from '@services/backend';
 import { dateRangeToString } from '@utils/helpers/dateRange';
 import { Box, Typography } from '@mui/material';
+import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 
 function PlannerSchedulePageWithAPI() {
   const { month } = useParams();
@@ -29,6 +30,7 @@ function PlannerSchedulePageWithAPI() {
 
       const props: PlannerSchedulePageProps = {
         ...scheduleToScheduleTableProps(schedules[0], roles, members),
+        stickyHeader: true,
       };
 
       return <PlannerSchedulePage {...props} />;
@@ -49,12 +51,10 @@ function PlannerSchedulePage(props: PlannerSchedulePageProps) {
       alignItems="center"
       gap={8}
     >
-      <Typography variant="h4">{title}</Typography>
-      <Box width="100vw" position="relative" overflow="auto">
-        <Box display="flex" marginX={4}>
-          <ScheduleTable {...props} />
-        </Box>
-      </Box>
+      <Typography variant="h3">{title}</Typography>
+      <FullWidthScheduleContainer>
+        <ScheduleTable {...props} />
+      </FullWidthScheduleContainer>
     </Box>
   );
 }
