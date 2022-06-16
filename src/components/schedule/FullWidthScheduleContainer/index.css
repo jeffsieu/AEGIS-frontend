@@ -1,10 +1,9 @@
 .full-width-container {
-  overflow: auto;
-  visibility: hidden;
+  overflow-x: hidden;
 }
 
-.full-width-container > *,
+/* .full-width-container > *, */
 .full-width-container:hover,
 .full-width-container:focus {
-  visibility: visible;
+  overflow-x: scroll;
 }
