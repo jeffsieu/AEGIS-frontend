@@ -2,7 +2,7 @@ import MemberTable, {
   MemberEntry,
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Paper, TextField, Typography } from '@mui/material';
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
@@ -13,6 +13,8 @@ import {
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import { Backend } from '@typing/backend';
+import { Warning, WarningAmberRounded, WarningRounded } from '@mui/icons-material';
+import { WarningChip } from '@components/general/warning-chip';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   isEditing: boolean;
@@ -170,6 +172,12 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     onCallsignChange,
   } = props;
 
+	const alphaRegex = /^[a-zA-Z_]*$/
+	const isCallsignAlphanumeric = alphaRegex.test(callsignFieldText);
+	const isCallsignTooShort = callsignFieldText.length < 3;
+	const isCallsignTooLong = callsignFieldText.length > 8;
+	const isValidCallsign = !isCallsignAlphanumeric || isCallsignTooShort || isCallsignTooLong;
+
   return (
     <Box display="flex" flexDirection="column" gap={4}>
       <Box display="flex" justifyContent="space-between">
@@ -199,12 +207,18 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
               }}
             />
             <Button
+							disabled={isValidCallsign}
               variant="contained"
               onClick={() => onAddMemberClick(callsignFieldText)}
             >
               Add member
             </Button>
           </Box>
+					<div>
+						{!isCallsignAlphanumeric ? <WarningChip label="Callsign can only contain alphabets"/>: null}
+						{isCallsignTooShort ? <WarningChip label="Callsign must be at least 3 characters"/>: null}
+						{isCallsignTooLong ? <WarningChip label="Callsign cannot be longer than 8 characters"/>: null}
+					</div>
           <div>
             <Button onClick={onCancelClick}>Cancel</Button>
             <Button variant="contained" onClick={onSaveClick}>
