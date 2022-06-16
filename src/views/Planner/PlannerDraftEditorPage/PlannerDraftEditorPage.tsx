@@ -21,6 +21,7 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { LoadingButton } from '@mui/lab';
+import { AsyncButton } from '@components/general/async-button';
 
 export type PlannerDraftEditorPageProps = {
   startDate: Date;
@@ -185,22 +186,14 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
-        <LoadingButton
+        <AsyncButton
 					loading={isPublishing}
           variant="contained"
           disabled={filledRequiredItemsCount < totalRequiredItemsCount}
-          onClick={async ()=>{
-						try{
-							setIsPublishing(true);
-							await onPublished();
-							setIsPublishing(false);
-						} catch {
-							setIsPublishing(false);
-						}
-					}}
+          asyncRequest={onPublished}
         >
           Publish
-        </LoadingButton>
+        </AsyncButton>
       </Box>
       <Box sx={{ width: '100%' }}>
         <ScheduleHeader
