@@ -13,7 +13,6 @@ import {
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import { Backend } from '@typing/backend';
-import { WarningChip } from '@components/general/warning-chip';
 import { AsyncButton } from '@components/general/async-button';
 
 export type PlannerMembersPageProps = MemberTableProps & {
@@ -184,11 +183,18 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   } = props;
 
   const alphaRegex = /^[a-zA-Z_]*$/;
-  const isCallsignAlphanumeric = alphaRegex.test(callsignFieldText);
+  const isCallsignNotAlphanumeric = !alphaRegex.test(callsignFieldText);
   const isCallsignTooShort = callsignFieldText.length < 3;
   const isCallsignTooLong = callsignFieldText.length > 8;
-  const isValidCallsign =
-    !isCallsignAlphanumeric || isCallsignTooShort || isCallsignTooLong;
+  const isInvalidCallsign =
+    isCallsignNotAlphanumeric || isCallsignTooShort || isCallsignTooLong;
+  const errorText = isCallsignNotAlphanumeric
+    ? 'Callsign can only contain letters'
+    : isCallsignTooShort
+    ? 'Callsign must be at least 3 characters'
+    : isCallsignTooLong
+    ? 'Callsign cannot be longer than 8 characters'
+    : '';
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
@@ -223,9 +229,11 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   onCallsignChange(event.target.value);
                 }}
+                error={isInvalidCallsign}
+                helperText={errorText}
               />
               <Button
-                disabled={isValidCallsign}
+                disabled={isInvalidCallsign}
                 variant="contained"
                 onClick={() => onAddMemberClick(callsignFieldText)}
               >
@@ -233,17 +241,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
               </Button>
             </Box>
           </form>
-          <div>
-            {!isCallsignAlphanumeric ? (
-              <WarningChip label="Callsign can only contain letters" />
-            ) : null}
-            {isCallsignTooShort ? (
-              <WarningChip label="Callsign must be at least 3 characters" />
-            ) : null}
-            {isCallsignTooLong ? (
-              <WarningChip label="Callsign cannot be longer than 8 characters" />
-            ) : null}
-          </div>
+          <div></div>
           <div>
             <Button onClick={onCancelClick}>Cancel</Button>
             <AsyncButton
