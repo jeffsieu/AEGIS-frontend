@@ -16,6 +16,7 @@ import { Backend } from '@typing/backend';
 import { WarningChip } from '@components/general/warning-chip';
 import { LoadingButton } from '@mui/lab';
 import { waitFor } from '@testing-library/react';
+import { AsyncButton } from '@components/general/async-button';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   isEditing: boolean;
@@ -232,9 +233,9 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 					</div>
           <div>
             <Button onClick={onCancelClick}>Cancel</Button>
-            <LoadingButton loading={isSaving} variant="contained" onClick={onSaveClick}>
+            <AsyncButton variant="contained" asyncRequest={onSaveClick}>
               Save
-            </LoadingButton>
+            </AsyncButton>
           </div>
         </>
       )}
