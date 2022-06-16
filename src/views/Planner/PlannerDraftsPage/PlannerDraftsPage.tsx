@@ -39,7 +39,7 @@ function PlannerDraftsPageWithAPI() {
         roles: roles,
         members: members,
         onDraftClick: (draft) => {
-          navigate(`/planner/drafts/${dayjs(draft.month).format('YYYY-MM')}`);
+          navigate(`/planner/drafts/${dayjs(draft.month).format('YYYY-MM-DD')}`);
         },
       };
       return <PlannerDraftsPage {...props} />;

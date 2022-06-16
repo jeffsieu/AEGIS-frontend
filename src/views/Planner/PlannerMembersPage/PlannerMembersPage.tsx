@@ -2,7 +2,7 @@ import MemberTable, {
   MemberEntry,
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
-import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
@@ -13,6 +13,8 @@ import {
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import { Backend } from '@typing/backend';
+import { WarningChip } from '@components/general/warning-chip';
+import { AsyncButton } from '@components/general/async-button';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   isEditing: boolean;
@@ -22,6 +24,7 @@ export type PlannerMembersPageProps = MemberTableProps & {
   onAddMemberClick: (callsign: string) => void;
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
+  isSaving: boolean;
 };
 
 function PlannerMembersPageWithAPI() {
@@ -92,7 +95,7 @@ function PlannerMembersPageWithAPI() {
 export type PlannerMembersPageWithStateProps = {
   members: MemberEntry[];
   roles: Backend.Role[];
-  updateMemberEntries: (members: MemberEntry[]) => void;
+  updateMemberEntries: (members: MemberEntry[]) => Promise<void>;
 };
 
 function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
@@ -100,6 +103,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const onMemberRolesChange = (callsign: string, roles: Role[]) => {
     const member = members.find((member) => member.callsign === callsign)!;
@@ -130,8 +134,14 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       isEditing={isEditing}
       onMemberRolesChange={onMemberRolesChange}
       onSaveClick={async () => {
-        setEditing(false);
-        updateMemberEntries(members);
+        try {
+          setIsSaving(true);
+          await updateMemberEntries(members);
+          setIsSaving(false);
+          setEditing(false);
+        } catch (err) {
+          setIsSaving(false);
+        }
       }}
       onEditClick={() => setEditing(true)}
       onCancelClick={() => {
@@ -154,6 +164,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       }}
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
+      isSaving={isSaving}
     />
   );
 }
@@ -169,7 +180,15 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     onAddMemberClick,
     callsignFieldText,
     onCallsignChange,
+    isSaving,
   } = props;
+
+  const alphaRegex = /^[a-zA-Z_]*$/;
+  const isCallsignAlphanumeric = alphaRegex.test(callsignFieldText);
+  const isCallsignTooShort = callsignFieldText.length < 3;
+  const isCallsignTooLong = callsignFieldText.length > 8;
+  const isValidCallsign =
+    !isCallsignAlphanumeric || isCallsignTooShort || isCallsignTooLong;
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
@@ -201,12 +220,12 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
                 label="Callsign"
                 variant="filled"
                 value={callsignFieldText}
-                onChange={(event) => {
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   onCallsignChange(event.target.value);
                 }}
               />
               <Button
-                type="submit"
+                disabled={isValidCallsign}
                 variant="contained"
                 onClick={() => onAddMemberClick(callsignFieldText)}
               >
@@ -215,10 +234,25 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
             </Box>
           </form>
           <div>
+            {!isCallsignAlphanumeric ? (
+              <WarningChip label="Callsign can only contain letters" />
+            ) : null}
+            {isCallsignTooShort ? (
+              <WarningChip label="Callsign must be at least 3 characters" />
+            ) : null}
+            {isCallsignTooLong ? (
+              <WarningChip label="Callsign cannot be longer than 8 characters" />
+            ) : null}
+          </div>
+          <div>
             <Button onClick={onCancelClick}>Cancel</Button>
-            <Button variant="contained" onClick={onSaveClick}>
+            <AsyncButton
+              loading={isSaving}
+              variant="contained"
+              asyncRequest={onSaveClick}
+            >
               Save
-            </Button>
+            </AsyncButton>
           </div>
         </>
       )}

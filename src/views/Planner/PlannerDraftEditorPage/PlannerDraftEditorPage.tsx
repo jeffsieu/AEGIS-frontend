@@ -21,20 +21,7 @@ import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
-
-export type PlannerDraftEditorPageProps = {
-  startDate: Date;
-  endDate: Date;
-  roles: Role[];
-  scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
-  onMemberSelected: (
-    date: Date,
-    role: Role,
-    member: AvailableQualifiedMember | null
-  ) => void;
-  onPublishClick: () => void;
-  onSaveClick: () => void;
-};
+import { AsyncButton } from '@components/general/async-button';
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
@@ -115,10 +102,10 @@ function PlannerDraftEditorPageWithState(
   > & {
     onPublished: (
       scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
-    ) => void;
+    ) => Promise<void>;
     onSaved: (
       scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
-    ) => void;
+    ) => Promise<void>;
   }
 ) {
   const {
@@ -131,6 +118,9 @@ function PlannerDraftEditorPageWithState(
   const [scheduleItemsByDay, setScheduleItemsByDay] = useState(
     serverScheduleItemsByDay
   );
+
+  const [isPublishing, setPublishing] = useState(false);
+  const [isSaving, setSaving] = useState(false);
 
   const onMemberSelected = (
     date: Date,
@@ -199,12 +189,16 @@ function PlannerDraftEditorPageWithState(
     setScheduleItemsByDay(newScheduleItemsByDay);
   };
 
-  const onPublishClick = () => {
-    onPublished(scheduleItemsByDay);
+  const onPublishClick = async () => {
+    setPublishing(true);
+    await onPublished(scheduleItemsByDay);
+    setPublishing(false);
   };
 
-  const onSaveClick = () => {
-    onSaved(scheduleItemsByDay);
+  const onSaveClick = async () => {
+    setSaving(true);
+    await onSaved(scheduleItemsByDay);
+    setSaving(false);
   };
 
   return (
@@ -214,9 +208,27 @@ function PlannerDraftEditorPageWithState(
       onMemberSelected={onMemberSelected}
       onPublishClick={onPublishClick}
       onSaveClick={onSaveClick}
+      isSaving={isSaving}
+      isPublishing={isPublishing}
     />
   );
 }
+
+export type PlannerDraftEditorPageProps = {
+  startDate: Date;
+  endDate: Date;
+  roles: Role[];
+  scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
+  onMemberSelected: (
+    date: Date,
+    role: Role,
+    member: AvailableQualifiedMember | null
+  ) => void;
+  onPublishClick: () => void;
+  onSaveClick: () => void;
+  isSaving: boolean;
+  isPublishing: boolean;
+};
 
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   const {
@@ -227,6 +239,8 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     onMemberSelected,
     onPublishClick,
     onSaveClick,
+    isSaving,
+    isPublishing,
   } = props;
 
   const totalRequiredItemsCount = scheduleItemsByDay.reduce(
@@ -258,16 +272,21 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
-        <Button variant="contained" onClick={onSaveClick}>
+        <AsyncButton
+          loading={isSaving}
+          variant="contained"
+          asyncRequest={onSaveClick}
+        >
           Save
-        </Button>
-        <Button
+        </AsyncButton>
+        <AsyncButton
+          loading={isPublishing}
           variant="contained"
           disabled={filledRequiredItemsCount < totalRequiredItemsCount}
-          onClick={onPublishClick}
+          asyncRequest={onPublishClick}
         >
           Publish
-        </Button>
+        </AsyncButton>
       </Box>
       <Box sx={{ width: '100%' }}>
         <ScheduleHeader
