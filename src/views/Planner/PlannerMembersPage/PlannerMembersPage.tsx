@@ -2,7 +2,7 @@ import MemberTable, {
   MemberEntry,
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
-import { Box, Button, Chip, Paper, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
@@ -13,8 +13,9 @@ import {
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import { Backend } from '@typing/backend';
-import { Warning, WarningAmberRounded, WarningRounded } from '@mui/icons-material';
 import { WarningChip } from '@components/general/warning-chip';
+import { LoadingButton } from '@mui/lab';
+import { waitFor } from '@testing-library/react';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   isEditing: boolean;
@@ -24,6 +25,7 @@ export type PlannerMembersPageProps = MemberTableProps & {
   onAddMemberClick: (callsign: string) => void;
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
+	isSaving: boolean;
 };
 
 function PlannerMembersPageWithAPI() {
@@ -102,6 +104,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
+	const [isSaving, setIsSaving] = useState(false);
 
   const onMemberRolesChange = (callsign: string, roles: Role[]) => {
     const member = members.find((member) => member.callsign === callsign)!;
@@ -132,8 +135,14 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       isEditing={isEditing}
       onMemberRolesChange={onMemberRolesChange}
       onSaveClick={async () => {
-        setEditing(false);
-        await updateMemberEntries(members);
+				try {
+					setIsSaving(true);
+					await updateMemberEntries(members);
+					setIsSaving(false);
+					setEditing(false);
+				} catch (err){
+					setIsSaving(false);
+				}
       }}
       onEditClick={() => setEditing(true)}
       onCancelClick={() => {
@@ -155,6 +164,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       }}
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
+			isSaving={isSaving}
     />
   );
 }
@@ -170,6 +180,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     onAddMemberClick,
     callsignFieldText,
     onCallsignChange,
+		isSaving
   } = props;
 
 	const alphaRegex = /^[a-zA-Z_]*$/
@@ -215,15 +226,15 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
             </Button>
           </Box>
 					<div>
-						{!isCallsignAlphanumeric ? <WarningChip label="Callsign can only contain alphabets"/>: null}
+						{!isCallsignAlphanumeric ? <WarningChip label="Callsign can only contain letters"/>: null}
 						{isCallsignTooShort ? <WarningChip label="Callsign must be at least 3 characters"/>: null}
 						{isCallsignTooLong ? <WarningChip label="Callsign cannot be longer than 8 characters"/>: null}
 					</div>
           <div>
             <Button onClick={onCancelClick}>Cancel</Button>
-            <Button variant="contained" onClick={onSaveClick}>
+            <LoadingButton loading={isSaving} variant="contained" onClick={onSaveClick}>
               Save
-            </Button>
+            </LoadingButton>
           </div>
         </>
       )}
