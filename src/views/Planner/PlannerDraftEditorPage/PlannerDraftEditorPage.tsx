@@ -20,6 +20,7 @@ import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
+import { LoadingButton } from '@mui/lab';
 
 export type PlannerDraftEditorPageProps = {
   startDate: Date;
@@ -50,7 +51,7 @@ function PlannerDraftEditorPageWithAPI() {
     onSuccess: ({ roles, memberAvailabilities, schedules }) => {
       if (schedules.length === 0) return <>No records for {month} found</>;
 
-      const onPublished = (
+      const onPublished = async (
         scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]
       ) => {
         const duties: Backend.Duty[] = scheduleItemsByDay
@@ -73,12 +74,11 @@ function PlannerDraftEditorPageWithAPI() {
             roleId: scheduleItem.roleId,
             date: scheduleItem.date,
           }));
-
-        publishDraft({
-          month: dayjs(month).format('YYYY-MM-DD'),
-          isPublished: true,
-          duties,
-        });
+					await publishDraft({
+						month: dayjs(month).format('YYYY-MM-DD'),
+						isPublished: true,
+						duties,
+					});
       };
 
       const draft = schedules[0];
@@ -130,8 +130,8 @@ function PlannerDraftEditorPageWithState(
     setScheduleItemsByDay(newScheduleItemsByDay);
   };
 
-  const onPublishedClick = () => {
-    onPublished(scheduleItemsByDay);
+  const onPublishedClick = async () => {
+    await onPublished(scheduleItemsByDay);
   };
 
   return (
@@ -153,6 +153,8 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     onMemberSelected,
     onPublished,
   } = props;
+
+	const [isPublishing, setIsPublishing] = useState<boolean>(false);
 
   const totalRequiredItemsCount = scheduleItemsByDay.reduce(
     (acc, dayScheduleItems) =>
@@ -183,13 +185,22 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     >
       <Box position="absolute" right={0} display="flex" gap={1}>
         <Button variant="outlined">Edit dates</Button>
-        <Button
+        <LoadingButton
+					loading={isPublishing}
           variant="contained"
           disabled={filledRequiredItemsCount < totalRequiredItemsCount}
-          onClick={onPublished}
+          onClick={async ()=>{
+						try{
+							setIsPublishing(true);
+							await onPublished();
+							setIsPublishing(false);
+						} catch {
+							setIsPublishing(false);
+						}
+					}}
         >
           Publish
-        </Button>
+        </LoadingButton>
       </Box>
       <Box sx={{ width: '100%' }}>
         <ScheduleHeader
