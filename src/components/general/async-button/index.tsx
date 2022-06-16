@@ -1,8 +1,12 @@
-import { LoadingButton } from "@mui/lab";
+import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import { Alert, Snackbar } from "@mui/material";
 import React from "react";
 
-export function AsyncButton(props: any & {asyncRequest: Promise<null>}){
+type AsyncButtonProps = {
+	asyncRequest: () => void;
+}
+
+export function AsyncButton(props: LoadingButtonProps & AsyncButtonProps){
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState('');
