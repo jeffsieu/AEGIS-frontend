@@ -1,12 +1,15 @@
 import MultiDatePicker from '@components/general/multi-date-picker';
+import TitledContainer from '@components/general/titled-container';
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Stack,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -107,11 +110,8 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
   }
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="start" gap={4}>
-      <Box display="flex" flexDirection="column" alignItems="start" gap={2}>
-        <Typography variant="h4" gutterBottom>
-          Draft new plan
-        </Typography>
+    <TitledContainer title="Draft new plan">
+      <Stack spacing={4}>
         <FormControl variant="filled">
           <InputLabel>Month</InputLabel>
           <Select
@@ -130,54 +130,69 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
             ))}
           </Select>
         </FormControl>
-      </Box>
-      <div>
-        <Typography
-          variant="h5"
-          color={theme.palette.text.secondary}
-          gutterBottom
+        <Divider />
+        <div>
+          <Box display="flex" marginBottom={4}>
+            <Box minWidth="calc(5em + 32px)" />
+            <Typography
+              variant="h5"
+              color={theme.palette.text.secondary}
+              gutterBottom
+            >
+              Roles
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="stretch"
+            gap={2}
+          >
+            {roles.map((role, index) => (
+              <Box key={index} display="flex" gap={4} alignItems="center">
+                <Box minWidth="5em" textAlign="end">
+                  <Typography variant="h6" color={theme.palette.text.secondary}>
+                    {role.name}
+                  </Typography>
+                </Box>
+                <Box flex="1">
+                  <MultiDatePicker
+                    label={`Dates for ${role.name}`}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    views={['day']}
+                    defaultCalendarMonth={month}
+                    onSelectionChanged={(selectedDates: Dayjs[]) => {
+                      setDateSelections({
+                        ...dateSelections,
+                        [role.name]: selectedDates,
+                      });
+                    }}
+                    selection={dateSelections[role.name] || []}
+                    textFieldProps={{
+                      fullWidth: true,
+                      variant: 'filled',
+                      helperText:
+                        dateSelections[role.name]?.length > 0
+                          ? ' '
+                          : `${role.name} will not be scheduled in entire month.`,
+                    }}
+                  ></MultiDatePicker>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </div>
+        <Button
+          variant="contained"
+          onClick={() => {
+            onScheduleCreated(month, dateSelections);
+          }}
         >
-          Roles
-        </Typography>
-        <Box display="flex" flexDirection="column" gap={2}>
-          {roles.map((role, index) => (
-            <Box key={index} display="flex" gap={8} alignItems="center">
-              <Typography variant="h6">{role.name}</Typography>
-              <MultiDatePicker
-                label="Dates"
-                minDate={minDate}
-                maxDate={maxDate}
-                views={['day']}
-                defaultCalendarMonth={month}
-                onSelectionChanged={(selectedDates: Dayjs[]) => {
-                  setDateSelections({
-                    ...dateSelections,
-                    [role.name]: selectedDates,
-                  });
-                }}
-                selection={dateSelections[role.name] || []}
-                textFieldProps={{
-                  fullWidth: true,
-                  variant: 'filled',
-                  helperText:
-                    dateSelections[role.name]?.length > 0
-                      ? ' '
-                      : 'Role will not be scheduled in entire month.',
-                }}
-              ></MultiDatePicker>
-            </Box>
-          ))}
-        </Box>
-      </div>
-      <Button
-        variant="contained"
-        onClick={() => {
-          onScheduleCreated(month, dateSelections);
-        }}
-      >
-        Create
-      </Button>
-    </Box>
+          Create
+        </Button>
+      </Stack>
+    </TitledContainer>
   );
 }
 

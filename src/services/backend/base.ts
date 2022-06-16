@@ -6,6 +6,8 @@ export const baseApi = createApi({
   reducerPath: 'backendApi',
   tagTypes: ['Members', 'Roles', 'Schedules', 'Requests'],
   baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
   endpoints: (builder) => ({
     clearData: builder.mutation<void, void>({
       query: () => ({

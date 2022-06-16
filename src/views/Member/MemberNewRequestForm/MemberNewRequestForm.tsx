@@ -1,3 +1,4 @@
+import TitledContainer from '@components/general/titled-container';
 import RequestForm, {
   RequestFormProps,
 } from '@components/requests/form/RequestForm';
@@ -32,12 +33,9 @@ function MemberNewRequestFormWithAPI() {
 
 function MemberNewRequestForm(props: MemberNewRequestFormProps) {
   return (
-    <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
-      <Typography variant="h4" gutterBottom>
-        Create new request
-      </Typography>
+    <TitledContainer title="Create new request">
       <RequestForm {...props} />
-    </Box>
+    </TitledContainer>
   );
 }
 

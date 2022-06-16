@@ -6,6 +6,7 @@ import { useGetRequestsQuery } from '@services/backend';
 import { RequestPeriod } from '@typing';
 import { ERROR_NO_REQUESTS } from '@utils/constants/string';
 import dayjs from 'dayjs';
+import TitledContainer from '@components/general/titled-container';
 
 export type MemberRequestsPageProps = {
   periods: (RequestPeriod & { callsign: string })[];
@@ -34,10 +35,7 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
   const { periods } = props;
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
-      <Typography variant="h4" gutterBottom>
-        Requests
-      </Typography>
+    <TitledContainer title="Requests">
       {periods.length === 0 && <EmptyHint>{ERROR_NO_REQUESTS}</EmptyHint>}
       {periods.length > 0 && (
         <RequestsTable
@@ -48,7 +46,7 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
           }))}
         />
       )}
-    </Box>
+    </TitledContainer>
   );
 }
 
