@@ -4,31 +4,31 @@ import dayjs from 'dayjs';
 
 export const MEMBERS: Backend.Member[] = [
   {
-    callsign: 'Alpha',
-    squadron: 'Squadron1',
+    callsign: 'Nano',
+    squadron: '18',
+    type: 'ADMIN',
+  },
+  {
+    callsign: 'Crafter',
+    squadron: '18',
     type: 'MEMBER',
   },
   {
-    callsign: 'Bravo',
-    squadron: 'Squadron1',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Charlie',
-    squadron: 'Squadron1',
+    callsign: 'Ram',
+    squadron: '18',
     type: 'MEMBER',
   },
 ];
 
 export const ROLES: Backend.Role[] = [
   {
-    name: 'A1',
-  },
-  {
     name: 'A2',
   },
   {
-    name: 'A3',
+    name: 'G4',
+  },
+  {
+    name: 'G4 COMD',
   },
 ];
 
@@ -40,15 +40,15 @@ export type MockQualification = {
 export const QUALIFICATIONS: MockQualification[] = [
   {
     memberId: 1,
-    roles: ['A1', 'A2'],
+    roles: ['A2', 'G4'],
   },
   {
     memberId: 2,
-    roles: ['A1', 'A3'],
+    roles: ['G4', 'G4 COMD'],
   },
   {
     memberId: 3,
-    roles: ['A2', 'A3'],
+    roles: ['A2', 'G4 COMD'],
   },
 ];
 
@@ -79,12 +79,12 @@ export const SCHEDULES: Backend.Schedule[] = [
     ],
   },
   {
-    month: '2022-02-01',
+    month: '2022-05-01',
     isPublished: false,
     duties: [
       {
         roleId: 1,
-        date: '2022-02-03',
+        date: '2022-05-03',
       },
     ],
   },
@@ -93,8 +93,8 @@ export const SCHEDULES: Backend.Schedule[] = [
 export const REQUESTS: Backend.Request[] = [
   {
     memberId: 1,
-    startDate: '2022-02-03',
-    endDate: '2022-02-03',
+    startDate: '2022-05-03',
+    endDate: '2022-05-03',
     reason: 'sick',
   },
 ];
