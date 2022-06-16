@@ -19,7 +19,6 @@ function FullWidthScheduleContainer(
             width: '100%',
             height: '100%',
             content: '""',
-            // background: 'red',
             position: 'absolute',
             zIndex: 5,
             background: `linear-gradient(-90deg, ${theme.palette.background.paper} 0px, ${theme.palette.background.paper} 16px, transparent 32px);`,
@@ -37,13 +36,6 @@ function FullWidthScheduleContainer(
           </Box>
         </Box>
       </Box>
-      {/* <Box
-        width="100%"
-        height="100%"
-        zIndex={2}
-        position="absolute"
-        top={0}
-      ></Box> */}
     </Box>
   );
 }
