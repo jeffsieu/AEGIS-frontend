@@ -37,7 +37,7 @@ function PlannerSchedulesPageWithAPI() {
         members,
         onScheduleClick: (schedule: Backend.Schedule) => {
           navigate(
-            `/planner/published/${dayjs(schedule.month).format('YYYY-MM')}`
+            `/planner/published/${dayjs(schedule.month).format('YYYY-MM-DD')}`
           );
         },
       };
