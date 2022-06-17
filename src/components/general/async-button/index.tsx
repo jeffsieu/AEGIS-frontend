@@ -20,7 +20,6 @@ export function AsyncButton(props: LoadingButtonProps & AsyncButtonProps){
 			setIsLoading(false);
 			setSnackbarMessage(err.toString());
 			setIsSnackbarOpen(true);
-			console.log(err);
 		}
 	}
 

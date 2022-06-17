@@ -6,12 +6,13 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
+  useAddRoleMutation,
   useGetMembersQuery,
   useGetRolesQuery,
   useUpdateMemberRolesMutation,
 } from '@services/backend';
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 
@@ -24,11 +25,19 @@ export type PlannerMembersPageProps = MemberTableProps & {
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
   isSaving: boolean;
+	createRoleClick: (role:string) => void;
+	roleFieldText:string;
+	onRoleFieldChange: (role: string) => void;
 };
 
 function PlannerMembersPageWithAPI() {
   const [updateMemberRoles] = useUpdateMemberRolesMutation();
   const [addMember] = useAddMemberMutation();
+	const [addRole] = useAddRoleMutation();
+
+	async function createRole(role: Backend.Role){
+		await addRole(role);
+	}
 
   return buildWithApiQueries({
     queries: {
@@ -82,6 +91,7 @@ function PlannerMembersPageWithAPI() {
             }
           }
         },
+				createRole
       };
 
       return (
@@ -95,14 +105,16 @@ export type PlannerMembersPageWithStateProps = {
   members: MemberEntry[];
   roles: Backend.Role[];
   updateMemberEntries: (members: MemberEntry[]) => Promise<void>;
+	createRole: (role: Backend.Role) => Promise<void>;
 };
 
 function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
-  const { updateMemberEntries, roles } = props;
+  const { updateMemberEntries, roles, createRole } = props;
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+	const [roleFieldText, setRoleFieldText] = useState('');
 
   const onMemberRolesChange = (callsign: string, roles: Role[]) => {
     const member = members.find((member) => member.callsign === callsign)!;
@@ -126,6 +138,10 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
     });
     setMembers(newMembers);
   };
+
+	useEffect(()=>{
+		setMembers(props.members);
+	}, [props.members]);
 
   return (
     <PlannerMembersPage
@@ -164,6 +180,11 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
       isSaving={isSaving}
+			createRoleClick={async (role: string) => {
+				await createRole({name: role});
+			}}
+			roleFieldText={roleFieldText}
+			onRoleFieldChange={(role) => setRoleFieldText(role)}
     />
   );
 }
@@ -180,6 +201,9 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     callsignFieldText,
     onCallsignChange,
     isSaving,
+		createRoleClick,
+		roleFieldText,
+		onRoleFieldChange
   } = props;
 
   const alphaRegex = /^[a-zA-Z_]*$/;
@@ -239,6 +263,29 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
               >
                 Add member
               </Button>
+            </Box>
+          </form>
+					<form
+            onSubmit={(event) => {
+              event.preventDefault();
+            }}
+          >
+            <Box display="flex" alignItems="center" gap={2}>
+              <TextField
+                autoComplete="off"
+                label="Role"
+                variant="filled"
+                value={roleFieldText}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  onRoleFieldChange(event.target.value);
+                }}
+              />
+              <AsyncButton
+                variant="contained"
+                asyncRequest={async () => createRoleClick(roleFieldText)}
+              >
+                Add role
+              </AsyncButton>
             </Box>
           </form>
           <div></div>
