@@ -1,6 +1,7 @@
 import EmptyHint from '@components/general/empty-hint';
+import TitledContainer from '@components/general/titled-container';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRolesQuery,
@@ -51,22 +52,21 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
   const { drafts, roles, members, onDraftClick } = props;
 
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <Typography variant="h4" gutterBottom>
-        Drafts
-      </Typography>
-      {drafts.length === 0 && (
-        <EmptyHint>{ERROR_NO_DRAFTS_SCHEDULES}</EmptyHint>
-      )}
-      {drafts.map((draft, index) => (
-        <div key={index}>
-          <ScheduleCard
-            {...scheduleToScheduleTableProps(draft, roles, members)}
-            onClick={() => onDraftClick(draft)}
-          />
-        </div>
-      ))}
-    </Box>
+    <TitledContainer title="Drafts">
+      <Stack spacing={4}>
+        {drafts.length === 0 && (
+          <EmptyHint>{ERROR_NO_DRAFTS_SCHEDULES}</EmptyHint>
+        )}
+        {drafts.map((draft, index) => (
+          <div key={index}>
+            <ScheduleCard
+              {...scheduleToScheduleTableProps(draft, roles, members)}
+              onClick={() => onDraftClick(draft)}
+            />
+          </div>
+        ))}
+      </Stack>
+    </TitledContainer>
   );
 }
 

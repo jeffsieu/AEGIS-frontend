@@ -18,6 +18,7 @@ function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
       flexDirection="column"
       justifyContent="end"
       gap={1}
+      paddingX={sticky ? 2 : undefined}
       position={sticky ? 'sticky' : undefined}
       left={sticky ? 0 : undefined}
       zIndex={sticky ? 1 : undefined}

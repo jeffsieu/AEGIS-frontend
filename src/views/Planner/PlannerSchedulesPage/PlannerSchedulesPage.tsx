@@ -1,12 +1,12 @@
 import EmptyHint from '@components/general/empty-hint';
+import TitledContainer from '@components/general/titled-container';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Skeleton } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRolesQuery,
   useGetSchedulesQuery,
 } from '@services/backend';
-import { Schedule } from '@typing';
 import { Backend } from '@typing/backend';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
@@ -47,6 +47,17 @@ function PlannerSchedulesPageWithAPI() {
       };
       return <PlannerSchedulesPage {...props} />;
     },
+    onLoading: () => {
+      return (
+        <TitledContainer title="Published">
+          <Stack spacing={4}>
+            <Skeleton variant="rectangular" height={250} />
+            <Skeleton variant="rectangular" height={250} />
+            <Skeleton variant="rectangular" height={250} />
+          </Stack>
+        </TitledContainer>
+      );
+    },
   });
 }
 
@@ -54,22 +65,21 @@ function PlannerSchedulesPage(props: PlannerSchedulesPageProps) {
   const { roles, members, schedules, onScheduleClick } = props;
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
-      <Typography variant="h4" gutterBottom>
-        Published
-      </Typography>
+    <TitledContainer title="Published">
       {schedules.length === 0 && (
         <EmptyHint>{ERROR_NO_PUBLISHED_SCHEDULES}</EmptyHint>
       )}
-      {schedules.map((schedule) => (
-        <ScheduleCard
-          {...scheduleToScheduleTableProps(schedule, roles, members)}
-          onClick={() => {
-            onScheduleClick(schedule);
-          }}
-        />
-      ))}
-    </Box>
+      <Stack spacing={4}>
+        {schedules.map((schedule) => (
+          <ScheduleCard
+            {...scheduleToScheduleTableProps(schedule, roles, members)}
+            onClick={() => {
+              onScheduleClick(schedule);
+            }}
+          />
+        ))}
+      </Stack>
+    </TitledContainer>
   );
 }
 
