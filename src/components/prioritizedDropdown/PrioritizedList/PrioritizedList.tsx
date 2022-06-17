@@ -6,6 +6,7 @@ import {
   ListItemText,
   MenuItem,
   MenuList,
+  Typography,
   useTheme,
 } from '@mui/material';
 
@@ -39,6 +40,14 @@ function PrioritizedList(props: PrioritizedListProps) {
     return sortMembers(qualifiedMembers);
   }, [qualifiedMembers]);
 
+  const sortedAvailableMembers = useMemo(() => {
+    return sortedMembers.filter((member) => member.isAvailable);
+  }, [sortedMembers]);
+
+  const sortedUnavailableMembers = useMemo(() => {
+    return sortedMembers.filter((member) => !member.isAvailable);
+  }, [sortedMembers]);
+
   return (
     <MenuList>
       <MenuItem
@@ -55,17 +64,56 @@ function PrioritizedList(props: PrioritizedListProps) {
           Unassign
         </ListItemText>
       </MenuItem>
-      <Divider />
-      {sortedMembers.map((qualifiedMember, i) => {
+      {sortedAvailableMembers.length > 0 && (
+        <>
+          <Divider />
+          <li>
+            <Typography
+              sx={{ mt: 0.5, ml: 2 }}
+              color="text.secondary"
+              display="block"
+              variant="caption"
+            >
+              Available
+            </Typography>
+          </li>
+        </>
+      )}
+      {sortedAvailableMembers.map((qualifiedMember, i) => {
         return (
           <PrioritizedListItem
             {...qualifiedMember}
             key={i}
             selected={qualifiedMember === selectedMember}
             onClick={() => {
-              if (qualifiedMember.isAvailable) {
-                onMemberSelected(qualifiedMember);
-              }
+              onMemberSelected(qualifiedMember as AvailableQualifiedMember);
+            }}
+          ></PrioritizedListItem>
+        );
+      })}
+      {sortedUnavailableMembers.length > 0 && (
+        <>
+          <Divider component="li" />
+          <li>
+            <Typography
+              sx={{ mt: 0.5, ml: 2 }}
+              color="text.secondary"
+              display="block"
+              variant="caption"
+            >
+              With requests
+            </Typography>
+          </li>
+        </>
+      )}
+      {sortedUnavailableMembers.map((qualifiedMember, i) => {
+        return (
+          <PrioritizedListItem
+            {...qualifiedMember}
+            key={i}
+            selected={qualifiedMember === selectedMember}
+            onClick={() => {
+              onMemberSelected(qualifiedMember as AvailableQualifiedMember);
             }}
           ></PrioritizedListItem>
         );
