@@ -8,7 +8,7 @@ import {
   useGetRolesQuery,
   useGetScheduleForMonthQuery,
 } from '@services/backend';
-import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
+import { ERROR_SCHEDULE_NOT_READY } from '@utils/constants/string';
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
@@ -26,7 +26,7 @@ function MemberHomePage() {
     onSuccess: ({ schedule, roles, members }) => {
       const getScheduleComponent = () => {
         if (schedule === null) {
-          return <EmptyHint>{ERROR_NO_SCHEDULE_FOUND}</EmptyHint>;
+          return <EmptyHint>{ERROR_SCHEDULE_NOT_READY}</EmptyHint>;
         }
 
         const props = scheduleToScheduleTableProps(schedule, roles, members);
