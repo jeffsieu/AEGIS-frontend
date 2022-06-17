@@ -1,5 +1,5 @@
 import { ComponentStory } from '@storybook/react';
-import { PlannerSchedulesPageWithProps } from './PlannerSchedulesPage';
+import { PublishedSchedulesPageWithProps } from './PublishedSchedulesPage';
 import dayjs from 'dayjs';
 import { createMockScheduleItems } from '@utils/mock-data/schedule';
 import { Decorators } from '@utils/storybook/decorators';
@@ -7,16 +7,16 @@ import { Backend } from '@typing/backend';
 
 export default {
   title: 'Planner/Published Schedules',
-  component: PlannerSchedulesPageWithProps,
+  component: PublishedSchedulesPageWithProps,
   parameters: {
     layout: 'fullscreen',
   },
   decorators: [Decorators.plannerContainerDecorator],
 };
 
-const Template: ComponentStory<typeof PlannerSchedulesPageWithProps> = (
+const Template: ComponentStory<typeof PublishedSchedulesPageWithProps> = (
   args
-) => <PlannerSchedulesPageWithProps {...args} />;
+) => <PublishedSchedulesPageWithProps {...args} />;
 
 const mockSchedules: Backend.Schedule[] = Array.from({ length: 3 }, (_, i) => {
   const startDate = dayjs('2022-01-01').month(i).toDate();

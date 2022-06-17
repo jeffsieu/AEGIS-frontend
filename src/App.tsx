@@ -98,6 +98,10 @@ function AnimatedRoutes() {
                     element={<MemberNewRequestForm />}
                   />
                   <Route path="/schedules" element={<MemberPublishedPage />} />
+                  <Route
+                    path="/schedules/:month"
+                    element={<PlannerSchedulePage />}
+                  />
                   <Route path="/requests" element={<MemberRequestPage />} />
                   <Route path="/planner" element={<PlannerHomePage />}></Route>
                   <Route

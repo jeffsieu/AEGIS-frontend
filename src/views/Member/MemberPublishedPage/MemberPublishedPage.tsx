@@ -1,18 +1,19 @@
-import EmptyHint from '@components/general/empty-hint';
-import { Box, Typography } from '@mui/material';
-import { ERROR_NO_SCHEDULES } from '@utils/constants/string';
-import PlannerSchedulesPage from '@views/Planner/PlannerSchedulesPage/PlannerSchedulesPage';
+import { Backend } from '@typing/backend';
+import PublishedSchedulesPage, {
+  PublishedSchedulesPageWithAPIProps,
+} from '@views/Shared/PublishedSchedulesPage/PublishedSchedulesPage';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 
 function MemberPublishedPage() {
-  return <PlannerSchedulesPage />;
-  // return (
-  //   <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
-  //     <Typography variant="h4" gutterBottom>
-  //       Schedules
-  //     </Typography>
-  //     <EmptyHint>{ERROR_NO_SCHEDULES}</EmptyHint>
-  //   </Box>
-  // );
+  const navigate = useNavigate();
+  const props: PublishedSchedulesPageWithAPIProps = {
+    onScheduleClick: (schedule: Backend.Schedule) => {
+      navigate('/schedules/' + dayjs(schedule.month).format('YYYY-MM'));
+    },
+  };
+
+  return <PublishedSchedulesPage {...props} />;
 }
 
 export default MemberPublishedPage;
