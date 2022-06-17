@@ -1,5 +1,6 @@
 import { LoadingButton, LoadingButtonProps } from "@mui/lab";
 import { Alert, Snackbar } from "@mui/material";
+import { string } from "prop-types";
 import React from "react";
 
 type AsyncButtonProps = {
@@ -11,6 +12,12 @@ export function AsyncButton(props: LoadingButtonProps & AsyncButtonProps){
 	const [isSnackbarOpen, setIsSnackbarOpen] = React.useState(false);
 	const [snackbarMessage, setSnackbarMessage] = React.useState('');
 
+	function getErrorString(err: any): string{
+		if(err instanceof string) return (err as string);
+		if(err.status != undefined && err.data.errors.length > 0 && err.data.errors[0].message) return err.data.errors[0].message;
+		return "Error";
+	}
+
 	async function onClick(){
 		try{
 			setIsLoading(true);
@@ -18,7 +25,7 @@ export function AsyncButton(props: LoadingButtonProps & AsyncButtonProps){
 			setIsLoading(false);
 		} catch(err: any) {
 			setIsLoading(false);
-			setSnackbarMessage(err.toString());
+			setSnackbarMessage(getErrorString(err));
 			setIsSnackbarOpen(true);
 		}
 	}
