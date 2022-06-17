@@ -7,7 +7,7 @@ import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import {
   useGetMembersQuery,
   useGetRolesQuery,
-  useGetSchedulesForMonthQuery,
+  useGetScheduleForMonthQuery,
 } from '@services/backend';
 import { dateRangeToString } from '@utils/helpers/dateRange';
 import { Box, Typography } from '@mui/material';
@@ -20,16 +20,16 @@ function PlannerSchedulePageWithAPI() {
     queries: {
       members: useGetMembersQuery(),
       roles: useGetRolesQuery(),
-      schedules: useGetSchedulesForMonthQuery({
+      schedule: useGetScheduleForMonthQuery({
         month: month!,
         isPublished: true,
       }),
     },
-    onSuccess: ({ members, roles, schedules }) => {
-      if (schedules.length === 0) return <>No records for {month} found</>;
+    onSuccess: ({ members, roles, schedule }) => {
+      if (schedule === null) return <>No records for {month} found</>;
 
       const props: PlannerSchedulePageProps = {
-        ...scheduleToScheduleTableProps(schedules[0], roles, members),
+        ...scheduleToScheduleTableProps(schedule, roles, members),
         stickyHeader: true,
       };
 

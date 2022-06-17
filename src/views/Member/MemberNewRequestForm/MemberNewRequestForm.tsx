@@ -2,7 +2,6 @@ import TitledContainer from '@components/general/titled-container';
 import RequestForm, {
   RequestFormProps,
 } from '@components/requests/form/RequestForm';
-import { Box, Typography } from '@mui/material';
 import { useAddRequestsMutation } from '@services/backend';
 import { useAppSelector } from '@store/hooks';
 import { RequestPeriod } from '@typing';

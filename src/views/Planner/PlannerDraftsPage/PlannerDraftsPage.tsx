@@ -1,7 +1,7 @@
 import EmptyHint from '@components/general/empty-hint';
 import TitledContainer from '@components/general/titled-container';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRolesQuery,

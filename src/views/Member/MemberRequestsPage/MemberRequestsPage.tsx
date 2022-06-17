@@ -1,7 +1,6 @@
 import { buildWithApiQueries } from '@utils/helpers/api-builder';
 import EmptyHint from '@components/general/empty-hint';
 import RequestsTable from '@components/requests/table/RequestsTable';
-import { Box, Typography } from '@mui/material';
 import { useGetRequestsQuery } from '@services/backend';
 import { RequestPeriod } from '@typing';
 import { ERROR_NO_REQUESTS } from '@utils/constants/string';

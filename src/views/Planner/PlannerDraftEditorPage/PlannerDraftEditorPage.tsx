@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   useGetMemberAvailabilitiesForMonthQuery,
   useGetRolesQuery,
-  useGetSchedulesForMonthQuery,
+  useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
@@ -31,7 +31,7 @@ function PlannerDraftEditorPageWithAPI() {
 
   return buildWithApiQueries({
     queries: {
-      schedules: useGetSchedulesForMonthQuery({
+      draft: useGetScheduleForMonthQuery({
         month: month!,
         isPublished: false,
       }),
@@ -40,8 +40,8 @@ function PlannerDraftEditorPageWithAPI() {
         dayjs(`${month}-01`).toDate()
       ),
     },
-    onSuccess: ({ roles, memberAvailabilities, schedules }) => {
-      if (schedules.length === 0) return <>No records for {month} found</>;
+    onSuccess: ({ roles, memberAvailabilities, draft }) => {
+      if (draft === null) return <>No records for {month} found</>;
 
       const updateDraft =
         (isPublished: boolean) =>
@@ -78,7 +78,6 @@ function PlannerDraftEditorPageWithAPI() {
           }
         };
 
-      const draft = schedules[0];
       const props = {
         ...scheduleToScheduleTableProps(
           draft,
