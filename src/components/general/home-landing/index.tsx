@@ -12,7 +12,7 @@ export default function HomeLanding(){
 	>
   <Grid item xs={3}>
 			<h1>AEGIS</h1>
-			<p>ASW Enhanced Generative Integrated Scheduler</p>
+			<p>ADW Enhanced Generative Integrated Scheduler</p>
 			<div><Button variant="contained" sx={{marginRight: 1}}>Get Started</Button><Button>Learn More</Button></div>
 		</Grid>
 	</Grid>
