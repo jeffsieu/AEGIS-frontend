@@ -36,7 +36,7 @@ function PlannerMembersPageWithAPI() {
 	const [addRole] = useAddRoleMutation();
 
 	async function createRole(role: Backend.Role){
-		await addRole(role);
+		await addRole(role).unwrap();
 	}
 
   return buildWithApiQueries({
