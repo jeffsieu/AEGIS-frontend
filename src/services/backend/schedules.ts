@@ -28,8 +28,8 @@ export const schedulesApi = baseApi.injectEndpoints({
         { type: 'Schedules', id: 'LIST' },
       ],
     }),
-    getSchedulesForMonth: builder.query<
-      Backend.Entry<Backend.Schedule>[],
+    getScheduleForMonth: builder.query<
+      Backend.Entry<Backend.Schedule> | null,
       GetSchedulesForMonthArgs
     >({
       query: ({ month, isPublished }) => ({
@@ -38,10 +38,12 @@ export const schedulesApi = baseApi.injectEndpoints({
       }),
       providesTags: (result) =>
         result
-          ? result.map((schedule) => ({
-              type: 'Schedules',
-              id: schedule.month,
-            }))
+          ? [
+              {
+                type: 'Schedules',
+                id: result.month,
+              },
+            ]
           : [],
     }),
     getMonthsToPlan: builder.query<Date[], void>({
@@ -76,7 +78,7 @@ export const schedulesApi = baseApi.injectEndpoints({
 
 export const {
   useGetSchedulesQuery,
-  useGetSchedulesForMonthQuery,
+  useGetScheduleForMonthQuery,
   useGetMonthsToPlanQuery,
   useAddScheduleMutation,
   useUpdateScheduleMutation,

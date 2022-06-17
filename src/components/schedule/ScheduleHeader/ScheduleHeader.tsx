@@ -4,10 +4,8 @@ import {
   Typography,
   styled,
   linearProgressClasses,
-  IconButton,
   useTheme,
 } from '@mui/material';
-import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 
 import {
   COLOR_SCHEDULE_PROGRESS_BACKGROUND,
@@ -53,22 +51,11 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
   // Inline css needed to position the rounded button.
   return (
     <Box display="flex" flexDirection="column" textAlign="center" gap={3}>
-      <Box position="relative" sx={{ margin: 'auto' }}>
+      <Box>
         <Typography variant="h2">{monthRangeString}</Typography>
         <Typography variant="h5" color={theme.palette.text.secondary}>
           {dateRangeString}
         </Typography>
-        <IconButton
-          size="large"
-          className="next-button"
-          color="primary"
-          sx={{
-            position: 'absolute',
-            background: theme.palette.action.disabledBackground,
-          }}
-        >
-          <NavigateNextRoundedIcon />
-        </IconButton>
       </Box>
       <Box display="flex" flexDirection="column" gap={1}>
         <div className="progress-container">

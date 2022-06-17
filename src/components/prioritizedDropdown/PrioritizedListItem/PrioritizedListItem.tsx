@@ -14,32 +14,45 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
 
   if (member.isAvailable) {
     return (
-      <MenuItem
-        sx={{ color: theme.palette.primary.main }}
-        onClick={onClick}
-        selected={selected}
+      <PaperTooltip
+        title={
+          <>
+            <b>
+              {member.dutyCount} dut{member.dutyCount === 1 ? 'y' : 'ies'}
+            </b>{' '}
+            so far
+          </>
+        }
+        placement="right"
       >
-        <ListItemText
-          primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
+        <MenuItem
+          sx={{ color: theme.palette.primary.main }}
+          onClick={onClick}
+          selected={selected}
         >
-          {member.callsign}
-        </ListItemText>
-        <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
-      </MenuItem>
+          <ListItemText
+            primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
+          >
+            {member.callsign}
+          </ListItemText>
+          <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
+        </MenuItem>
+      </PaperTooltip>
     );
   } else {
     return (
       <PaperTooltip
         title={
           <>
-            Unavailable due to <b>{member.unavailableReason}</b>
+            Reason: <b>{member.unavailableReason}</b>
           </>
         }
         placement="right"
       >
         <MenuItem
-          sx={{ color: theme.palette.action.disabled }}
+          onClick={onClick}
           selected={selected}
+          sx={{ color: theme.palette.action.disabled }}
         >
           <ListItemText
             primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
