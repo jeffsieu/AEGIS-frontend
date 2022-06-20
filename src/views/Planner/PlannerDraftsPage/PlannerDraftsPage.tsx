@@ -63,6 +63,7 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
           <div key={index}>
             <ScheduleCard
               {...scheduleToScheduleTableProps(draft, roles, members)}
+              canFilter={false}
               onClick={() => onDraftClick(draft)}
             />
           </div>

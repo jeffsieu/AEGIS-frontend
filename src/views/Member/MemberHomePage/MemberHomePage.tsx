@@ -39,7 +39,11 @@ function MemberHomePage() {
           >
             <FullWidthScheduleContainer>
               <Box paddingLeft="calc(50vw - 600px + 24px - 36px)">
-                <ScheduleTable {...props} stickyHeader={true} />
+                <ScheduleTable
+                  {...props}
+                  stickyHeader={true}
+                  canFilter={true}
+                />
               </Box>
             </FullWidthScheduleContainer>
           </Box>

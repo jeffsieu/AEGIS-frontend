@@ -77,6 +77,7 @@ function PublishedSchedulesPage(props: PublishedSchedulesPageProps) {
             onClick={() => {
               onScheduleClick(schedule);
             }}
+            canFilter={false}
           />
         ))}
       </Stack>

@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import ScheduleColumns from '../ScheduleColumns/ScheduleColumns';
 import ScheduleRowHeaders from '../ScheduleRowHeaders/ScheduleRowHeaders';
 import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
@@ -18,6 +18,7 @@ export type ScheduleTableProps = {
   ) => void;
   header?: React.ReactElement;
   stickyHeader?: boolean;
+  canFilter: boolean;
 };
 
 function ScheduleTable(props: ScheduleTableProps) {
@@ -29,15 +30,24 @@ function ScheduleTable(props: ScheduleTableProps) {
     onMemberSelected,
     header,
     stickyHeader = false,
+    canFilter,
   } = props;
 
   const dates = useMemo(() => {
     return [...iterateDates(startDate, endDate)];
   }, [startDate, endDate]);
 
+  const [selectedRoles, setSelectedRoles] = useState(roles);
+
   return (
     <Box display="flex" margin="auto" gap={2}>
-      <ScheduleRowHeaders roles={roles} sticky={stickyHeader} />
+      <ScheduleRowHeaders
+        roles={roles}
+        sticky={stickyHeader}
+        canFilter={canFilter}
+        selectedRoles={selectedRoles}
+        onSelectedRolesChange={setSelectedRoles}
+      />
       <Box display="flex" flexDirection="column" flexBasis={0}>
         {header}
         <Box display="flex" gap={1}>
@@ -46,15 +56,20 @@ function ScheduleTable(props: ScheduleTableProps) {
               <ScheduleColumns
                 key={index}
                 date={date}
-                scheduleItems={scheduleItemsByDay[index].map(
-                  (scheduleItem, roleIndex) => ({
-                    ...scheduleItem,
-                    onMemberSelected: onMemberSelected
-                      ? (member: AvailableQualifiedMember | null) =>
-                          onMemberSelected(date, roles[roleIndex], member)
-                      : undefined,
-                  })
-                )}
+                scheduleItems={[
+                  ...scheduleItemsByDay[index]
+                    .map((scheduleItem, roleIndex) => ({
+                      ...scheduleItem,
+                      onMemberSelected: onMemberSelected
+                        ? (member: AvailableQualifiedMember | null) =>
+                            onMemberSelected(date, roles[roleIndex], member)
+                        : undefined,
+                      role: roles[roleIndex],
+                    }))
+                    .filter((scheduleItem) =>
+                      selectedRoles.includes(scheduleItem.role)
+                    ),
+                ]}
               />
             );
           })}

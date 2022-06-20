@@ -51,6 +51,7 @@ function PlannerPublishedSchedulePageWithAPI() {
           setUnpublishing(false);
         },
         isUnpublishing,
+        canFilter: true,
       };
 
       return <PlannerPublishedSchedulePage {...props} />;

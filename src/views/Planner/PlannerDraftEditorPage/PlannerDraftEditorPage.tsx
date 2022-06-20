@@ -243,6 +243,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
             scheduleItemsByDay={scheduleItemsByDay}
             onMemberSelected={onMemberSelected}
             stickyHeader={true}
+            canFilter={true}
           />
         </FullWidthScheduleContainer>
       </Box>

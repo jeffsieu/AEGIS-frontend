@@ -1,16 +1,34 @@
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { Box, Typography, useTheme } from '@mui/material';
 import { Role } from '@typing';
 import ScheduleRowHeader from '../ScheduleRowHeader/ScheduleRowHeader';
+import ScheduleRoleFilterButton from '../ScheduleRoleFilterButton/ScheduleRoleFilterButton';
+import { useMemo } from 'react';
 
-export type ScheduleRowHeadersProps = {
-  roles: Role[];
-  sticky?: boolean;
-};
+export type ScheduleRowHeadersProps =
+  | {
+      roles: Role[];
+      sticky?: boolean;
+    } & (
+      | {
+          canFilter: false;
+          selectedRoles?: Role[];
+        }
+      | {
+          canFilter: true;
+          selectedRoles: Role[];
+          onSelectedRolesChange: (roles: Role[]) => void;
+        }
+    );
 
 function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
-  const { roles, sticky = false } = props;
+  const { roles, canFilter, sticky = false } = props;
   const theme = useTheme();
+
+  const visibleRoles = useMemo(() => {
+    return canFilter
+      ? roles.filter((role) => props.selectedRoles.includes(role))
+      : roles;
+  }, [canFilter, props.selectedRoles, roles]);
 
   return (
     <Box
@@ -32,11 +50,15 @@ function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
     >
       <Box padding={1} display="flex" alignItems="center">
         <Typography variant="overline">Roles</Typography>
-        <IconButton>
-          <FilterAltOutlinedIcon />
-        </IconButton>
+        {canFilter && (
+          <ScheduleRoleFilterButton
+            roles={roles}
+            selectedRoles={props.selectedRoles}
+            onSelectedRolesChange={props.onSelectedRolesChange}
+          />
+        )}
       </Box>
-      {roles.map((role, index) => {
+      {visibleRoles.map((role, index) => {
         return <ScheduleRowHeader key={index} role={role} />;
       })}
     </Box>

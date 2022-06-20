@@ -29,7 +29,7 @@ function ScheduleRowHeader(props: ScheduleRowHeaderProps) {
         disableRipple
         disableTouchRipple
         disabled
-        sx={{ justifyContent: 'left' }}
+        sx={{ justifyContent: 'left', whiteSpace: 'nowrap' }}
       >
         <Typography color={theme.palette.text.secondary}>
           {role.name}
