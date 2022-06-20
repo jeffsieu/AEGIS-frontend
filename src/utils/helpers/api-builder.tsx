@@ -1,4 +1,5 @@
 import { CircularProgress } from '@mui/material';
+import { useEffect, useMemo } from 'react';
 
 type SuccessArgs<Q extends QueryResults> = {
   [K in keyof Q]: NonNullable<Q[K]['data']>;
@@ -14,6 +15,7 @@ type SuccessBuilder<Q extends QueryResults> = (
 type ErrorBuilder<Q extends QueryResults> = (
   args: ErrorArgs<Q>
 ) => ReturnType<ApiStateBuilder>;
+type OnLoad<Q extends QueryResults> = (args: SuccessArgs<Q>) => void;
 
 type QueryResult<T> = {
   data?: T;
@@ -30,6 +32,7 @@ type ApiBuilderArgs<Q extends QueryResults> = {
   onSuccess: SuccessBuilder<Q>;
   onLoading?: ApiStateBuilder;
   onError?: ErrorBuilder<Q>;
+  onLoad?: OnLoad<Q>;
 };
 
 const defaultProps = {
@@ -42,20 +45,35 @@ const defaultProps = {
  * @param args
  * @returns
  */
-function buildWithApiQueries<Q extends QueryResults>(args: ApiBuilderArgs<Q>) {
-  const { queries, onSuccess, onLoading, onError } = args;
+function useBuildWithApiQueries<Q extends QueryResults>(
+  args: ApiBuilderArgs<Q>
+) {
+  const { queries, onSuccess, onLoading, onError, onLoad } = args;
   const isSuccess = Object.values(queries).every((query) => query.isSuccess);
   const isError = Object.values(queries).some((query) => query.isError);
 
+  const props = useMemo(() => {
+    if (isSuccess) {
+      return Object.keys(queries).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: queries[key].data,
+        }),
+        {} as SuccessArgs<Q>
+      );
+    } else {
+      return undefined;
+    }
+  }, [isSuccess, queries]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      onLoad?.(props!);
+    }
+  });
+
   if (isSuccess) {
-    const props: SuccessArgs<Q> = Object.keys(queries).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: queries[key].data,
-      }),
-      {} as SuccessArgs<Q>
-    );
-    return onSuccess(props);
+    return onSuccess(props!);
   } else if (isError) {
     const reasons: (keyof Q)[] = Object.keys(queries).reduce((acc, key) => {
       if (queries[key].isError) {
@@ -69,4 +87,4 @@ function buildWithApiQueries<Q extends QueryResults>(args: ApiBuilderArgs<Q>) {
   }
 }
 
-export { buildWithApiQueries };
+export { useBuildWithApiQueries };

@@ -25,7 +25,7 @@ import {
   useGetRolesQuery,
   useUpdateMemberRolesMutation,
 } from '@services/backend';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import { useEffect, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
@@ -60,7 +60,7 @@ function PlannerMembersPageWithAPI() {
     await addRole(role).unwrap();
   }
 
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       members: useGetMembersQuery(),
       roles: useGetRolesQuery(),

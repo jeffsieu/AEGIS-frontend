@@ -9,12 +9,12 @@ import {
   useGetScheduleForMonthQuery,
 } from '@services/backend';
 import { ERROR_SCHEDULE_NOT_READY } from '@utils/constants/string';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
 
 function MemberHomePage() {
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       schedule: useGetScheduleForMonthQuery({
         month: dayjs().format('YYYY-MM'),

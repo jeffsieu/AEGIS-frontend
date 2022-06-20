@@ -9,7 +9,7 @@ import {
 } from '@services/backend';
 import { Backend } from '@typing/backend';
 import { ERROR_NO_DRAFTS_SCHEDULES } from '@utils/constants/string';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,7 @@ export type PlannerDraftsPageProps = {
 function PlannerDraftsPageWithAPI() {
   const navigate = useNavigate();
 
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       schedules: useGetSchedulesQuery({ isPublished: false }),
       roles: useGetRolesQuery(),
@@ -40,7 +40,9 @@ function PlannerDraftsPageWithAPI() {
         roles: roles,
         members: members,
         onDraftClick: (draft) => {
-          navigate(`/planner/drafts/${dayjs(draft.month).format('YYYY-MM')}`);
+          navigate(
+            `/planner/schedules/${dayjs(draft.month).format('YYYY-MM')}/edit`
+          );
         },
       };
       return <PlannerDraftsPage {...props} />;

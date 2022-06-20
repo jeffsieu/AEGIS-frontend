@@ -10,7 +10,9 @@ function PlannerSchedulesPage() {
 
   const props: PublishedSchedulesPageWithAPIProps = {
     onScheduleClick: (schedule: Backend.Schedule) => {
-      navigate(`/planner/published/${dayjs(schedule.month).format('YYYY-MM')}`);
+      navigate(
+        `/planner/schedules/${dayjs(schedule.month).format('YYYY-MM')}/view`
+      );
     },
   };
 

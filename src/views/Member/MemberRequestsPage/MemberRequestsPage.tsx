@@ -1,4 +1,4 @@
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import EmptyHint from '@components/general/empty-hint';
 import RequestsTable from '@components/requests/table/RequestsTable';
 import { useGetRequestsQuery } from '@services/backend';
@@ -12,7 +12,7 @@ export type MemberRequestsPageProps = {
 };
 
 function MemberRequestsPageWithAPI() {
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       periods: useGetRequestsQuery(),
     },

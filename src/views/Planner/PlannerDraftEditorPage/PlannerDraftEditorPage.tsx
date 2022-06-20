@@ -1,6 +1,6 @@
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Divider, Stack } from '@mui/material';
 import {
   RequiredScheduleItemProps,
   ScheduleItemProps,
@@ -17,7 +17,7 @@ import {
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import EmptyHint from '@components/general/empty-hint';
 import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
@@ -29,16 +29,20 @@ function PlannerDraftEditorPageWithAPI() {
   const navigate = useNavigate();
   const [publishDraft] = useUpdateScheduleMutation();
 
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       draft: useGetScheduleForMonthQuery({
         month: month!,
-        isPublished: false,
       }),
       roles: useGetRolesQuery(),
       memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(
         dayjs(`${month}-01`).toDate()
       ),
+    },
+    onLoad: ({ draft }) => {
+      if (draft.isPublished) {
+        navigate(`/planner/schedules/${month}/view`);
+      }
     },
     onSuccess: ({ roles, memberAvailabilities, draft }) => {
       if (draft === null) return <>No records for {month} found</>;
@@ -72,10 +76,6 @@ function PlannerDraftEditorPageWithAPI() {
             isPublished: isPublished,
             duties,
           });
-
-          if (isPublished) {
-            navigate('/planner/published');
-          }
         };
 
       const props = {
@@ -263,49 +263,51 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   );
 
   return (
-    <Box
-      display="flex"
-      position="relative"
-      flexDirection="column"
-      alignItems="center"
-      gap={8}
-    >
-      <Box position="absolute" right={0} display="flex" gap={1}>
-        <Button variant="outlined">Edit dates</Button>
-        <AsyncButton
-          loading={isSaving}
-          variant="contained"
-          asyncRequest={onSaveClick}
-        >
-          Save
-        </AsyncButton>
-        <AsyncButton
-          loading={isPublishing}
-          variant="contained"
-          disabled={filledRequiredItemsCount < totalRequiredItemsCount}
-          asyncRequest={onPublishClick}
-        >
-          Publish
-        </AsyncButton>
-      </Box>
-      <Box sx={{ width: '100%' }}>
+    <Stack spacing={4}>
+      <Box position="relative">
         <ScheduleHeader
           startDate={startDate}
           endDate={endDate}
           progress={progress}
         />
+        <Box position="absolute" top={0} right={0} display="flex" gap={1}>
+          <Button variant="outlined">Edit dates</Button>
+          <AsyncButton
+            loading={isSaving}
+            variant="contained"
+            asyncRequest={onSaveClick}
+          >
+            Save
+          </AsyncButton>
+          <AsyncButton
+            loading={isPublishing}
+            variant="contained"
+            disabled={filledRequiredItemsCount < totalRequiredItemsCount}
+            asyncRequest={onPublishClick}
+          >
+            Publish
+          </AsyncButton>
+        </Box>
       </Box>
-      <FullWidthScheduleContainer>
-        <ScheduleTable
-          startDate={startDate}
-          endDate={endDate}
-          roles={roles}
-          scheduleItemsByDay={scheduleItemsByDay}
-          onMemberSelected={onMemberSelected}
-          stickyHeader={true}
-        />
-      </FullWidthScheduleContainer>
-    </Box>
+      <Divider />
+      <Box
+        display="flex"
+        position="relative"
+        flexDirection="column"
+        alignItems="center"
+      >
+        <FullWidthScheduleContainer>
+          <ScheduleTable
+            startDate={startDate}
+            endDate={endDate}
+            roles={roles}
+            scheduleItemsByDay={scheduleItemsByDay}
+            onMemberSelected={onMemberSelected}
+            stickyHeader={true}
+          />
+        </FullWidthScheduleContainer>
+      </Box>
+    </Stack>
   );
 }
 

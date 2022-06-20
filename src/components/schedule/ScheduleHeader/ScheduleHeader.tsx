@@ -19,7 +19,7 @@ import { dateRangeToString } from '@utils/helpers/dateRange';
 export type ScheduleHeaderProps = {
   startDate: Date;
   endDate: Date;
-  progress: number;
+  progress?: number;
 };
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -50,21 +50,23 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
 
   // Inline css needed to position the rounded button.
   return (
-    <Box display="flex" flexDirection="column" textAlign="center" gap={3}>
+    <Box display="flex" flexDirection="column" gap={6}>
       <Box>
-        <Typography variant="h2">{monthRangeString}</Typography>
+        <Typography variant="h3">{monthRangeString}</Typography>
         <Typography variant="h5" color={theme.palette.text.secondary}>
           {dateRangeString}
         </Typography>
       </Box>
-      <Box display="flex" flexDirection="column" gap={1}>
-        <div className="progress-container">
-          <StyledLinearProgress variant="determinate" value={progress} />
-        </div>
-        <Typography variant="h6" color={theme.palette.text.secondary}>
-          {completionStatusString}
-        </Typography>
-      </Box>
+      {progress !== undefined && (
+        <Box display="flex" flexDirection="column" gap={1}>
+          <div className="progress-container">
+            <StyledLinearProgress variant="determinate" value={progress} />
+          </div>
+          <Typography variant="h6" color={theme.palette.text.secondary}>
+            {completionStatusString}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

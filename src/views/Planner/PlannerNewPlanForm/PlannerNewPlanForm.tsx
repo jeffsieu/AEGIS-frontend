@@ -19,7 +19,7 @@ import {
   useAddScheduleMutation,
 } from '@services/backend';
 import { Role } from '@typing';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +38,7 @@ function PlannerNewPlanFormWithAPI() {
   const navigate = useNavigate();
   const [addSchedule] = useAddScheduleMutation();
 
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       roles: useGetRolesQuery(),
       monthData: useGetMonthsToPlanQuery(),
@@ -67,7 +67,7 @@ function PlannerNewPlanFormWithAPI() {
             ),
           });
 
-          navigate(`/planner/drafts/${month.format('YYYY-MM')}`);
+          navigate(`/planner/schedules/${month.format('YYYY-MM')}/edit`);
         },
       };
 

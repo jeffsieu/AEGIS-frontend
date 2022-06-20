@@ -9,7 +9,7 @@ import {
 } from '@services/backend';
 import { Backend } from '@typing/backend';
 import { ERROR_NO_PUBLISHED_SCHEDULES } from '@utils/constants/string';
-import { buildWithApiQueries } from '@utils/helpers/api-builder';
+import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
 
@@ -29,7 +29,7 @@ function PublishedSchedulesPageWithAPI(
 ) {
   const { onScheduleClick } = props;
 
-  return buildWithApiQueries({
+  return useBuildWithApiQueries({
     queries: {
       schedules: useGetSchedulesQuery({ isPublished: true }),
       roles: useGetRolesQuery(),

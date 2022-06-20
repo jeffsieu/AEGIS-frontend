@@ -1,7 +1,7 @@
-import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
+import PlannerPublishedSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerPublishedSchedulePage';
 
 function MemberSchedulePage() {
-  return <PlannerSchedulePage />;
+  return <PlannerPublishedSchedulePage />;
 }
 
 export default MemberSchedulePage;

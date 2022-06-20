@@ -24,7 +24,7 @@ import store from '@store';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PlannerMembersPage from '@views/Planner/PlannerMembersPage/PlannerMembersPage';
 import PlannerSchedulesPage from '@views/Planner/PlannerSchedulesPage/PlannerSchedulesPage';
-import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
+import PlannerPublishedSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerPublishedSchedulePage';
 import MemberHomePage from '@views/Member/MemberHomePage/MemberHomePage';
 import PlannerDraftsPage from '@views/Planner/PlannerDraftsPage/PlannerDraftsPage';
 import MemberNewRequestForm from '@views/Member/MemberNewRequestForm/MemberNewRequestForm';
@@ -37,6 +37,7 @@ import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useGetMembersQuery } from '@services/backend';
 import { setUserId } from '@store/general';
+import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -80,7 +81,7 @@ function AnimatedRoutes() {
       <Container className="container" sx={{ position: 'relative' }}>
         <TransitionGroup component={null}>
           <CSSTransition
-            key={location.pathname}
+            key={location.pathname + location.state}
             classNames="fade"
             timeout={{
               enter: 1000,
@@ -100,7 +101,7 @@ function AnimatedRoutes() {
                   <Route path="/schedules" element={<MemberPublishedPage />} />
                   <Route
                     path="/schedules/:month"
-                    element={<PlannerSchedulePage />}
+                    element={<PlannerPublishedSchedulePage />}
                   />
                   <Route path="/requests" element={<MemberRequestPage />} />
                   <Route path="/planner" element={<PlannerHomePage />}></Route>
@@ -113,16 +114,20 @@ function AnimatedRoutes() {
                     element={<PlannerSchedulesPage />}
                   />
                   <Route
-                    path="/planner/published/:month"
-                    element={<PlannerSchedulePage />}
-                  />
-                  <Route
                     path="/planner/drafts"
                     element={<PlannerDraftsPage />}
                   />
                   <Route
-                    path="/planner/drafts/:month"
+                    path="/planner/schedules/:month/view"
+                    element={<PlannerPublishedSchedulePage />}
+                  />
+                  <Route
+                    path="/planner/schedules/:month/edit"
                     element={<PlannerDraftEditorPage />}
+                  />
+                  <Route
+                    path="/planner/schedules/:month"
+                    element={<PlannerSchedulePage />}
                   />
                   <Route
                     path="/planner/members"
