@@ -95,7 +95,6 @@ function PlannerDraftEditorPageWithState(
     [draft, roles, memberAvailabilities]
   );
 
-  console.log(draft.duties);
   const onMemberSelected = (
     date: Date,
     role: Role,
@@ -106,12 +105,11 @@ function PlannerDraftEditorPageWithState(
       (duty) =>
         dayjs(date).isSame(duty.date, 'day') && duty.roleId === backendRole.id
     )!;
-    const backendMember = memberAvailabilities.find(
-      (m) => m.callsign === member?.callsign
-    )!;
+    const backendMember =
+      memberAvailabilities.find((m) => m.callsign === member?.callsign) ?? null;
     const newDuty = {
       ...duty,
-      memberId: backendMember.id,
+      memberId: backendMember?.id ?? undefined,
     };
 
     setDraft({
@@ -209,6 +207,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           startDate={startDate}
           endDate={endDate}
           progress={progress}
+          isPublished={false}
         />
         <Box position="absolute" top={0} right={0} display="flex" gap={1}>
           <Button variant="outlined">Edit dates</Button>

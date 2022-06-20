@@ -1,6 +1,6 @@
 import { ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { ScheduleTableProps } from '@components/schedule/ScheduleTable/ScheduleTable';
-import { AvailableQualifiedMember } from '@typing';
+import { AvailableQualifiedMember, QualifiedMember } from '@typing';
 import { Backend } from '@typing/backend';
 import dayjs from 'dayjs';
 
@@ -51,12 +51,10 @@ export const getScheduleItemsByDay = (
   memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[]
 ): ScheduleItemPropsWithoutCallback[][] => {
   const scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][] = [];
-
-  const scheduleItems: {
-    [key: string]: {
-      [key: string]: ScheduleItemPropsWithoutCallback;
-    };
-  } = {};
+  const scheduleItems: Record<
+    string,
+    Record<string, ScheduleItemPropsWithoutCallback>
+  > = {};
 
   const dutyCounts: Map<number, number> = new Map();
   for (const duty of duties) {
@@ -122,15 +120,57 @@ export const getScheduleItemsByDay = (
   for (const date of iterateDates(startDate, endDate)) {
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
     const scheduleItemsMap = scheduleItems[dayjs(date).format('YYYY-MM-DD')];
+    const scheduledMemberCounts = new Map<string, number>();
+
     for (const role of roles) {
       const scheduleItem = scheduleItemsMap?.[role.name];
       if (scheduleItem) {
         scheduleItemsForDate.push(scheduleItem);
+        if (scheduleItem.assignedMember) {
+          scheduledMemberCounts.set(
+            scheduleItem.assignedMember.callsign,
+            (scheduledMemberCounts.get(scheduleItem.assignedMember.callsign) ||
+              0) + 1
+          );
+        }
       } else {
         scheduleItemsForDate.push({ isRequired: false, assignedMember: null });
       }
     }
-    scheduleItemsByDay.push(scheduleItemsForDate);
+
+    // For each slot, if member is schedule in another slot, declare already assigned member as unavailable
+    const updatedScheduleItemsForDate = scheduleItemsForDate.map(
+      (scheduleItem) => {
+        if (!scheduleItem.isRequired) {
+          return scheduleItem;
+        }
+        return {
+          ...scheduleItem,
+          qualifiedMembers: scheduleItem.qualifiedMembers.map((member) => {
+            const sameDayDutyCount =
+              scheduledMemberCounts.get(member.callsign) ?? 0;
+            const isScheduledForThisRole =
+              scheduleItem.assignedMember?.callsign === member.callsign;
+
+            // Get the number of other duties scheduled for this member on this day
+            const otherSameDayDutyCount =
+              sameDayDutyCount - (isScheduledForThisRole ? 1 : 0);
+
+            if (otherSameDayDutyCount > 0) {
+              return {
+                ...member,
+                isAvailable: false,
+                unavailableReason: 'Scheduled on same day',
+              };
+            } else {
+              return member;
+            }
+          }) as QualifiedMember[],
+        };
+      }
+    );
+
+    scheduleItemsByDay.push(updatedScheduleItemsForDate);
   }
 
   return scheduleItemsByDay;

@@ -5,6 +5,8 @@ import {
   styled,
   linearProgressClasses,
   useTheme,
+  Chip,
+  Stack,
 } from '@mui/material';
 
 import {
@@ -19,8 +21,15 @@ import { dateRangeToString } from '@utils/helpers/dateRange';
 export type ScheduleHeaderProps = {
   startDate: Date;
   endDate: Date;
-  progress?: number;
-};
+} & (
+  | {
+      progress: number;
+      isPublished: false;
+    }
+  | {
+      isPublished: true;
+    }
+);
 
 const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 8,
@@ -35,7 +44,8 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 function ScheduleHeader(props: ScheduleHeaderProps) {
-  const { startDate, endDate, progress } = props;
+  const { startDate, endDate, isPublished } = props;
+  const progress = isPublished ? 0 : props.progress;
 
   const theme = useTheme();
 
@@ -51,12 +61,21 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
   // Inline css needed to position the rounded button.
   return (
     <Box display="flex" flexDirection="column" gap={6}>
-      <Box>
-        <Typography variant="h3">{monthRangeString}</Typography>
-        <Typography variant="h5" color={theme.palette.text.secondary}>
-          {dateRangeString}
-        </Typography>
-      </Box>
+      <Stack spacing={2}>
+        <div>
+          <Typography variant="h3">{monthRangeString}</Typography>
+          <Typography variant="h5" color={theme.palette.text.secondary}>
+            {dateRangeString}
+          </Typography>
+        </div>
+        <div>
+          <Chip
+            label={isPublished ? 'Published' : 'Draft'}
+            variant="outlined"
+            color="primary"
+          />
+        </div>
+      </Stack>
       {progress !== undefined && (
         <Box display="flex" flexDirection="column" gap={1}>
           <div className="progress-container">

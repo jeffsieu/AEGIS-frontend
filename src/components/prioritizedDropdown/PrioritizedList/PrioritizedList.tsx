@@ -84,7 +84,7 @@ function PrioritizedList(props: PrioritizedListProps) {
           <PrioritizedListItem
             {...qualifiedMember}
             key={i}
-            selected={qualifiedMember === selectedMember}
+            selected={qualifiedMember.callsign === selectedMember?.callsign}
             onClick={() => {
               onMemberSelected(qualifiedMember as AvailableQualifiedMember);
             }}
@@ -111,7 +111,7 @@ function PrioritizedList(props: PrioritizedListProps) {
           <PrioritizedListItem
             {...qualifiedMember}
             key={i}
-            selected={qualifiedMember === selectedMember}
+            selected={qualifiedMember.callsign === selectedMember?.callsign}
             onClick={() => {
               onMemberSelected(qualifiedMember as AvailableQualifiedMember);
             }}

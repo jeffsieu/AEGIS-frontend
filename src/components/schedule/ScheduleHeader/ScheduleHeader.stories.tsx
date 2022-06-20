@@ -23,6 +23,12 @@ export default {
         required: true,
       },
     },
+    isPublished: {
+      control: 'boolean',
+      type: {
+        required: true,
+      },
+    },
   },
 };
 
@@ -43,4 +49,5 @@ Default.args = {
   startDate: new Date(2020, 3, 1),
   endDate: new Date(2020, 3, 14),
   progress: 40,
+  isPublished: false,
 };

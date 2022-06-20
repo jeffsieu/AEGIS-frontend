@@ -1,4 +1,4 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import ScheduleTable, {
   ScheduleTableProps,
@@ -10,7 +10,7 @@ import {
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Box, Divider, Stack } from '@mui/material';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,6 @@ import { AsyncButton } from '@components/general/async-button';
 function PlannerPublishedSchedulePageWithAPI() {
   const { month } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [updateSchedule] = useUpdateScheduleMutation();
   const [isUnpublishing, setUnpublishing] = useState(false);
 
@@ -45,16 +44,11 @@ function PlannerPublishedSchedulePageWithAPI() {
         stickyHeader: true,
         onUnpublishClick: async () => {
           setUnpublishing(true);
-          try {
-            await updateSchedule({
-              ...schedule,
-              isPublished: false,
-            }).unwrap();
-            navigate(location, { state: { isPublished: false } });
-          } catch (e) {
-          } finally {
-            setUnpublishing(false);
-          }
+          await updateSchedule({
+            ...schedule,
+            isPublished: false,
+          }).unwrap();
+          setUnpublishing(false);
         },
         isUnpublishing,
       };
@@ -76,12 +70,11 @@ function PlannerPublishedSchedulePage(
   return (
     <Stack spacing={4}>
       <Box position="relative">
-        <Stack spacing={2}>
-          <ScheduleHeader startDate={startDate} endDate={endDate} />
-          <Typography variant="h6" color="primary">
-            Published
-          </Typography>
-        </Stack>
+        <ScheduleHeader
+          startDate={startDate}
+          endDate={endDate}
+          isPublished={true}
+        />
         <Box position="absolute" top={0} right={0} display="flex" gap={1}>
           <AsyncButton
             loading={isUnpublishing}
