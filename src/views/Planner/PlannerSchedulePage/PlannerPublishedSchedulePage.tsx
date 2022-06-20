@@ -10,7 +10,7 @@ import {
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
-import { Box, Divider, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -73,13 +73,12 @@ function PlannerPublishedSchedulePage(
   props: PlannerPublishedSchedulePageProps
 ) {
   const { startDate, endDate, onUnpublishClick, isUnpublishing } = props;
-  const theme = useTheme();
   return (
     <Stack spacing={4}>
       <Box position="relative">
         <Stack spacing={2}>
           <ScheduleHeader startDate={startDate} endDate={endDate} />
-          <Typography variant="h6" color={theme.palette.text.secondary}>
+          <Typography variant="h6" color="primary">
             Published
           </Typography>
         </Stack>
