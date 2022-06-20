@@ -41,5 +41,13 @@ export namespace Backend {
     id: number;
     createdAt: string;
     updatedAt: string;
-  } & T;
+  } & {
+    // If any attribute is an array, it is a list of entries.
+    // If it is an object, it is a single entry.
+    [K in keyof T]: T[K] extends Array<infer U>
+      ? Entry<U>[]
+      : T[K] extends object
+      ? Entry<T[K]>
+      : T[K];
+  };
 }

@@ -3,7 +3,6 @@ import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { Box, Button, Divider, Stack } from '@mui/material';
 import {
   RequiredScheduleItemProps,
-  ScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { AvailableQualifiedMember, Role } from '@typing';
@@ -18,7 +17,7 @@ import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import EmptyHint from '@components/general/empty-hint';
 import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
@@ -48,43 +47,17 @@ function PlannerDraftEditorPageWithAPI() {
       if (draft === null) return <>No records for {month} found</>;
 
       const updateDraft =
-        (isPublished: boolean) =>
-        async (scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][]) => {
-          const duties: Backend.Duty[] = scheduleItemsByDay
-            .flatMap((scheduleItems, dayIndex) => {
-              const date = dayjs(month)
-                .date(dayIndex + 1)
-                .format('YYYY-MM-DD');
-              return scheduleItems.map((scheduleItem, roleIndex) => ({
-                ...scheduleItem,
-                date: date,
-                roleId: roles[roleIndex].id,
-              }));
-            })
-            .filter((scheduleItem) => scheduleItem.assignedMember !== null)
-            .map((scheduleItem) => ({
-              memberId: memberAvailabilities.find(
-                (member) =>
-                  member.callsign === scheduleItem.assignedMember!.callsign
-              )!.id,
-              roleId: scheduleItem.roleId,
-              date: scheduleItem.date,
-            }));
-
+        (isPublished: boolean) => async (schedule: Backend.Schedule) => {
           await publishDraft({
-            month: dayjs(month).date(1).format('YYYY-MM-DD'),
-            isPublished: isPublished,
-            duties,
+            ...schedule,
+            isPublished,
           });
         };
 
       const props = {
-        ...scheduleToScheduleTableProps(
-          draft,
-          roles,
-          memberAvailabilities,
-          memberAvailabilities
-        ),
+        draft,
+        roles,
+        memberAvailabilities,
         onPublished: updateDraft(true),
         onSaved: updateDraft(false),
       };
@@ -95,116 +68,73 @@ function PlannerDraftEditorPageWithAPI() {
   });
 }
 
-function PlannerDraftEditorPageWithState(
-  props: Pick<
-    PlannerDraftEditorPageProps,
-    'startDate' | 'endDate' | 'roles' | 'scheduleItemsByDay'
-  > & {
-    onPublished: (
-      scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
-    ) => Promise<void>;
-    onSaved: (
-      scheduleItemsByDay: PlannerDraftEditorPageProps['scheduleItemsByDay']
-    ) => Promise<void>;
-  }
-) {
-  const {
-    startDate,
-    roles,
-    scheduleItemsByDay: serverScheduleItemsByDay,
-    onSaved,
-    onPublished,
-  } = props;
-  const [scheduleItemsByDay, setScheduleItemsByDay] = useState(
-    serverScheduleItemsByDay
-  );
+export type PlannerDraftEditorPageWithStateProps = {
+  roles: Backend.Entry<Backend.Role>[];
+  draft: Backend.Entry<Backend.Schedule>;
+  memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[];
+  onPublished: (draft: Backend.Schedule) => Promise<void>;
+  onSaved: (draft: Backend.Schedule) => Promise<void>;
+};
 
+function PlannerDraftEditorPageWithState(
+  props: PlannerDraftEditorPageWithStateProps
+) {
+  const { roles, memberAvailabilities, onSaved, onPublished } = props;
+  const [draft, setDraft] = useState(props.draft);
   const [isPublishing, setPublishing] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
+  const scheduleTableProps = useMemo(
+    () =>
+      scheduleToScheduleTableProps(
+        draft,
+        roles,
+        memberAvailabilities,
+        memberAvailabilities
+      ),
+    [draft, roles, memberAvailabilities]
+  );
+
+  console.log(draft.duties);
   const onMemberSelected = (
     date: Date,
     role: Role,
     member: AvailableQualifiedMember | null
   ) => {
-    const memberDayIndex = dayjs(date).diff(dayjs(startDate), 'day');
-    const memberRoleIndex = roles.findIndex((r) => r.name === role.name);
-    const oldMember =
-      scheduleItemsByDay[memberDayIndex][memberRoleIndex].assignedMember;
-    const oldMemberDutyCount = oldMember?.dutyCount;
-    const updatedOldMember: AvailableQualifiedMember | null =
-      oldMember !== null
-        ? { ...oldMember, dutyCount: oldMemberDutyCount! - 1 }
-        : null;
-    const updatedMember =
-      member !== null ? { ...member, dutyCount: member.dutyCount + 1 } : null;
+    const backendRole = roles.find((r) => r.name === role.name)!;
+    const duty = draft.duties.find(
+      (duty) =>
+        dayjs(date).isSame(duty.date, 'day') && duty.roleId === backendRole.id
+    )!;
+    const backendMember = memberAvailabilities.find(
+      (m) => m.callsign === member?.callsign
+    )!;
+    const newDuty = {
+      ...duty,
+      memberId: backendMember.id,
+    };
 
-    if (updatedOldMember?.callsign === updatedMember?.callsign) {
-      return;
-    }
-
-    const newScheduleItemsByDay = scheduleItemsByDay.map(
-      (scheduleItems, dayIndex) =>
-        scheduleItems.map((scheduleItem, roleIndex) => {
-          const scheduleItemMember = scheduleItem.assignedMember;
-          const isSelectedField =
-            dayIndex === memberDayIndex && roleIndex === memberRoleIndex;
-
-          const getUpdatedScheduleItemMember = () => {
-            if (isSelectedField) {
-              return updatedMember;
-            }
-            if (scheduleItemMember === null) {
-              return null;
-            }
-            if (scheduleItemMember.callsign === updatedOldMember?.callsign) {
-              return updatedOldMember;
-            }
-            if (scheduleItemMember.callsign === updatedMember?.callsign) {
-              return updatedMember;
-            }
-            return scheduleItemMember;
-          };
-
-          const updatedScheduleItemMember = getUpdatedScheduleItemMember();
-
-          return {
-            ...scheduleItem,
-            ...(scheduleItem.isRequired
-              ? {
-                  qualifiedMembers: scheduleItem.qualifiedMembers?.map(
-                    (qualifiedMember) =>
-                      qualifiedMember.callsign === updatedOldMember?.callsign
-                        ? updatedOldMember
-                        : qualifiedMember.callsign === updatedMember?.callsign
-                        ? updatedMember
-                        : qualifiedMember
-                  ),
-                }
-              : {}),
-            assignedMember: updatedScheduleItemMember,
-          } as ScheduleItemProps;
-        })
-    );
-    setScheduleItemsByDay(newScheduleItemsByDay);
+    setDraft({
+      ...draft,
+      duties: draft.duties.map((d) => (d.id === duty.id ? newDuty : d)),
+    });
   };
 
   const onPublishClick = async () => {
     setPublishing(true);
-    await onPublished(scheduleItemsByDay);
+    await onPublished(draft);
     setPublishing(false);
   };
 
   const onSaveClick = async () => {
     setSaving(true);
-    await onSaved(scheduleItemsByDay);
+    await onSaved(draft);
     setSaving(false);
   };
 
   return (
     <PlannerDraftEditorPage
-      {...props}
-      scheduleItemsByDay={scheduleItemsByDay}
+      {...scheduleTableProps}
       onMemberSelected={onMemberSelected}
       onPublishClick={onPublishClick}
       onSaveClick={onSaveClick}
@@ -243,19 +173,29 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     isPublishing,
   } = props;
 
-  const totalRequiredItemsCount = scheduleItemsByDay.reduce(
-    (acc, dayScheduleItems) =>
-      acc + dayScheduleItems.filter(({ isRequired }) => isRequired).length,
-    0
+  const totalRequiredItemsCount = useMemo(
+    () =>
+      scheduleItemsByDay.reduce(
+        (acc, dayScheduleItems) =>
+          acc + dayScheduleItems.filter(({ isRequired }) => isRequired).length,
+        0
+      ),
+    [scheduleItemsByDay]
   );
 
-  const filledRequiredItemsCount = scheduleItemsByDay.reduce(
-    (acc, dayScheduleItems) =>
-      acc +
-      dayScheduleItems
-        .filter((item): item is RequiredScheduleItemProps => item.isRequired)
-        .filter(({ assignedMember }) => assignedMember !== null).length,
-    0
+  const filledRequiredItemsCount = useMemo(
+    () =>
+      scheduleItemsByDay.reduce(
+        (acc, dayScheduleItems) =>
+          acc +
+          dayScheduleItems
+            .filter(
+              (item): item is RequiredScheduleItemProps => item.isRequired
+            )
+            .filter(({ assignedMember }) => assignedMember !== null).length,
+        0
+      ),
+    [scheduleItemsByDay]
   );
 
   const progress = Math.round(
