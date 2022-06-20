@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import { AvailableQualifiedMember, QualifiedMember } from '@typing';
-import { RemoveCircleOutline } from '@mui/icons-material';
+import { PersonOffOutlined } from '@mui/icons-material';
 
 export type PrioritizedListProps = {
   qualifiedMembers: QualifiedMember[];
@@ -58,7 +58,7 @@ function PrioritizedList(props: PrioritizedListProps) {
         }}
       >
         <ListItemIcon>
-          <RemoveCircleOutline />
+          <PersonOffOutlined />
         </ListItemIcon>
         <ListItemText color={theme.palette.text.secondary}>
           Unassign
