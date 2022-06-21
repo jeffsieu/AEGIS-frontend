@@ -21,7 +21,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import PlannerNewPlanForm from '@views/Planner/PlannerNewPlanForm/PlannerNewPlanForm';
 import { Provider } from 'react-redux';
 import store from '@store';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import PlannerMembersPage from '@views/Planner/PlannerMembersPage/PlannerMembersPage';
 import PlannerSchedulesPage from '@views/Planner/PlannerSchedulesPage/PlannerSchedulesPage';
 import PlannerPublishedSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerPublishedSchedulePage';
@@ -36,8 +35,10 @@ import PlannerDraftEditorPage from '@views/Planner/PlannerDraftEditorPage/Planne
 import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useGetMembersQuery } from '@services/backend';
-import { setUserId } from '@store/general';
+import { setUser } from '@store/general';
 import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
+import { useEffect } from 'react';
+import FadeTransition from '@components/general/fade-transition';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -46,8 +47,27 @@ function AnimatedRoutes() {
   const dispatch = useAppDispatch();
 
   const handleUserChange = (event: SelectChangeEvent) => {
-    dispatch(setUserId(+event.target.value));
+    dispatch(
+      setUser({
+        id: +event.target.value,
+        callsign:
+          members?.find((member) => member.id === +event.target.value)
+            ?.callsign ?? '',
+      })
+    );
   };
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(
+        setUser({
+          id: userId,
+          callsign:
+            members?.find((member) => member.id === userId)?.callsign ?? '',
+        })
+      );
+    }
+  }, [userId, members, dispatch]);
 
   return (
     <>
@@ -78,66 +98,49 @@ function AnimatedRoutes() {
         </Container>
       </Toolbar>
       {/* Transparent toolbar to fix navbar overlap */}
-      <Container className="container" sx={{ position: 'relative' }}>
-        <TransitionGroup component={null}>
-          <CSSTransition
-            key={location.pathname + location.state}
-            classNames="fade"
-            timeout={{
-              enter: 1000,
-              exit: 200,
-            }}
-            mountOnEnter={false}
-            unmountOnExit={true}
-          >
-            <Box pt={4} position="absolute" width="100%" left={0}>
-              <Container>
-                <Routes location={location}>
-                  <Route path="/" element={<MemberHomePage />}></Route>
-                  <Route
-                    path="/new-request"
-                    element={<MemberNewRequestForm />}
-                  />
-                  <Route path="/schedules" element={<MemberPublishedPage />} />
-                  <Route
-                    path="/schedules/:month"
-                    element={<PlannerPublishedSchedulePage />}
-                  />
-                  <Route path="/requests" element={<MemberRequestPage />} />
-                  <Route path="/planner" element={<PlannerHomePage />}></Route>
-                  <Route
-                    path="/planner/new-plan"
-                    element={<PlannerNewPlanForm />}
-                  />
-                  <Route
-                    path="/planner/published"
-                    element={<PlannerSchedulesPage />}
-                  />
-                  <Route
-                    path="/planner/drafts"
-                    element={<PlannerDraftsPage />}
-                  />
-                  <Route
-                    path="/planner/schedules/:month/view"
-                    element={<PlannerPublishedSchedulePage />}
-                  />
-                  <Route
-                    path="/planner/schedules/:month/edit"
-                    element={<PlannerDraftEditorPage />}
-                  />
-                  <Route
-                    path="/planner/schedules/:month"
-                    element={<PlannerSchedulePage />}
-                  />
-                  <Route
-                    path="/planner/members"
-                    element={<PlannerMembersPage />}
-                  />
-                </Routes>
-              </Container>
-            </Box>
-          </CSSTransition>
-        </TransitionGroup>
+      <Container disableGutters>
+        <FadeTransition transitionKey={location.pathname + location.state}>
+          <Box pt={4}>
+            <Container>
+              <Routes location={location}>
+                <Route path="/" element={<MemberHomePage />}></Route>
+                <Route path="/new-request" element={<MemberNewRequestForm />} />
+                <Route path="/schedules" element={<MemberPublishedPage />} />
+                <Route
+                  path="/schedules/:month"
+                  element={<PlannerPublishedSchedulePage />}
+                />
+                <Route path="/requests" element={<MemberRequestPage />} />
+                <Route path="/planner" element={<PlannerHomePage />}></Route>
+                <Route
+                  path="/planner/new-plan"
+                  element={<PlannerNewPlanForm />}
+                />
+                <Route
+                  path="/planner/published"
+                  element={<PlannerSchedulesPage />}
+                />
+                <Route path="/planner/drafts" element={<PlannerDraftsPage />} />
+                <Route
+                  path="/planner/schedules/:month/view"
+                  element={<PlannerPublishedSchedulePage />}
+                />
+                <Route
+                  path="/planner/schedules/:month/edit"
+                  element={<PlannerDraftEditorPage />}
+                />
+                <Route
+                  path="/planner/schedules/:month"
+                  element={<PlannerSchedulePage />}
+                />
+                <Route
+                  path="/planner/members"
+                  element={<PlannerMembersPage />}
+                />
+              </Routes>
+            </Container>
+          </Box>
+        </FadeTransition>
       </Container>
     </>
   );

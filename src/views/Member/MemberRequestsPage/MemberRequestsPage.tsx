@@ -6,9 +6,11 @@ import { RequestPeriod } from '@typing';
 import { ERROR_NO_REQUESTS } from '@utils/constants/string';
 import dayjs from 'dayjs';
 import TitledContainer from '@components/general/titled-container';
+import { Stack } from '@mui/material';
+import CreateRequestButton from '@components/requests/form/CreateRequestButton';
 
 export type MemberRequestsPageProps = {
-  periods: (RequestPeriod & { callsign: string })[];
+  periods: (RequestPeriod & { id: number; callsign: string })[];
 };
 
 function MemberRequestsPageWithAPI() {
@@ -20,6 +22,7 @@ function MemberRequestsPageWithAPI() {
       const props: MemberRequestsPageProps = {
         periods: periods.map((period) => ({
           ...period,
+          id: period.id,
           startDate: dayjs(period.startDate),
           endDate: dayjs(period.endDate),
           callsign: period.member.callsign,
@@ -35,16 +38,28 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
 
   return (
     <TitledContainer title="Requests">
-      {periods.length === 0 && <EmptyHint>{ERROR_NO_REQUESTS}</EmptyHint>}
-      {periods.length > 0 && (
-        <RequestsTable
-          requests={periods.map(({ reason, startDate, endDate, callsign }) => ({
-            reason,
-            dates: [[startDate.toDate(), endDate.toDate()]],
-            callsign,
-          }))}
-        />
-      )}
+      <Stack spacing={4}>
+        {periods.length === 0 && <EmptyHint>{ERROR_NO_REQUESTS}</EmptyHint>}
+        <div>
+          <CreateRequestButton />
+        </div>
+        {periods.length > 0 && (
+          <RequestsTable
+            onRequestsUpdate={() => {
+              // Todo: update requests
+            }}
+            requests={periods.map(
+              ({ reason, startDate, endDate, callsign, id }) => ({
+                id,
+                reason,
+                startDate: startDate.toDate(),
+                endDate: endDate.toDate(),
+                callsign,
+              })
+            )}
+          />
+        )}
+      </Stack>
     </TitledContainer>
   );
 }

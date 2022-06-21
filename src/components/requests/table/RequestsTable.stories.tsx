@@ -15,19 +15,17 @@ export const Default = Template.bind({});
 Default.args = {
   requests: [
     {
+      id: 0,
       callsign: 'Upin',
-      dates: [
-        [new Date('2022-05-01'), new Date('2022-05-01')],
-        [new Date('2022-05-02'), new Date('2022-05-05')],
-      ],
+      startDate: new Date('2020-05-01'),
+      endDate: new Date('2020-05-05'),
       reason: 'Chao geng',
     },
     {
+      id: 1,
       callsign: 'Ipin',
-      dates: [
-        [new Date('2022-05-01'), new Date('2022-05-01')],
-        [new Date('2022-05-02'), new Date('2022-05-05')],
-      ],
+      startDate: new Date('2020-05-01'),
+      endDate: new Date('2020-05-05'),
       reason: 'Go back to village, approved by OC',
     },
   ],

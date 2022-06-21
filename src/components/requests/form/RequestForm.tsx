@@ -76,7 +76,7 @@ function RequestForm(props: RequestFormProps) {
           }
         }}
       >
-        Create
+        Create request
       </Button>
     </Box>
   );

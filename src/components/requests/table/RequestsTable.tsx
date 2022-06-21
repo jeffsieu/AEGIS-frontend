@@ -1,58 +1,169 @@
-import { FilterAltOutlined } from '@mui/icons-material';
+import { Cancel, Delete, Edit, Save } from '@mui/icons-material';
+import { Card, useTheme } from '@mui/material';
 import {
-  Grid,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableBody,
-  Table,
-} from '@mui/material';
-import { DateRange, dateRangesToString } from '@utils/helpers/dateRange';
+  DataGrid,
+  GridColumns,
+  GridValueFormatterParams,
+  GridRowModes,
+  GridRowModesModel,
+  GridEventListener,
+  GridRowParams,
+  MuiEvent,
+  GridActionsCellItem,
+  GridRowId,
+  GridRowsProp,
+} from '@mui/x-data-grid';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
 export type Request = {
+  id: number;
   callsign: string;
-  dates: DateRange[];
+  startDate: Date;
+  endDate: Date;
   reason: string;
 };
 
 export type RequestsTableProps = {
   requests: Request[];
+  onRequestsUpdate: (requests: Request[]) => void;
 };
 
 export default function RequestsTable(props: RequestsTableProps) {
-  const { requests } = props;
+  const { onRequestsUpdate } = props;
+
+  const theme = useTheme();
+  const [rows, setRows] = useState<GridRowsProp>(props.requests);
+
+  useEffect(() => {
+    setRows(props.requests);
+  }, [props.requests]);
+
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+
+  const handleRowEditStart = (
+    params: GridRowParams,
+    event: MuiEvent<React.SyntheticEvent>
+  ) => {
+    event.defaultMuiPrevented = true;
+  };
+
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
+    params,
+    event
+  ) => {
+    event.defaultMuiPrevented = true;
+  };
+
+  const handleEditClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    onRequestsUpdate(rows as Request[]);
+  };
+
+  const handleDeleteClick = (id: GridRowId) => () => {
+    // setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow!.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const columns: GridColumns = [
+    {
+      field: 'callsign',
+      headerName: 'Callsign',
+      width: 150,
+    },
+    {
+      field: 'startDate',
+      headerName: 'Start Date',
+      width: 200,
+      editable: true,
+      type: 'date',
+      valueFormatter: (params: GridValueFormatterParams<Date>) =>
+        dayjs(params.value).format('DD/MM/YYYY'),
+    },
+    {
+      field: 'endDate',
+      headerName: 'End Date',
+      editable: true,
+      width: 200,
+      type: 'date',
+      valueFormatter: (params: GridValueFormatterParams<Date>) =>
+        dayjs(params.value).format('DD/MM/YYYY'),
+    },
+    {
+      field: 'reason',
+      headerName: 'Reason',
+      flex: 1,
+      editable: true,
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<Save htmlColor={theme.palette.text.secondary} />}
+              label="Save"
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<Cancel htmlColor={theme.palette.text.secondary} />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<Edit htmlColor={theme.palette.text.secondary} />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<Delete htmlColor={theme.palette.text.secondary} />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+          />,
+        ];
+      },
+    },
+  ];
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Grid container direction="row" alignItems="center">
-                Callsign
-                <FilterAltOutlined />
-              </Grid>
-            </TableCell>
-            <TableCell>
-              <Grid container direction="row" alignItems="center">
-                Date(s)
-                <FilterAltOutlined />
-              </Grid>
-            </TableCell>
-            <TableCell>Reason</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {requests.map((request, index) => (
-            <TableRow key={index}>
-              <TableCell>{request.callsign}</TableCell>
-              <TableCell>{dateRangesToString(request.dates)}</TableCell>
-              <TableCell>{request.reason}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <DataGrid
+      autoHeight
+      editMode="row"
+      columns={columns}
+      rows={rows}
+      rowModesModel={rowModesModel}
+      experimentalFeatures={{ newEditingApi: true }}
+      onRowEditStart={handleRowEditStart}
+      onRowEditStop={handleRowEditStop}
+    />
   );
 }
