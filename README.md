@@ -19,6 +19,10 @@ To view components on Storybook:
 ```console
 npm run storybook
 ```
+## Run in Docker container
+
+`docker build -t aegis-frontend .`
+`docker run aegis-frontend`
 
 ## Tech stack
 
