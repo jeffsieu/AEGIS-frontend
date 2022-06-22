@@ -29,7 +29,7 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Eng Chow',
+    callsign: 'EngChow',
     squadron: '18',
     type: 'ADMIN',
   },
@@ -119,7 +119,7 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Si Yi',
+    callsign: 'SiYi',
     squadron: '3',
     type: 'MEMBER',
   },
@@ -134,7 +134,7 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Teng Wen Jie',
+    callsign: 'WenJie',
     squadron: '69',
     type: 'MEMBER',
   },
@@ -169,12 +169,12 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Wen Yun',
+    callsign: 'WenYun',
     squadron: '69',
     type: 'MEMBER',
   },
   {
-    callsign: 'Yan Jun',
+    callsign: 'YanJun',
     squadron: '69',
     type: 'MEMBER',
   },
@@ -343,7 +343,7 @@ export const QUALIFICATIONS: MockQualification[] = [
 export const SCHEDULES: Backend.Schedule[] = [
   {
     month: '2022-01-01',
-    isPublished: true,
+    isPublished: false,
     duties: [
       ...[
         ...iterateDates(new Date('2022-01-01'), new Date('2022-01-31')),
@@ -382,8 +382,373 @@ export const SCHEDULES: Backend.Schedule[] = [
     duties: [
       {
         roleId: 1,
+        memberId: 29,
+        date: '2022-06-01',
+      },
+      {
+        roleId: 2,
+        memberId: 14,
+        date: '2022-06-01',
+      },
+      {
+        roleId: 3,
+        memberId: 4,
+        date: '2022-06-01',
+      },
+      {
+        roleId: 1,
+        memberId: 9,
+        date: '2022-06-02',
+      },
+      {
+        roleId: 2,
+        memberId: 33,
+        date: '2022-06-02',
+      },
+      {
+        roleId: 1,
+        memberId: 21,
+        date: '2022-06-03',
+      },
+      {
+        roleId: 2,
+        memberId: 11,
+        date: '2022-06-03',
+      },
+      {
+        roleId: 1,
+        memberId: 7,
+        date: '2022-06-04',
+      },
+      {
+        roleId: 2,
+        memberId: 23,
+        date: '2022-06-04',
+      },
+      {
+        roleId: 3,
+        memberId: 19,
+        date: '2022-06-04',
+      },
+      {
+        roleId: 1,
+        memberId: 9,
+        date: '2022-06-05',
+      },
+      {
+        roleId: 2,
+        memberId: 28,
+        date: '2022-06-05',
+      },
+      {
+        roleId: 1,
+        memberId: 6,
+        date: '2022-06-06',
+      },
+      {
+        roleId: 2,
+        memberId: 31,
+        date: '2022-06-06',
+      },
+      {
+        roleId: 3,
+        memberId: 4,
+        date: '2022-06-06',
+      },
+      {
+        roleId: 1,
+        memberId: 10,
+        date: '2022-06-07',
+      },
+      {
+        roleId: 2,
+        memberId: 11,
+        date: '2022-06-07',
+      },
+      {
+        roleId: 1,
+        memberId: 28,
+        date: '2022-06-08',
+      },
+      {
+        roleId: 2,
+        memberId: 17,
+        date: '2022-06-08',
+      },
+      {
+        roleId: 3,
+        memberId: 16,
+        date: '2022-06-08',
+      },
+      {
+        roleId: 1,
+        memberId: 21,
+        date: '2022-06-09',
+      },
+      {
+        roleId: 2,
+        memberId: 23,
+        date: '2022-06-09',
+      },
+      {
+        roleId: 3,
+        memberId: 4,
+        date: '2022-06-09',
+      },
+      {
+        roleId: 1,
+        memberId: 13,
+        date: '2022-06-10',
+      },
+      {
+        roleId: 2,
+        memberId: 5,
+        date: '2022-06-10',
+      },
+      {
+        roleId: 1,
+        memberId: 6,
+        date: '2022-06-11',
+      },
+      {
+        roleId: 2,
+        memberId: 20,
+        date: '2022-06-11',
+      },
+      {
+        roleId: 3,
+        memberId: 15,
+        date: '2022-06-11',
+      },
+      {
+        roleId: 1,
+        memberId: 27,
+        date: '2022-06-12',
+      },
+      {
+        roleId: 2,
+        memberId: 23,
+        date: '2022-06-12',
+      },
+      {
+        roleId: 1,
+        memberId: 34,
+        date: '2022-06-13',
+      },
+      {
+        roleId: 2,
+        memberId: 11,
+        date: '2022-06-13',
+      },
+      {
+        roleId: 1,
+        memberId: 10,
+        date: '2022-06-14',
+      },
+      {
+        roleId: 2,
+        memberId: 7,
+        date: '2022-06-14',
+      },
+      {
+        roleId: 1,
+        memberId: 17,
+        date: '2022-06-15',
+      },
+      {
+        roleId: 2,
+        memberId: 33,
+        date: '2022-06-15',
+      },
+      {
+        roleId: 3,
+        memberId: 4,
+        date: '2022-06-15',
+      },
+      {
+        roleId: 1,
+        memberId: 27,
+        date: '2022-06-16',
+      },
+      {
+        roleId: 2,
+        memberId: 22,
+        date: '2022-06-16',
+      },
+      {
+        roleId: 3,
+        memberId: 15,
+        date: '2022-06-16',
+      },
+      {
+        roleId: 1,
+        memberId: 13,
+        date: '2022-06-17',
+      },
+      {
+        roleId: 2,
+        memberId: 25,
+        date: '2022-06-17',
+      },
+      {
+        roleId: 1,
+        memberId: 24,
+        date: '2022-06-18',
+      },
+      {
+        roleId: 2,
+        memberId: 20,
+        date: '2022-06-18',
+      },
+      {
+        roleId: 3,
+        memberId: 19,
+        date: '2022-06-18',
+      },
+      {
+        roleId: 1,
+        memberId: 22,
+        date: '2022-06-19',
+      },
+      {
+        roleId: 2,
+        memberId: 7,
+        date: '2022-06-19',
+      },
+      {
+        roleId: 1,
+        memberId: 6,
+        date: '2022-06-20',
+      },
+      {
+        roleId: 2,
+        memberId: 14,
+        date: '2022-06-20',
+      },
+      {
+        roleId: 3,
+        memberId: 15,
+        date: '2022-06-20',
+      },
+      {
+        roleId: 1,
+        memberId: 34,
+        date: '2022-06-21',
+      },
+      {
+        roleId: 2,
         memberId: 1,
-        date: '2022-05-01',
+        date: '2022-06-21',
+      },
+      {
+        roleId: 1,
+        memberId: 24,
+        date: '2022-06-22',
+      },
+      {
+        roleId: 2,
+        memberId: 28,
+        date: '2022-06-22',
+      },
+      {
+        roleId: 1,
+        memberId: 9,
+        date: '2022-06-23',
+      },
+      {
+        roleId: 2,
+        memberId: 26,
+        date: '2022-06-23',
+      },
+      {
+        roleId: 3,
+        memberId: 8,
+        date: '2022-06-23',
+      },
+      {
+        roleId: 1,
+        memberId: 21,
+        date: '2022-06-24',
+      },
+      {
+        roleId: 2,
+        memberId: 31,
+        date: '2022-06-24',
+      },
+      {
+        roleId: 3,
+        memberId: 15,
+        date: '2022-06-24',
+      },
+      {
+        roleId: 1,
+        memberId: 27,
+        date: '2022-06-25',
+      },
+      {
+        roleId: 2,
+        memberId: 7,
+        date: '2022-06-25',
+      },
+      {
+        roleId: 1,
+        memberId: 24,
+        date: '2022-06-26',
+      },
+      {
+        roleId: 2,
+        memberId: 14,
+        date: '2022-06-26',
+      },
+      {
+        roleId: 3,
+        memberId: 4,
+        date: '2022-06-26',
+      },
+      {
+        roleId: 1,
+        memberId: 10,
+        date: '2022-06-27',
+      },
+      {
+        roleId: 2,
+        memberId: 22,
+        date: '2022-06-27',
+      },
+      {
+        roleId: 1,
+        memberId: 33,
+        date: '2022-06-28',
+      },
+      {
+        roleId: 2,
+        memberId: 1,
+        date: '2022-06-28',
+      },
+      {
+        roleId: 1,
+        memberId: 29,
+        date: '2022-06-29',
+      },
+      {
+        roleId: 2,
+        memberId: 25,
+        date: '2022-06-29',
+      },
+      {
+        roleId: 3,
+        memberId: 15,
+        date: '2022-06-29',
+      },
+      {
+        roleId: 1,
+        memberId: 24,
+        date: '2022-06-30',
+      },
+      {
+        roleId: 2,
+        memberId: 26,
+        date: '2022-06-30',
       },
     ],
   },
