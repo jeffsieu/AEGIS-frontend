@@ -4,57 +4,17 @@ import dayjs from 'dayjs';
 
 export const MEMBERS: Backend.Member[] = [
   {
-    callsign: 'Tim',
-    squadron: '3',
+    callsign: 'Bentoh',
+    squadron: 'HQ',
     type: 'MEMBER',
   },
   {
-    callsign: 'Volley',
-    squadron: '3',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Gambit',
-    squadron: '3',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Trickshot',
-    squadron: '3',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Muru',
+    callsign: 'Bon',
     squadron: '69',
     type: 'MEMBER',
   },
   {
-    callsign: 'Sean',
-    squadron: '69',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Lennon',
-    squadron: '69',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Tofu',
-    squadron: '18',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Egal',
-    squadron: '18',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Focus',
-    squadron: '18',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Seed',
+    callsign: 'Choi',
     squadron: '18',
     type: 'MEMBER',
   },
@@ -64,17 +24,52 @@ export const MEMBERS: Backend.Member[] = [
     type: 'ADMIN',
   },
   {
-    callsign: 'Rudolph',
+    callsign: 'Egal',
     squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Eng Chow',
+    squadron: '18',
+    type: 'ADMIN',
+  },
+  {
+    callsign: 'Faisal',
+    squadron: 'HQ',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Focus',
+    squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Furi',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Gambit',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Halftime',
+    squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Ivan',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Jereld',
+    squadron: '69',
     type: 'MEMBER',
   },
   {
     callsign: 'Karma',
-    squadron: '18',
-    type: 'MEMBER',
-  },
-  {
-    callsign: 'Sonic',
     squadron: '18',
     type: 'MEMBER',
   },
@@ -84,18 +79,48 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Threemen',
+    callsign: 'Lennon',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Muru',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Priscilla',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Rhythm',
+    squadron: '201',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Rudolph',
     squadron: '18',
     type: 'MEMBER',
   },
   {
-    callsign: 'Halftime',
+    callsign: 'Ryan',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Sean',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Seed',
     squadron: '18',
     type: 'MEMBER',
   },
   {
-    callsign: 'Bentoh',
-    squadron: 'HQ',
+    callsign: 'Si Yi',
+    squadron: '3',
     type: 'MEMBER',
   },
   {
@@ -104,8 +129,53 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Faisal',
-    squadron: 'HQ',
+    callsign: 'Sonic',
+    squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Teng Wen Jie',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Threemen',
+    squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Tim',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Tofu',
+    squadron: '18',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Trickshot',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Vernon',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Volley',
+    squadron: '3',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Wen Yun',
+    squadron: '69',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'Yan Jun',
+    squadron: '69',
     type: 'MEMBER',
   },
 ];
@@ -134,39 +204,39 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 2,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['G4 COMD'],
   },
   {
     memberId: 3,
-    roles: ['G4 COMD', 'G4'],
+    roles: [],
   },
   {
     memberId: 4,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['G4', 'A2'],
   },
   {
     memberId: 5,
-    roles: ['G4 COMD', 'G4'],
-  },
-  {
-    memberId: 6,
-    roles: ['G4 COMD', 'G4'],
-  },
-  {
-    memberId: 7,
-    roles: ['G4', 'A2'],
-  },
-  {
-    memberId: 8,
-    roles: ['G4 COMD', 'G4'],
-  },
-  {
-    memberId: 9,
     roles: ['G4'],
   },
   {
-    memberId: 10,
+    memberId: 6,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 7,
+    roles: ['G4 COMD', 'A2'],
+  },
+  {
+    memberId: 8,
     roles: ['G4', 'A2'],
+  },
+  {
+    memberId: 9,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 10,
+    roles: ['G4 COMD', 'G4'],
   },
   {
     memberId: 11,
@@ -174,11 +244,11 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 12,
-    roles: ['G4', 'A2'],
+    roles: [],
   },
   {
     memberId: 13,
-    roles: ['G4'],
+    roles: ['G4 COMD'],
   },
   {
     memberId: 14,
@@ -186,7 +256,7 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 15,
-    roles: ['G4'],
+    roles: ['G4', 'A2'],
   },
   {
     memberId: 16,
@@ -198,21 +268,77 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 18,
-    roles: ['G4'],
+    roles: [],
   },
   {
     memberId: 19,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['A2'],
   },
   {
     memberId: 20,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['G4'],
   },
   {
     memberId: 21,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 22,
     roles: ['G4 COMD', 'G4'],
   },
-];
+  {
+    memberId: 23,
+    roles: ['G4'],
+  },
+  {
+    memberId: 24,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 25,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 26,
+    roles: ['G4'],
+  },
+  {
+    memberId: 27,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 28,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 29,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 30,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 31,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 32,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 33,
+    roles: ['G4 COMD', 'G4'],
+  },
+  {
+    memberId: 34,
+    roles: ['G4 COMD'],
+  },
+  {
+    memberId: 35,
+    roles: [],
+  },
+]
 
 export const SCHEDULES: Backend.Schedule[] = [
   {
@@ -247,6 +373,17 @@ export const SCHEDULES: Backend.Schedule[] = [
       {
         roleId: 1,
         date: '2022-05-03',
+      },
+    ],
+  },
+  {
+    month: '2022-06-01',
+    isPublished: true,
+    duties: [
+      {
+        roleId: 1,
+        memberId: 1,
+        date: '2022-05-01',
       },
     ],
   },
