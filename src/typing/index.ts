@@ -10,9 +10,11 @@ export type AvailableQualifiedMember = BaseQualifiedMember & {
   isAvailable: true;
 };
 
+type Reason = string;
+
 export type UnavailableQualifiedMember = BaseQualifiedMember & {
   isAvailable: false;
-  unavailableReason: string;
+  unavailableReasons: Reason[];
 };
 
 export type QualifiedMember =

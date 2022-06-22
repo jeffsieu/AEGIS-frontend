@@ -92,23 +92,26 @@ export const getScheduleItemsByDay = (
             return roles.some((r) => r.id === role.id);
           })
           .map((member) => {
-            const unavailableReason = member.requests.find((request) => {
+            const memberRequests = member.requests.filter((request) => {
               return !(
                 dayjs(request.endDate).isBefore(duty.date, 'day') ||
                 dayjs(request.startDate).isAfter(duty.date, 'day')
               );
             });
-            if (unavailableReason === undefined) {
+            if (memberRequests.length === 0) {
               return {
                 ...member,
                 isAvailable: true,
+                unavailableReasons: [],
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
             } else {
               return {
                 ...member,
                 isAvailable: false,
-                unavailableReason: unavailableReason.reason,
+                unavailableReasons: memberRequests.map(
+                  (request) => `Request: ${request.reason}`
+                ),
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
             }
@@ -157,10 +160,16 @@ export const getScheduleItemsByDay = (
               sameDayDutyCount - (isScheduledForThisRole ? 1 : 0);
 
             if (otherSameDayDutyCount > 0) {
+              const oldUnavailableReasons = member.isAvailable
+                ? []
+                : member.unavailableReasons;
               return {
                 ...member,
                 isAvailable: false,
-                unavailableReason: 'Scheduled on same day',
+                unavailableReasons: [
+                  ...oldUnavailableReasons,
+                  'Scheduled on same day',
+                ],
               };
             } else {
               return member;

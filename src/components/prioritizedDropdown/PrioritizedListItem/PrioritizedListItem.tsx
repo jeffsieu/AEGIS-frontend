@@ -43,9 +43,16 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
     return (
       <PaperTooltip
         title={
-          <>
-            Reason: <b>{member.unavailableReason}</b>
-          </>
+          <div>
+            <Typography variant="overline">Reasons</Typography>
+            <ul style={{ paddingInlineStart: '20px', marginBlockStart: '0' }}>
+              {member.unavailableReasons.map((reason) => (
+                <li>
+                  <b>{reason}</b>
+                </li>
+              ))}
+            </ul>
+          </div>
         }
         placement="right"
       >

@@ -100,7 +100,7 @@ function AnimatedRoutes() {
       {/* Transparent toolbar to fix navbar overlap */}
       <Container disableGutters>
         <FadeTransition transitionKey={location.pathname + location.state}>
-          <Box pt={4}>
+          <Box paddingY={4}>
             <Container>
               <Routes location={location}>
                 <Route path="/" element={<MemberHomePage />}></Route>
