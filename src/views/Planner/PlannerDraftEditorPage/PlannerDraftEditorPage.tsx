@@ -17,7 +17,7 @@ import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import EmptyHint from '@components/general/empty-hint';
 import { ERROR_NO_SCHEDULE_FOUND } from '@utils/constants/string';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
@@ -84,6 +84,10 @@ function PlannerDraftEditorPageWithState(
   const [isPublishing, setPublishing] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
+  useEffect(() => {
+    setDraft(props.draft);
+  }, [props.draft]);
+
   const scheduleTableProps = useMemo(
     () =>
       scheduleToScheduleTableProps(
@@ -130,6 +134,13 @@ function PlannerDraftEditorPageWithState(
     setSaving(false);
   };
 
+  const canSave = useMemo(() => {
+    // Check for object equality, not deep equality
+    // This means that if a change is made then reverted by the user, the Save button will still be enabled
+    // Deep equality solves this issue, but it is not worth the performance cost
+    return draft !== props.draft;
+  }, [draft, props.draft]);
+
   return (
     <PlannerDraftEditorPage
       {...scheduleTableProps}
@@ -138,6 +149,7 @@ function PlannerDraftEditorPageWithState(
       onSaveClick={onSaveClick}
       isSaving={isSaving}
       isPublishing={isPublishing}
+      canSave={canSave}
     />
   );
 }
@@ -156,6 +168,7 @@ export type PlannerDraftEditorPageProps = {
   onSaveClick: () => Promise<void>;
   isSaving: boolean;
   isPublishing: boolean;
+  canSave: boolean;
 };
 
 function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
@@ -169,6 +182,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     onSaveClick,
     isSaving,
     isPublishing,
+    canSave,
   } = props;
 
   const totalRequiredItemsCount = useMemo(
@@ -214,6 +228,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           <AsyncButton
             loading={isSaving}
             variant="contained"
+            disabled={!canSave}
             asyncRequest={onSaveClick}
           >
             Save
