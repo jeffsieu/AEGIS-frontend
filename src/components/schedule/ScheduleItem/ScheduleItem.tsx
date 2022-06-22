@@ -4,7 +4,7 @@ import {
   COLOR_SCHEDULE_ITEM_FILLED,
   COLOR_SCHEDULE_ITEM_PENDING,
 } from '../../../utils/constants/schedule';
-import { AvailableQualifiedMember, QualifiedMember } from '@typing';
+import { QualifiedMember } from '@typing';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
 
 export type ReadonlyScheduleItemProps = Pick<
@@ -15,8 +15,8 @@ export type ReadonlyScheduleItemProps = Pick<
 export type RequiredScheduleItemProps = {
   isRequired: true;
   qualifiedMembers: QualifiedMember[];
-  assignedMember: AvailableQualifiedMember | null;
-  onMemberSelected?: (member: AvailableQualifiedMember | null) => void;
+  assignedMember: QualifiedMember | null;
+  onMemberSelected?: (member: QualifiedMember | null) => void;
 };
 
 export type NotRequiredScheduleItemProps = {

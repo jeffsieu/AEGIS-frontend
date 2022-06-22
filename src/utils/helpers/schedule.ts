@@ -78,14 +78,14 @@ export const getScheduleItemsByDay = (
       [role.name]: {
         isRequired: true,
         assignedMember: duty.memberId
-          ? ({
+          ? {
               isAvailable: true,
               ...members.find((m) => m.id === duty.memberId)!,
               dutyCount:
                 duty.memberId !== undefined
                   ? dutyCounts.get(duty.memberId) || 0
                   : 0,
-            } as AvailableQualifiedMember)
+            }
           : null,
         qualifiedMembers: memberAvailabilities
           .filter(({ roles }) => {
@@ -221,6 +221,36 @@ export const getScheduleItemsByDay = (
     );
 
     scheduleItemsByDay.push(updatedScheduleItemsForDate);
+  }
+
+  for (const duty of duties) {
+    if (duty.memberId === undefined) {
+      continue;
+    }
+    const dayIndex = dayjs(duty.date).diff(startDate, 'day');
+    const roleIndex = roles.findIndex((r) => r.id === duty.roleId);
+
+    const scheduleItem = scheduleItemsByDay[dayIndex][roleIndex];
+    if (scheduleItem && scheduleItem.isRequired) {
+      const member = members.find((m) => m.id === duty.memberId);
+      if (member === undefined) {
+        continue;
+      }
+      const memberCallsign = member.callsign;
+
+      const memberWithAvailability = scheduleItem.qualifiedMembers.find(
+        (member) => member.callsign === memberCallsign
+      );
+
+      if (memberWithAvailability === undefined) {
+        continue;
+      }
+
+      scheduleItemsByDay[dayIndex][roleIndex] = {
+        ...scheduleItem,
+        assignedMember: memberWithAvailability,
+      };
+    }
   }
 
   return scheduleItemsByDay;

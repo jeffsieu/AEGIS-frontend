@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import ScheduleColumns from '../ScheduleColumns/ScheduleColumns';
 import ScheduleRowHeaders from '../ScheduleRowHeaders/ScheduleRowHeaders';
 import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
-import { AvailableQualifiedMember, Role } from '@typing';
+import { QualifiedMember, Role } from '@typing';
 import { iterateDates } from '@utils/helpers/schedule';
 
 export type ScheduleTableProps = {
@@ -14,7 +14,7 @@ export type ScheduleTableProps = {
   onMemberSelected?: (
     date: Date,
     role: Role,
-    member: AvailableQualifiedMember | null
+    member: QualifiedMember | null
   ) => void;
   header?: React.ReactElement;
   stickyHeader?: boolean;
@@ -61,7 +61,7 @@ function ScheduleTable(props: ScheduleTableProps) {
                     .map((scheduleItem, roleIndex) => ({
                       ...scheduleItem,
                       onMemberSelected: onMemberSelected
-                        ? (member: AvailableQualifiedMember | null) =>
+                        ? (member: QualifiedMember | null) =>
                             onMemberSelected(date, roles[roleIndex], member)
                         : undefined,
                       role: roles[roleIndex],

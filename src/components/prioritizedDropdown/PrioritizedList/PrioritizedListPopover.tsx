@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PrioritizedList from './PrioritizedList';
-import { AvailableQualifiedMember, QualifiedMember } from '@typing';
+import { QualifiedMember } from '@typing';
 import { Popover } from '@mui/material';
 
 export type PrioritizedListPopoverProps = {
@@ -8,8 +8,8 @@ export type PrioritizedListPopoverProps = {
     openPopover: (event: React.MouseEvent<HTMLElement>) => void
   ) => React.ReactNode;
   qualifiedMembers: QualifiedMember[];
-  selectedMember: AvailableQualifiedMember | null;
-  onMemberSelected: (member: AvailableQualifiedMember | null) => void;
+  selectedMember: QualifiedMember | null;
+  onMemberSelected: (member: QualifiedMember | null) => void;
 };
 
 function PrioritizedListPopover({

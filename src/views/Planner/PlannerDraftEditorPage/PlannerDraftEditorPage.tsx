@@ -1,11 +1,26 @@
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
-import { Box, Button, Divider, Stack } from '@mui/material';
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Collapse,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  Stack,
+  Typography,
+} from '@mui/material';
 import {
   RequiredScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
-import { AvailableQualifiedMember, Role } from '@typing';
+import { QualifiedMember, Role, UnavailableQualifiedMember } from '@typing';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   useGetMemberAvailabilitiesForMonthQuery,
@@ -22,6 +37,7 @@ import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
+import { ExpandLess, ExpandMore, Warning } from '@mui/icons-material';
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
@@ -102,7 +118,7 @@ function PlannerDraftEditorPageWithState(
   const onMemberSelected = (
     date: Date,
     role: Role,
-    member: AvailableQualifiedMember | null
+    member: QualifiedMember | null
   ) => {
     const backendRole = roles.find((r) => r.name === role.name)!;
     const duty = draft.duties.find(
@@ -162,7 +178,7 @@ export type PlannerDraftEditorPageProps = {
   onMemberSelected: (
     date: Date,
     role: Role,
-    member: AvailableQualifiedMember | null
+    member: QualifiedMember | null
   ) => void;
   onPublishClick: () => Promise<void>;
   onSaveClick: () => Promise<void>;
@@ -184,6 +200,8 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     isPublishing,
     canSave,
   } = props;
+
+  const [showClashes, setShowClashes] = useState(false);
 
   const totalRequiredItemsCount = useMemo(
     () =>
@@ -212,6 +230,28 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
 
   const progress = Math.round(
     (filledRequiredItemsCount / totalRequiredItemsCount) * 100
+  );
+
+  const clashes = useMemo(() => {
+    // Get all unavailable members that are still assigned
+    return scheduleItemsByDay.map((scheduleItemsForDay, dayIndex) => {
+      return scheduleItemsForDay
+        .filter(
+          (scheduleItem) =>
+            scheduleItem.assignedMember !== null &&
+            !scheduleItem.assignedMember.isAvailable
+        )
+        .map((scheduleItem, roleIndex) => ({
+          ...scheduleItem,
+          date: dayjs(startDate).add(dayIndex, 'day'),
+          role: roles[roleIndex],
+        }));
+    });
+  }, [scheduleItemsByDay, startDate, roles]);
+
+  const clashCount = useMemo(
+    () => clashes.reduce((acc, clash) => acc + clash.length, 0),
+    [clashes]
   );
 
   return (
@@ -262,6 +302,52 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           />
         </FullWidthScheduleContainer>
       </Box>
+      <Divider />
+      <Card variant="outlined">
+        <ListItemButton
+          onClick={() => {
+            setShowClashes(!showClashes);
+          }}
+        >
+          <ListItemIcon>
+            <Badge badgeContent={clashCount} color="warning">
+              <Warning />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText primary="Clashes" />
+          {showClashes ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={showClashes}>
+          <List dense>
+            {clashes
+              .filter((dayClashes) => dayClashes.length > 0)
+              .map((dayClashes, index) => (
+                <div key={index}>
+                  {index > 0 && <Divider />}
+                  <ListSubheader>
+                    {dayClashes[0].date.format('DD/MM/YYYY')}
+                  </ListSubheader>
+                  {dayClashes.map((clash, clashIndex) => (
+                    <div key={clashIndex}>
+                      {(
+                        clash.assignedMember as UnavailableQualifiedMember
+                      ).unavailableReasons.map((reason, reasonIndex) => (
+                        <ListItem key={reasonIndex}>
+                          <ListItemText
+                            primary={`[${clash.role.name} | ${
+                              clash.assignedMember!.callsign
+                            }]`}
+                            secondary={reason}
+                          />
+                        </ListItem>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </List>
+        </Collapse>
+      </Card>
     </Stack>
   );
 }
