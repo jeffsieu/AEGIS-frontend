@@ -92,23 +92,26 @@ export const getScheduleItemsByDay = (
             return roles.some((r) => r.id === role.id);
           })
           .map((member) => {
-            const unavailableReason = member.requests.find((request) => {
+            const memberRequests = member.requests.filter((request) => {
               return !(
                 dayjs(request.endDate).isBefore(duty.date, 'day') ||
                 dayjs(request.startDate).isAfter(duty.date, 'day')
               );
             });
-            if (unavailableReason === undefined) {
+            if (memberRequests.length === 0) {
               return {
                 ...member,
                 isAvailable: true,
+                unavailableReasons: [],
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
             } else {
               return {
                 ...member,
                 isAvailable: false,
-                unavailableReason: unavailableReason.reason,
+                unavailableReasons: memberRequests.map(
+                  (request) => `Request: ${request.reason}`
+                ),
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
             }
@@ -117,38 +120,65 @@ export const getScheduleItemsByDay = (
     };
   }
 
+  const scheduledDutyCounts = new Map<string, Map<string, number>>();
+
+  for (const date of iterateDates(startDate, endDate)) {
+    const dutyCounts = new Map<string, number>();
+    const scheduleItemsMap = scheduleItems[dayjs(date).format('YYYY-MM-DD')];
+
+    for (const role of roles) {
+      const scheduleItem = scheduleItemsMap?.[role.name];
+      if (scheduleItem) {
+        if (scheduleItem.assignedMember) {
+          dutyCounts.set(
+            scheduleItem.assignedMember.callsign,
+            (dutyCounts.get(scheduleItem.assignedMember.callsign) || 0) + 1
+          );
+        }
+      }
+    }
+
+    scheduledDutyCounts.set(dayjs(date).format('YYYY-MM-DD'), dutyCounts);
+  }
+
   for (const date of iterateDates(startDate, endDate)) {
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
     const scheduleItemsMap = scheduleItems[dayjs(date).format('YYYY-MM-DD')];
-    const scheduledMemberCounts = new Map<string, number>();
 
     for (const role of roles) {
       const scheduleItem = scheduleItemsMap?.[role.name];
       if (scheduleItem) {
         scheduleItemsForDate.push(scheduleItem);
-        if (scheduleItem.assignedMember) {
-          scheduledMemberCounts.set(
-            scheduleItem.assignedMember.callsign,
-            (scheduledMemberCounts.get(scheduleItem.assignedMember.callsign) ||
-              0) + 1
-          );
-        }
       } else {
         scheduleItemsForDate.push({ isRequired: false, assignedMember: null });
       }
     }
 
-    // For each slot, if member is schedule in another slot, declare already assigned member as unavailable
+    // For each duty,
+    // - the scheduled member is declared as unavailable for other same-day duties
+    // - the scheduled member is declared as unavailable for other next-day duties
+    const sameDayScheduledDutyCounts = scheduledDutyCounts.get(
+      dayjs(date).format('YYYY-MM-DD')
+    )!;
+
+    const previousDayScheduledDutyCounts =
+      scheduledDutyCounts.get(
+        dayjs(date).subtract(1, 'day').format('YYYY-MM-DD')
+      ) ?? new Map<string, number>();
+
     const updatedScheduleItemsForDate = scheduleItemsForDate.map(
       (scheduleItem) => {
         if (!scheduleItem.isRequired) {
           return scheduleItem;
         }
+
         return {
           ...scheduleItem,
           qualifiedMembers: scheduleItem.qualifiedMembers.map((member) => {
             const sameDayDutyCount =
-              scheduledMemberCounts.get(member.callsign) ?? 0;
+              sameDayScheduledDutyCounts.get(member.callsign) || 0;
+            const previousDayDutyCount =
+              previousDayScheduledDutyCounts.get(member.callsign) || 0;
             const isScheduledForThisRole =
               scheduleItem.assignedMember?.callsign === member.callsign;
 
@@ -157,14 +187,34 @@ export const getScheduleItemsByDay = (
               sameDayDutyCount - (isScheduledForThisRole ? 1 : 0);
 
             if (otherSameDayDutyCount > 0) {
-              return {
+              const oldUnavailableReasons = member.isAvailable
+                ? []
+                : member.unavailableReasons;
+              member = {
                 ...member,
                 isAvailable: false,
-                unavailableReason: 'Scheduled on same day',
+                unavailableReasons: [
+                  ...oldUnavailableReasons,
+                  'Scheduled on same day',
+                ],
               };
-            } else {
-              return member;
             }
+
+            if (previousDayDutyCount > 0) {
+              const oldUnavailableReasons = member.isAvailable
+                ? []
+                : member.unavailableReasons;
+              member = {
+                ...member,
+                isAvailable: false,
+                unavailableReasons: [
+                  ...oldUnavailableReasons,
+                  'Scheduled on previous day',
+                ],
+              };
+            }
+
+            return member;
           }) as QualifiedMember[],
         };
       }

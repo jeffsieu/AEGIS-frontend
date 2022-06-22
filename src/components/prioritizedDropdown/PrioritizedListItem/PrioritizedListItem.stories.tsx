@@ -22,7 +22,7 @@ Available.argTypes = {
   isAvailable: {
     control: false,
   },
-  unavailableReason: {
+  unavailableReasons: {
     control: false,
   },
 };
@@ -32,7 +32,7 @@ Unavailable.args = {
   isAvailable: false,
   callsign: 'Daniel',
   dutyCount: 1,
-  unavailableReason: 'Medical Leave',
+  unavailableReasons: ['Medical Leave'],
 };
 Unavailable.argTypes = {
   isAvailable: {

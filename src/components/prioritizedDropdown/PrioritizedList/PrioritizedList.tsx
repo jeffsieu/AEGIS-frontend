@@ -65,19 +65,17 @@ function PrioritizedList(props: PrioritizedListProps) {
         </ListItemText>
       </MenuItem>
       {sortedAvailableMembers.length > 0 && (
-        <>
+        <div>
           <Divider />
-          <li>
-            <Typography
-              sx={{ mt: 0.5, ml: 2 }}
-              color="text.secondary"
-              display="block"
-              variant="caption"
-            >
-              Available
-            </Typography>
-          </li>
-        </>
+          <Typography
+            sx={{ mt: 0.5, ml: 2 }}
+            color="text.secondary"
+            display="block"
+            variant="caption"
+          >
+            Available
+          </Typography>
+        </div>
       )}
       {sortedAvailableMembers.map((qualifiedMember, i) => {
         return (
@@ -92,19 +90,17 @@ function PrioritizedList(props: PrioritizedListProps) {
         );
       })}
       {sortedUnavailableMembers.length > 0 && (
-        <>
+        <div>
           <Divider component="li" />
-          <li>
-            <Typography
-              sx={{ mt: 0.5, ml: 2 }}
-              color="text.secondary"
-              display="block"
-              variant="caption"
-            >
-              Unavailable
-            </Typography>
-          </li>
-        </>
+          <Typography
+            sx={{ mt: 0.5, ml: 2 }}
+            color="text.secondary"
+            display="block"
+            variant="caption"
+          >
+            Unavailable
+          </Typography>
+        </div>
       )}
       {sortedUnavailableMembers.map((qualifiedMember, i) => {
         return (
