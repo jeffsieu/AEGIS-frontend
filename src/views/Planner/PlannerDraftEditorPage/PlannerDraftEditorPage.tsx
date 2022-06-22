@@ -14,7 +14,6 @@ import {
   ListItemText,
   ListSubheader,
   Stack,
-  Typography,
 } from '@mui/material';
 import {
   RequiredScheduleItemProps,

@@ -1,6 +1,6 @@
 import { ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { ScheduleTableProps } from '@components/schedule/ScheduleTable/ScheduleTable';
-import { AvailableQualifiedMember, QualifiedMember } from '@typing';
+import { QualifiedMember } from '@typing';
 import { Backend } from '@typing/backend';
 import dayjs from 'dayjs';
 

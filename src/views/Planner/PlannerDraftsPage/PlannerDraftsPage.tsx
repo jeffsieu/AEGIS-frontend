@@ -1,7 +1,8 @@
 import EmptyHint from '@components/general/empty-hint';
 import TitledContainer from '@components/general/titled-container';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
-import { Stack } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Button, Stack } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRolesQuery,
@@ -19,6 +20,7 @@ export type PlannerDraftsPageProps = {
   roles: Backend.Entry<Backend.Role>[];
   members: Backend.Entry<Backend.Member>[];
   onDraftClick: (draft: Backend.Schedule) => void;
+  onNewDraftClick: () => void;
 };
 
 function PlannerDraftsPageWithAPI() {
@@ -44,6 +46,9 @@ function PlannerDraftsPageWithAPI() {
             `/planner/schedules/${dayjs(draft.month).format('YYYY-MM')}/edit`
           );
         },
+        onNewDraftClick: () => {
+          navigate('/planner/new-plan');
+        },
       };
       return <PlannerDraftsPage {...props} />;
     },
@@ -51,11 +56,20 @@ function PlannerDraftsPageWithAPI() {
 }
 
 function PlannerDraftsPage(props: PlannerDraftsPageProps) {
-  const { drafts, roles, members, onDraftClick } = props;
+  const { drafts, roles, members, onDraftClick, onNewDraftClick } = props;
 
   return (
     <TitledContainer title="Drafts">
       <Stack spacing={4}>
+        <div>
+          <Button
+            variant="outlined"
+            startIcon={<Add />}
+            onClick={onNewDraftClick}
+          >
+            New draft
+          </Button>
+        </div>
         {drafts.length === 0 && (
           <EmptyHint>{ERROR_NO_DRAFTS_SCHEDULES}</EmptyHint>
         )}
