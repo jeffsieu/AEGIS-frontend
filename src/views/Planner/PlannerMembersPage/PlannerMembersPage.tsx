@@ -36,7 +36,7 @@ export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
   isEditing: boolean;
   isSaving: boolean;
-  onSaveClick: () => void;
+  onSaveClick: () => Promise<void>;
   onEditClick: () => void;
   onCancelClick: () => void;
 

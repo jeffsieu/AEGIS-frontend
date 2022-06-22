@@ -152,8 +152,8 @@ export type PlannerDraftEditorPageProps = {
     role: Role,
     member: AvailableQualifiedMember | null
   ) => void;
-  onPublishClick: () => void;
-  onSaveClick: () => void;
+  onPublishClick: () => Promise<void>;
+  onSaveClick: () => Promise<void>;
   isSaving: boolean;
   isPublishing: boolean;
 };
