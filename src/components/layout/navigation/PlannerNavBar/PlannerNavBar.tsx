@@ -54,7 +54,7 @@ function PlannerNavBar() {
           },
         },
         {
-          label: 'Draft new plan',
+          label: 'New draft',
           onClick: () => {
             navigate('/planner/new-plan');
           },

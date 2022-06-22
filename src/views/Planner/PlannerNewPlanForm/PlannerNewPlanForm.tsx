@@ -110,7 +110,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
   }
 
   return (
-    <TitledContainer title="Draft new plan">
+    <TitledContainer title="New draft">
       <Stack spacing={4}>
         <FormControl variant="filled">
           <InputLabel>Month</InputLabel>

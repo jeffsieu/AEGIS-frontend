@@ -39,7 +39,7 @@ Default.args = {
   ],
   actions: [
     {
-      label: 'Draft new plan',
+      label: 'New draft',
       onClick: () => {},
     },
   ],
