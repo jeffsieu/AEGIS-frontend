@@ -46,8 +46,8 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
           <div>
             <Typography variant="overline">Reasons</Typography>
             <ul style={{ paddingInlineStart: '20px', marginBlockStart: '0' }}>
-              {member.unavailableReasons.map((reason) => (
-                <li>
+              {member.unavailableReasons.map((reason, index) => (
+                <li key={index}>
                   <b>{reason}</b>
                 </li>
               ))}
