@@ -8,11 +8,6 @@ import {
   Card,
   CardContent,
   Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   TextField,
   Typography,
   useTheme,
@@ -20,7 +15,6 @@ import {
 import { Role } from '@typing';
 import {
   useAddMemberMutation,
-  useAddRoleMutation,
   useGetMembersQuery,
   useGetRolesQuery,
   useUpdateMemberRolesMutation,
@@ -44,21 +38,11 @@ export type PlannerMembersPageProps = MemberTableProps & {
   onAddMemberClick: (callsign: string) => void;
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
-
-  // Roles
-  onAddRoleClick: (role: string) => void;
-  roleFieldText: string;
-  onRoleFieldChange: (role: string) => void;
 };
 
 function PlannerMembersPageWithAPI() {
   const [updateMemberRoles] = useUpdateMemberRolesMutation();
   const [addMember] = useAddMemberMutation();
-  const [addRole] = useAddRoleMutation();
-
-  async function createRole(role: Backend.Role) {
-    await addRole(role).unwrap();
-  }
 
   return useBuildWithApiQueries({
     queries: {
@@ -112,7 +96,6 @@ function PlannerMembersPageWithAPI() {
             }
           }
         },
-        createRole,
       };
 
       return (
@@ -126,17 +109,14 @@ export type PlannerMembersPageWithStateProps = {
   members: MemberEntry[];
   roles: Backend.Role[];
   updateMemberEntries: (members: MemberEntry[]) => Promise<void>;
-  createRole: (role: Backend.Role) => Promise<void>;
 };
 
 function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
-  const { updateMemberEntries, createRole } = props;
+  const { updateMemberEntries, roles } = props;
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
-  const [roles, setRoles] = useState<Backend.Role[]>(props.roles);
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
   const [isSaving, setSaving] = useState(false);
-  const [roleFieldText, setRoleFieldText] = useState('');
 
   const onMemberRolesChange = (callsign: string, roles: Role[]) => {
     const member = members.find((member) => member.callsign === callsign)!;
@@ -161,21 +141,9 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
     setMembers(newMembers);
   };
 
-  const createNewRoles = async (roles: Backend.Role[]) => {
-    const newRoles = roles.filter((role) =>
-      props.roles.every((r) => r.name !== role.name)
-    );
-    for (const role of newRoles) {
-      await createRole(role);
-    }
-  };
-
   useEffect(() => {
     setMembers(props.members);
   }, [props.members]);
-  useEffect(() => {
-    setRoles(props.roles);
-  }, [props.roles]);
 
   return (
     <PlannerMembersPage
@@ -186,7 +154,6 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       onSaveClick={async () => {
         try {
           setSaving(true);
-          await createNewRoles(roles);
           await updateMemberEntries(members);
           setSaving(false);
           setEditing(false);
@@ -198,7 +165,6 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       onCancelClick={() => {
         setEditing(false);
         setMembers(props.members);
-        setRoles(props.roles);
       }}
       onAddMemberClick={(name) => {
         const newMemberRoles: MemberEntry['roles'] = {};
@@ -217,22 +183,6 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
       isSaving={isSaving}
-      onAddRoleClick={(role: string) => {
-        setRoles([...roles, { name: role }]);
-        setRoleFieldText('');
-        setMembers(
-          members.map((member) => {
-            const newMemberRoles = { ...member.roles };
-            newMemberRoles[role] = false;
-            return {
-              ...member,
-              roles: newMemberRoles,
-            };
-          })
-        );
-      }}
-      roleFieldText={roleFieldText}
-      onRoleFieldChange={(role) => setRoleFieldText(role)}
     />
   );
 }
@@ -241,7 +191,6 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   const {
     onMemberRolesChange,
     members,
-    roles,
     isEditing,
     onSaveClick,
     onEditClick,
@@ -250,9 +199,6 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     callsignFieldText,
     onCallsignChange,
     isSaving,
-    onAddRoleClick,
-    roleFieldText,
-    onRoleFieldChange,
   } = props;
 
   const theme = useTheme();
@@ -273,8 +219,6 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     : isCallsignTooLong
     ? 'Callsign cannot be longer than 8 characters'
     : '';
-
-  const isInvalidRole = roleFieldText.length === 0;
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
@@ -315,7 +259,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
                     gutterBottom
                     color={theme.palette.text.secondary}
                   >
-                    Create new member...
+                    New member
                   </Typography>
                 </Box>
                 <TextField
@@ -342,67 +286,8 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
           </CardContent>
         </Card>
       )}
-      <Divider />
-      <Typography variant="h5">Roles</Typography>
-      <List disablePadding>
-        {roles.map((role, index) => (
-          <ListItem disableGutters>
-            <ListItemButton>
-              <ListItemIcon>
-                <Typography variant="h6">{index + 1}.</Typography>
-              </ListItemIcon>
-              <ListItemText>{role.name}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
       {isEditing && (
         <>
-          <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
-            <CardContent>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                }}
-              >
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="start"
-                  gap={2}
-                  paddingY={1}
-                >
-                  <Box display="flex" gap={1}>
-                    <Add htmlColor={theme.palette.text.secondary} />
-                    <Typography
-                      variant="h6"
-                      gutterBottom
-                      color={theme.palette.text.secondary}
-                    >
-                      Create new role...
-                    </Typography>
-                  </Box>
-                  <TextField
-                    autoComplete="off"
-                    label="Role name"
-                    variant="filled"
-                    value={roleFieldText}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      onRoleFieldChange(event.target.value);
-                    }}
-                  />
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={isInvalidRole}
-                    onClick={() => onAddRoleClick(roleFieldText)}
-                  >
-                    Add role
-                  </Button>
-                </Box>
-              </form>
-            </CardContent>
-          </Card>
           <Divider />
           <Box display="flex" gap={1}>
             <Button onClick={onCancelClick}>Cancel</Button>

@@ -36,6 +36,12 @@ function PlannerNavBar() {
             navigate('/planner/members');
           },
         },
+        {
+          label: 'Roles',
+          onClick: () => {
+            navigate('/planner/roles');
+          },
+        },
       ]}
       actions={[
         {

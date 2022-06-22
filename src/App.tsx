@@ -22,6 +22,7 @@ import PlannerNewPlanForm from '@views/Planner/PlannerNewPlanForm/PlannerNewPlan
 import { Provider } from 'react-redux';
 import store from '@store';
 import PlannerMembersPage from '@views/Planner/PlannerMembersPage/PlannerMembersPage';
+import PlannerRolesPage from '@views/Planner/PlannerRolesPage/PlannerRolesPage';
 import PlannerSchedulesPage from '@views/Planner/PlannerSchedulesPage/PlannerSchedulesPage';
 import PlannerPublishedSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerPublishedSchedulePage';
 import MemberHomePage from '@views/Member/MemberHomePage/MemberHomePage';
@@ -137,6 +138,7 @@ function AnimatedRoutes() {
                   path="/planner/members"
                   element={<PlannerMembersPage />}
                 />
+                <Route path="/planner/roles" element={<PlannerRolesPage />} />
               </Routes>
             </Container>
           </Box>
