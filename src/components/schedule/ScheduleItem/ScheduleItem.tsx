@@ -1,4 +1,4 @@
-import { Button, createTheme, ThemeProvider } from '@mui/material';
+import { alpha, Button, createTheme, ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material';
 import { QualifiedMember } from '@typing';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
@@ -32,13 +32,25 @@ function ScheduleItem(props: ScheduleItemProps) {
   const { isRequired } = props;
 
   const theme = useTheme();
-  const customButtonTheme = createTheme({
+  const customButtonTheme = createTheme(theme, {
     palette: {
       success: {
-        main: theme.palette.success.main,
+        main: alpha(theme.palette.success.main, 0.5),
+        light: alpha(theme.palette.success.light, 0.5),
+        dark: alpha(theme.palette.success.dark, 0.5),
+        contrastText: theme.palette.text.secondary,
       },
       warning: {
-        main: theme.palette.warning.main,
+        main: alpha(theme.palette.warning.main, 0.5),
+        light: alpha(theme.palette.warning.light, 0.5),
+        dark: alpha(theme.palette.warning.dark, 0.5),
+        contrastText: theme.palette.text.secondary,
+      },
+      error: {
+        main: alpha(theme.palette.error.main, 0.5),
+        light: alpha(theme.palette.error.light, 0.5),
+        dark: alpha(theme.palette.error.dark, 0.5),
+        contrastText: theme.palette.text.primary,
       },
       action: {
         disabled: 'transparent',
@@ -63,7 +75,16 @@ function ScheduleItem(props: ScheduleItemProps) {
       >
         {(openPopover) => (
           <ThemeProvider theme={customButtonTheme}>
-            {assignedMember !== null ? (
+            {assignedMember === null ? (
+              <Button
+                variant="contained"
+                color="warning"
+                disableElevation
+                onClick={onMemberSelected && openPopover}
+              >
+                Pending
+              </Button>
+            ) : assignedMember.isAvailable ? (
               <Button
                 variant="contained"
                 color="success"
@@ -75,11 +96,11 @@ function ScheduleItem(props: ScheduleItemProps) {
             ) : (
               <Button
                 variant="contained"
-                color="warning"
+                color="error"
                 disableElevation
                 onClick={onMemberSelected && openPopover}
               >
-                Pending
+                {assignedMember.callsign}
               </Button>
             )}
           </ThemeProvider>
