@@ -1,9 +1,5 @@
 import { Button, createTheme, ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material';
-import {
-  COLOR_SCHEDULE_ITEM_FILLED,
-  COLOR_SCHEDULE_ITEM_PENDING,
-} from '../../../utils/constants/schedule';
 import { QualifiedMember } from '@typing';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
 
@@ -39,10 +35,10 @@ function ScheduleItem(props: ScheduleItemProps) {
   const customButtonTheme = createTheme({
     palette: {
       success: {
-        main: COLOR_SCHEDULE_ITEM_FILLED,
+        main: theme.palette.success.main,
       },
       warning: {
-        main: COLOR_SCHEDULE_ITEM_PENDING,
+        main: theme.palette.warning.main,
       },
       action: {
         disabled: 'transparent',
