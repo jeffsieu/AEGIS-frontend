@@ -72,7 +72,7 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
           />
         </div>
       </Stack>
-      {progress !== undefined && (
+      {!isPublished && (
         <Box display="flex" flexDirection="column" gap={1}>
           <div className="progress-container">
             <StyledLinearProgress variant="determinate" value={progress} />
