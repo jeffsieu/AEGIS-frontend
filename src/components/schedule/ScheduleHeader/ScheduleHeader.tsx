@@ -9,10 +9,6 @@ import {
   Stack,
 } from '@mui/material';
 
-import {
-  COLOR_SCHEDULE_PROGRESS_BACKGROUND,
-  COLOR_SCHEDULE_PROGRESS_BAR,
-} from '../../../utils/constants/schedule';
 import { toShortenedDateString } from '../../../utils/helpers/schedule';
 
 import './ScheduleHeader.css';
@@ -35,11 +31,11 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 8,
   borderRadius: 8,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: COLOR_SCHEDULE_PROGRESS_BACKGROUND,
+    backgroundColor: theme.palette.secondary.light,
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 8,
-    backgroundColor: COLOR_SCHEDULE_PROGRESS_BAR,
+    backgroundColor: theme.palette.primary.light,
   },
 }));
 
