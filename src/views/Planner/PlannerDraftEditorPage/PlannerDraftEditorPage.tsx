@@ -309,7 +309,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           }}
         >
           <ListItemIcon>
-            <Badge badgeContent={clashCount} color="warning">
+            <Badge badgeContent={clashCount} color="error">
               <Warning />
             </Badge>
           </ListItemIcon>
