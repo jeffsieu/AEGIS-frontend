@@ -40,6 +40,8 @@ import { setUser } from '@store/general';
 import PlannerSchedulePage from '@views/Planner/PlannerSchedulePage/PlannerSchedulePage';
 import { useEffect } from 'react';
 import FadeTransition from '@components/general/fade-transition';
+import PlannerSimpleLoginPage from '@views/Planner/PlannerSimpleLoginPage/PlannerSimpleLoginPage';
+import ProtectedPlannerRoute from '@views/Planner/PlannerSimpleLoginPage/ProtectedPlannerRoute';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -112,33 +114,34 @@ function AnimatedRoutes() {
                   element={<PlannerPublishedSchedulePage />}
                 />
                 <Route path="/requests" element={<MemberRequestPage />} />
-                <Route path="/planner" element={<PlannerHomePage />}></Route>
+                <Route path="/planner" element={<ProtectedPlannerRoute><PlannerHomePage /></ProtectedPlannerRoute>}></Route>
                 <Route
                   path="/planner/new-plan"
-                  element={<PlannerNewPlanForm />}
+                  element={<ProtectedPlannerRoute><PlannerNewPlanForm /></ProtectedPlannerRoute>}
                 />
                 <Route
                   path="/planner/published"
-                  element={<PlannerSchedulesPage />}
+                  element={<ProtectedPlannerRoute><PlannerSchedulesPage /></ProtectedPlannerRoute>}
                 />
-                <Route path="/planner/drafts" element={<PlannerDraftsPage />} />
+                <Route path="/planner/drafts" element={<ProtectedPlannerRoute><PlannerDraftsPage /></ProtectedPlannerRoute>} />
                 <Route
                   path="/planner/schedules/:month/view"
-                  element={<PlannerPublishedSchedulePage />}
+                  element={<ProtectedPlannerRoute><PlannerPublishedSchedulePage /></ProtectedPlannerRoute>}
                 />
                 <Route
                   path="/planner/schedules/:month/edit"
-                  element={<PlannerDraftEditorPage />}
+                  element={<ProtectedPlannerRoute><PlannerDraftEditorPage /></ProtectedPlannerRoute>}
                 />
                 <Route
                   path="/planner/schedules/:month"
-                  element={<PlannerSchedulePage />}
+                  element={<ProtectedPlannerRoute><PlannerSchedulePage /></ProtectedPlannerRoute>}
                 />
                 <Route
                   path="/planner/members"
-                  element={<PlannerMembersPage />}
+                  element={<ProtectedPlannerRoute><PlannerMembersPage /></ProtectedPlannerRoute>}
                 />
-                <Route path="/planner/roles" element={<PlannerRolesPage />} />
+                <Route path="/planner/roles" element={<ProtectedPlannerRoute><PlannerRolesPage /></ProtectedPlannerRoute>} />
+								<Route path="/login" element={<PlannerSimpleLoginPage />} />
               </Routes>
             </Container>
           </Box>

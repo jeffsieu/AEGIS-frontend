@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import NavigationBar from '@components/general/navigation-bar';
+import { useAppDispatch } from '@store/hooks';
+import { setIsPlanner } from '@store/general';
 
 function PlannerNavBar() {
   const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
   return (
     <NavigationBar
       title={{
@@ -47,6 +51,16 @@ function PlannerNavBar() {
         {
           label: 'Switch to member',
           onClick: () => {
+            navigate('/');
+          },
+          ButtonProps: {
+            variant: 'outlined',
+          },
+        },
+				{
+          label: 'Logout',
+          onClick: () => {
+						dispatch(setIsPlanner({isPlanner: false}))
             navigate('/');
           },
           ButtonProps: {
