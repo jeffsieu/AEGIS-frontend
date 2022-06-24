@@ -73,6 +73,15 @@ export const schedulesApi = baseApi.injectEndpoints({
         { type: 'Schedules', id: month },
       ],
     }),
+    deleteSchedule: builder.mutation<void, Backend.Schedule>({
+      query: (schedule) => ({
+        url: `schedules/${dayjs(schedule.month).format('YYYY-MM-DD')}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (result, error, { month }) => [
+        { type: 'Schedules', id: month },
+      ],
+    }),
   }),
 });
 
@@ -81,5 +90,6 @@ export const {
   useGetScheduleForMonthQuery,
   useGetMonthsToPlanQuery,
   useAddScheduleMutation,
+  useDeleteScheduleMutation,
   useUpdateScheduleMutation,
 } = schedulesApi;
