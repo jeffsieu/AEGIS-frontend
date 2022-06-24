@@ -9,7 +9,9 @@ export const hasPlannerCookie = (): boolean => {
 
 export const setPlannerCookie = (isPlanner: boolean) => {
   if (isPlanner) {
-    cookies.set('isPlanner', isPlanner);
+    cookies.set('isPlanner', isPlanner, {
+      path: '/',
+    });
   } else {
     cookies.remove('isPlanner');
   }

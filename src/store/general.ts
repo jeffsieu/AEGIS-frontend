@@ -18,9 +18,9 @@ const generalSlice = createSlice({
       state.userId = action.payload.id;
       state.callsign = action.payload.callsign;
     },
-    setIsPlanner: (state, action: PayloadAction<{ isPlanner: boolean }>) => {
-      setPlannerCookie(action.payload.isPlanner);
-      state.isPlanner = action.payload.isPlanner;
+    setIsPlanner: (state, action: PayloadAction<boolean>) => {
+      setPlannerCookie(action.payload);
+      state.isPlanner = action.payload;
     },
   },
 });

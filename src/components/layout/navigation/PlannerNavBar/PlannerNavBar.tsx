@@ -60,7 +60,7 @@ function PlannerNavBar() {
         {
           label: 'Logout',
           onClick: () => {
-            dispatch(setIsPlanner({ isPlanner: false }));
+            dispatch(setIsPlanner(false));
             navigate('/');
           },
           ButtonProps: {

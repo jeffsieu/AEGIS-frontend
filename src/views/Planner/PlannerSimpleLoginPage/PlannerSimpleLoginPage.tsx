@@ -23,7 +23,7 @@ export default function PlannerSimpleLoginPage() {
     event.preventDefault();
     try {
       await validatePassword(passwordInput);
-      dispatch(setIsPlanner({ isPlanner: true }));
+      dispatch(setIsPlanner(true));
     } catch (error: any) {
       setError(error.toString());
     }
