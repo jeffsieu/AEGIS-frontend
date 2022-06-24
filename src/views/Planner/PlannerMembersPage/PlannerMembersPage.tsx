@@ -25,6 +25,7 @@ import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
 import { Add } from '@mui/icons-material';
+import useAppBarHeight from '@utils/helpers/app-bar-height';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
@@ -202,6 +203,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   } = props;
 
   const theme = useTheme();
+  const appBarHeight = useAppBarHeight();
 
   const alphaRegex = /^[a-zA-Z_]*$/;
   const isCallsignNotAlphanumeric = !alphaRegex.test(callsignFieldText);
@@ -222,15 +224,40 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4" gutterBottom>
-          Members
-        </Typography>
-        {!isEditing && (
-          <Button variant="outlined" onClick={onEditClick}>
-            Edit
-          </Button>
-        )}
+      <Box
+        position="sticky"
+        top={appBarHeight}
+        bgcolor={theme.palette.background.default}
+        zIndex={1}
+      >
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY={1}
+        >
+          <Typography variant="h4" gutterBottom>
+            Members
+          </Typography>
+          {!isEditing && (
+            <Button variant="outlined" onClick={onEditClick}>
+              Edit
+            </Button>
+          )}
+          {isEditing && (
+            <Box display="flex" gap={1}>
+              <Button onClick={onCancelClick}>Cancel</Button>
+              <AsyncButton
+                loading={isSaving}
+                variant="contained"
+                asyncRequest={onSaveClick}
+              >
+                Save
+              </AsyncButton>
+            </Box>
+          )}
+        </Box>
+        <Divider />
       </Box>
       <MemberTable
         members={members}
@@ -285,21 +312,6 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
             </form>
           </CardContent>
         </Card>
-      )}
-      {isEditing && (
-        <>
-          <Divider />
-          <Box display="flex" gap={1}>
-            <Button onClick={onCancelClick}>Cancel</Button>
-            <AsyncButton
-              loading={isSaving}
-              variant="contained"
-              asyncRequest={onSaveClick}
-            >
-              Save
-            </AsyncButton>
-          </Box>
-        </>
       )}
     </Box>
   );
