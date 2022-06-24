@@ -11,18 +11,17 @@ const generalSlice = createSlice({
   initialState: {
     userId: 1,
     callsign: '',
-		isPlanner: hasPlannerCookie(),
+    isPlanner: hasPlannerCookie(),
   },
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
       state.userId = action.payload.id;
       state.callsign = action.payload.callsign;
     },
-
-		setIsPlanner: (state, action: PayloadAction<{isPlanner: boolean}>) => {
-			setPlannerCookie(action.payload.isPlanner);
-			state.isPlanner = action.payload.isPlanner;
-		}
+    setIsPlanner: (state, action: PayloadAction<{ isPlanner: boolean }>) => {
+      setPlannerCookie(action.payload.isPlanner);
+      state.isPlanner = action.payload.isPlanner;
+    },
   },
 });
 

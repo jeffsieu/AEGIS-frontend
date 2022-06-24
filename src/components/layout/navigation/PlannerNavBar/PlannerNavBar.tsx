@@ -5,7 +5,7 @@ import { setIsPlanner } from '@store/general';
 
 function PlannerNavBar() {
   const navigate = useNavigate();
-	const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <NavigationBar
@@ -57,10 +57,20 @@ function PlannerNavBar() {
             variant: 'outlined',
           },
         },
-				{
+        {
           label: 'Logout',
           onClick: () => {
-						dispatch(setIsPlanner({isPlanner: false}))
+            dispatch(setIsPlanner({ isPlanner: false }));
+            navigate('/');
+          },
+          ButtonProps: {
+            variant: 'outlined',
+          },
+        },
+        {
+          label: 'Logout',
+          onClick: () => {
+            dispatch(setIsPlanner({ isPlanner: false }));
             navigate('/');
           },
           ButtonProps: {

@@ -1,18 +1,21 @@
-import { useAppSelector } from "@store/hooks";
-import { Navigate } from "react-router-dom";
+import { CircularProgress } from '@mui/material';
+import { useAppSelector } from '@store/hooks';
+import { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 
-type PlannerRouteProps = {
-	children: JSX.Element;
-}
+export default function ProtectedPlannerRoute() {
+  const isPlanner = useAppSelector((state) => state.general.isPlanner);
+  const navigate = useNavigate();
 
-export default function ProtectedPlannerRoute({children}: PlannerRouteProps) {
-	const isPlanner = useAppSelector((state) => state.general.isPlanner);
+  useEffect(() => {
+    if (!isPlanner) {
+      navigate('/login');
+    }
+  }, [isPlanner, navigate]);
 
-	console.log(isPlanner);
-
-	if(!isPlanner){
-		return <Navigate to="/login" replace />;
-	}
-
-	return children;
+  if (isPlanner) {
+    return <Outlet />;
+  } else {
+    return <CircularProgress />;
+  }
 }

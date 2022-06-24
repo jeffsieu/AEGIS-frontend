@@ -106,7 +106,7 @@ function AnimatedRoutes() {
           <Box paddingY={4}>
             <Container>
               <Routes location={location}>
-                <Route path="/" element={<MemberHomePage />}></Route>
+                <Route path="/" element={<MemberHomePage />} />
                 <Route path="/new-request" element={<MemberNewRequestForm />} />
                 <Route path="/schedules" element={<MemberPublishedPage />} />
                 <Route
@@ -114,34 +114,27 @@ function AnimatedRoutes() {
                   element={<PlannerPublishedSchedulePage />}
                 />
                 <Route path="/requests" element={<MemberRequestPage />} />
-                <Route path="/planner" element={<ProtectedPlannerRoute><PlannerHomePage /></ProtectedPlannerRoute>}></Route>
-                <Route
-                  path="/planner/new-plan"
-                  element={<ProtectedPlannerRoute><PlannerNewPlanForm /></ProtectedPlannerRoute>}
-                />
-                <Route
-                  path="/planner/published"
-                  element={<ProtectedPlannerRoute><PlannerSchedulesPage /></ProtectedPlannerRoute>}
-                />
-                <Route path="/planner/drafts" element={<ProtectedPlannerRoute><PlannerDraftsPage /></ProtectedPlannerRoute>} />
-                <Route
-                  path="/planner/schedules/:month/view"
-                  element={<ProtectedPlannerRoute><PlannerPublishedSchedulePage /></ProtectedPlannerRoute>}
-                />
-                <Route
-                  path="/planner/schedules/:month/edit"
-                  element={<ProtectedPlannerRoute><PlannerDraftEditorPage /></ProtectedPlannerRoute>}
-                />
-                <Route
-                  path="/planner/schedules/:month"
-                  element={<ProtectedPlannerRoute><PlannerSchedulePage /></ProtectedPlannerRoute>}
-                />
-                <Route
-                  path="/planner/members"
-                  element={<ProtectedPlannerRoute><PlannerMembersPage /></ProtectedPlannerRoute>}
-                />
-                <Route path="/planner/roles" element={<ProtectedPlannerRoute><PlannerRolesPage /></ProtectedPlannerRoute>} />
-								<Route path="/login" element={<PlannerSimpleLoginPage />} />
+                <Route path="/planner" element={<ProtectedPlannerRoute />}>
+                  <Route index element={<PlannerHomePage />} />
+                  <Route path="new-plan" element={<PlannerNewPlanForm />} />
+                  <Route path="published" element={<PlannerSchedulesPage />} />
+                  <Route path="drafts" element={<PlannerDraftsPage />} />
+                  <Route
+                    path="schedules/:month/view"
+                    element={<PlannerPublishedSchedulePage />}
+                  />
+                  <Route
+                    path="schedules/:month/edit"
+                    element={<PlannerDraftEditorPage />}
+                  />
+                  <Route
+                    path="schedules/:month"
+                    element={<PlannerSchedulePage />}
+                  />
+                  <Route path="members" element={<PlannerMembersPage />} />
+                  <Route path="roles" element={<PlannerRolesPage />} />
+                </Route>
+                <Route path="/login" element={<PlannerSimpleLoginPage />} />
               </Routes>
             </Container>
           </Box>
