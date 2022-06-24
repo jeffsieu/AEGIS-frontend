@@ -21,8 +21,8 @@ npm run storybook
 ```
 ## Run in Docker container
 
-`docker build -t aegis-frontend .`
-`docker run aegis-frontend`
+1. `docker build -t aegis-frontend .`
+2. `docker run -p 3000:3000 aegis-frontend`
 
 ## Tech stack
 
