@@ -5,6 +5,8 @@ import {
   Box,
   Button,
   Card,
+  CardContent,
+  Chip,
   Collapse,
   Divider,
   List,
@@ -14,6 +16,7 @@ import {
   ListItemText,
   ListSubheader,
   Stack,
+  ThemeProvider,
 } from '@mui/material';
 import {
   RequiredScheduleItemProps,
@@ -36,7 +39,14 @@ import dayjs from 'dayjs';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
-import { ExpandLess, ExpandMore, Warning } from '@mui/icons-material';
+import {
+  ExpandLess,
+  ExpandMore,
+  Info,
+  Publish,
+  Warning,
+} from '@mui/icons-material';
+import { useCustomButtonTheme } from '@utils/theme';
 
 function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
@@ -201,6 +211,9 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   } = props;
 
   const [showClashes, setShowClashes] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
+
+  const customButtonTheme = useCustomButtonTheme();
 
   const totalRequiredItemsCount = useMemo(
     () =>
@@ -273,6 +286,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
             Save
           </AsyncButton>
           <AsyncButton
+            startIcon={<Publish />}
             loading={isPublishing}
             variant="contained"
             disabled={filledRequiredItemsCount < totalRequiredItemsCount}
@@ -306,6 +320,29 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
         <Divider />
       </div>
       <Card variant="outlined">
+        <ListItemButton
+          onClick={() => {
+            setShowLegend(!showLegend);
+          }}
+        >
+          <ListItemIcon>
+            <Info />
+          </ListItemIcon>
+          <ListItemText primary="Legend" />
+          {showLegend ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={showLegend}>
+          <CardContent>
+            <ThemeProvider theme={customButtonTheme}>
+              <Box display="flex" gap={1}>
+                <Chip color="success" label="No clashes" />
+                <Chip color="warning" label="Unassigned" />
+                <Chip color="error" label="Clashes present" />
+              </Box>
+            </ThemeProvider>
+          </CardContent>
+        </Collapse>
+        <Divider />
         <ListItemButton
           onClick={() => {
             setShowClashes(!showClashes);

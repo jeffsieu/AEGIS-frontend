@@ -1,7 +1,13 @@
-import { alpha, Button, createTheme, ThemeProvider } from '@mui/material';
-import { useTheme } from '@mui/material';
+import {
+  Button,
+  ButtonProps,
+  SxProps,
+  Theme,
+  ThemeProvider,
+} from '@mui/material';
 import { QualifiedMember } from '@typing';
 import PrioritizedListPopover from '@components/prioritizedDropdown/PrioritizedList/PrioritizedListPopover';
+import { useCustomButtonTheme } from '@utils/theme';
 
 export type ReadonlyScheduleItemProps = Pick<
   ScheduleItemProps,
@@ -31,41 +37,23 @@ export type ScheduleItemPropsWithoutCallback =
 function ScheduleItem(props: ScheduleItemProps) {
   const { isRequired } = props;
 
-  const theme = useTheme();
-  const customButtonTheme = createTheme(theme, {
-    palette: {
-      success: {
-        main: alpha(theme.palette.success.main, 0.5),
-        light: alpha(theme.palette.success.light, 0.5),
-        dark: alpha(theme.palette.success.dark, 0.5),
-        contrastText: theme.palette.text.secondary,
-      },
-      warning: {
-        main: alpha(theme.palette.warning.main, 0.5),
-        light: alpha(theme.palette.warning.light, 0.5),
-        dark: alpha(theme.palette.warning.dark, 0.5),
-        contrastText: theme.palette.text.secondary,
-      },
-      error: {
-        main: alpha(theme.palette.error.main, 0.5),
-        light: alpha(theme.palette.error.light, 0.5),
-        dark: alpha(theme.palette.error.dark, 0.5),
-        contrastText: theme.palette.text.primary,
-      },
-      action: {
-        disabled: 'transparent',
-        disabledBackground: theme.palette.action.disabledBackground,
-      },
-    },
-    typography: {
-      button: {
-        textTransform: 'none',
-      },
-    },
-  });
+  const customButtonTheme = useCustomButtonTheme();
 
   if (isRequired) {
     const { qualifiedMembers, assignedMember, onMemberSelected } = props;
+
+    const disabledButtonStyles: SxProps<Theme> = {
+      pointerEvents: 'none',
+    };
+
+    const buttonProps: ButtonProps =
+      onMemberSelected === undefined
+        ? {
+            sx: disabledButtonStyles,
+            'aria-disabled': true,
+            tabIndex: -1, // To make the non-interactable button unfocusable through tabbing, without using disabled
+          }
+        : {};
 
     return (
       <PrioritizedListPopover
@@ -81,6 +69,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 color="warning"
                 disableElevation
                 onClick={onMemberSelected && openPopover}
+                {...buttonProps}
               >
                 Pending
               </Button>
@@ -90,6 +79,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 color="success"
                 disableElevation
                 onClick={onMemberSelected && openPopover}
+                {...buttonProps}
               >
                 {assignedMember.callsign}
               </Button>
@@ -99,6 +89,7 @@ function ScheduleItem(props: ScheduleItemProps) {
                 color="error"
                 disableElevation
                 onClick={onMemberSelected && openPopover}
+                {...buttonProps}
               >
                 {assignedMember.callsign}
               </Button>
