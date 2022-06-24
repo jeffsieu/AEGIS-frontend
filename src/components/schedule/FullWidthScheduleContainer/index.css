@@ -1,9 +1,10 @@
 .full-width-container {
   overflow-x: hidden;
+  padding-bottom: 16px;
 }
 
 /* .full-width-container > *, */
 .full-width-container:hover,
 .full-width-container:focus {
-  overflow-x: scroll;
+  overflow-x: overlay;
 }

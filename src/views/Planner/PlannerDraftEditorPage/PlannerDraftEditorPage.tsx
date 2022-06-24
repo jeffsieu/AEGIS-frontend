@@ -283,25 +283,28 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
         </Box>
       </Box>
       <Divider />
-      <Box
-        display="flex"
-        position="relative"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <FullWidthScheduleContainer>
-          <ScheduleTable
-            startDate={startDate}
-            endDate={endDate}
-            roles={roles}
-            scheduleItemsByDay={scheduleItemsByDay}
-            onMemberSelected={onMemberSelected}
-            stickyHeader={true}
-            canFilter={true}
-          />
-        </FullWidthScheduleContainer>
-      </Box>
-      <Divider />
+      {/* The div below is a hack to prevent too much bottom padding */}
+      <div>
+        <Box
+          display="flex"
+          position="relative"
+          flexDirection="column"
+          alignItems="center"
+        >
+          <FullWidthScheduleContainer>
+            <ScheduleTable
+              startDate={startDate}
+              endDate={endDate}
+              roles={roles}
+              scheduleItemsByDay={scheduleItemsByDay}
+              onMemberSelected={onMemberSelected}
+              stickyHeader={true}
+              canFilter={true}
+            />
+          </FullWidthScheduleContainer>
+        </Box>
+        <Divider />
+      </div>
       <Card variant="outlined">
         <ListItemButton
           onClick={() => {
