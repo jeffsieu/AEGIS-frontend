@@ -68,7 +68,7 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
           <Chip
             label={isPublished ? 'Published' : 'Draft'}
             variant="outlined"
-            color="primary"
+            color={isPublished ? 'primary' : undefined}
           />
         </div>
       </Stack>
