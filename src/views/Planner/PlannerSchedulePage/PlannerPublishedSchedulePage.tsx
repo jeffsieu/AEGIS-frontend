@@ -32,7 +32,7 @@ function PlannerPublishedSchedulePageWithAPI() {
       }),
     },
     onLoad: ({ schedule }) => {
-      if (!schedule.isPublished) {
+      if (schedule !== null && !schedule.isPublished) {
         navigate(`/planner/schedules/${month}/edit`);
       }
     },

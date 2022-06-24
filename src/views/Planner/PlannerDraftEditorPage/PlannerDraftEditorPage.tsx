@@ -6,6 +6,11 @@ import {
   Button,
   Card,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   List,
   ListItem,
@@ -22,6 +27,7 @@ import {
 import { QualifiedMember, Role, UnavailableQualifiedMember } from '@typing';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+  useDeleteScheduleMutation,
   useGetMemberAvailabilitiesForMonthQuery,
   useGetRolesQuery,
   useGetScheduleForMonthQuery,
@@ -42,6 +48,7 @@ function PlannerDraftEditorPageWithAPI() {
   const { month } = useParams();
   const navigate = useNavigate();
   const [publishDraft] = useUpdateScheduleMutation();
+  const [deleteDraft] = useDeleteScheduleMutation();
 
   return useBuildWithApiQueries({
     queries: {
@@ -54,7 +61,7 @@ function PlannerDraftEditorPageWithAPI() {
       ),
     },
     onLoad: ({ draft }) => {
-      if (draft.isPublished) {
+      if (draft?.isPublished) {
         navigate(`/planner/schedules/${month}/view`);
       }
     },
@@ -75,6 +82,9 @@ function PlannerDraftEditorPageWithAPI() {
         memberAvailabilities,
         onPublished: updateDraft(true),
         onSaved: updateDraft(false),
+        onDeleted: async () => {
+          deleteDraft(draft);
+        },
       };
 
       return <PlannerDraftEditorPageWithState {...props} />;
@@ -89,15 +99,19 @@ export type PlannerDraftEditorPageWithStateProps = {
   memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[];
   onPublished: (draft: Backend.Schedule) => Promise<void>;
   onSaved: (draft: Backend.Schedule) => Promise<void>;
+  onDeleted: () => Promise<void>;
 };
 
 function PlannerDraftEditorPageWithState(
   props: PlannerDraftEditorPageWithStateProps
 ) {
-  const { roles, memberAvailabilities, onSaved, onPublished } = props;
+  const navigate = useNavigate();
+  const { roles, memberAvailabilities, onSaved, onPublished, onDeleted } =
+    props;
   const [draft, setDraft] = useState(props.draft);
   const [isPublishing, setPublishing] = useState(false);
   const [isSaving, setSaving] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setDraft(props.draft);
@@ -149,6 +163,13 @@ function PlannerDraftEditorPageWithState(
     setSaving(false);
   };
 
+  const onDeleteClick = async () => {
+    setDeleting(true);
+    await onDeleted();
+    setDeleting(false);
+    navigate(`/planner/drafts`);
+  };
+
   const canSave = useMemo(() => {
     // Check for object equality, not deep equality
     // This means that if a change is made then reverted by the user, the Save button will still be enabled
@@ -162,8 +183,10 @@ function PlannerDraftEditorPageWithState(
       onMemberSelected={onMemberSelected}
       onPublishClick={onPublishClick}
       onSaveClick={onSaveClick}
+      onDraftDelete={onDeleteClick}
       isSaving={isSaving}
       isPublishing={isPublishing}
+      isDeleting={isDeleting}
       canSave={canSave}
     />
   );
@@ -181,8 +204,10 @@ export type PlannerDraftEditorPageProps = {
   ) => void;
   onPublishClick: () => Promise<void>;
   onSaveClick: () => Promise<void>;
+  onDraftDelete: () => Promise<void>;
   isSaving: boolean;
   isPublishing: boolean;
+  isDeleting: boolean;
   canSave: boolean;
 };
 
@@ -195,12 +220,15 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     onMemberSelected,
     onPublishClick,
     onSaveClick,
+    onDraftDelete,
     isSaving,
     isPublishing,
+    isDeleting,
     canSave,
   } = props;
 
   const [showClashes, setShowClashes] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const totalRequiredItemsCount = useMemo(
     () =>
@@ -253,6 +281,10 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     [clashes]
   );
 
+  const onDeleteClick = () => {
+    setShowDeleteConfirmation(true);
+  };
+
   return (
     <Stack spacing={4}>
       <Box position="relative">
@@ -263,7 +295,36 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
           isPublished={false}
         />
         <Box position="absolute" top={0} right={0} display="flex" gap={1}>
-          <Button variant="outlined">Edit dates</Button>
+          <Button variant="outlined" color="error" onClick={onDeleteClick}>
+            Delete
+          </Button>
+          <Dialog
+            open={showDeleteConfirmation}
+            onClose={() => setShowDeleteConfirmation(false)}
+          >
+            <DialogTitle>Delete draft</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete this draft?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setShowDeleteConfirmation(false)}>
+                Cancel
+              </Button>
+              <AsyncButton
+                asyncRequest={async () => {
+                  setShowDeleteConfirmation(false);
+                  await onDraftDelete();
+                }}
+                loading={isDeleting}
+                color="error"
+              >
+                Delete
+              </AsyncButton>
+            </DialogActions>
+          </Dialog>
+          <Divider orientation="vertical" flexItem />
           <AsyncButton
             loading={isSaving}
             variant="contained"

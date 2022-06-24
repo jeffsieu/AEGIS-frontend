@@ -23,6 +23,10 @@ function ThisMonthActions() {
       }),
     },
     onSuccess: ({ schedule }) => {
+      if (schedule === null) {
+        return <></>;
+      }
+
       if (schedule.isPublished) {
         return (
           <div>
