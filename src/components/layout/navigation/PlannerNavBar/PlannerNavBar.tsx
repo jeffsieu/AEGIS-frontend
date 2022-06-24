@@ -68,16 +68,6 @@ function PlannerNavBar() {
           },
         },
         {
-          label: 'Logout',
-          onClick: () => {
-            dispatch(setIsPlanner({ isPlanner: false }));
-            navigate('/');
-          },
-          ButtonProps: {
-            variant: 'outlined',
-          },
-        },
-        {
           label: 'New draft',
           onClick: () => {
             navigate('/planner/new-plan');
