@@ -172,6 +172,9 @@ function RequestFormItem(props: RequestFormItemProps) {
                   request.member = value;
                   onUpdate();
                 }}
+                onFocus={() => {
+                  onInputFocus();
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -200,6 +203,9 @@ function RequestFormItem(props: RequestFormItemProps) {
                   onChange={(event) => {
                     request.type = event.target.value as Backend.RequestType;
                     onUpdate();
+                  }}
+                  onFocus={() => {
+                    onInputFocus();
                   }}
                 >
                   <MenuItem value="Work">
