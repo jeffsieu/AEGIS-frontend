@@ -41,6 +41,12 @@ function PlannerNavBar() {
           },
         },
         {
+          label: 'Requests',
+          onClick: () => {
+            navigate('/planner/requests');
+          },
+        },
+        {
           label: 'Roles',
           onClick: () => {
             navigate('/planner/roles');
