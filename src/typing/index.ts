@@ -1,5 +1,6 @@
 import { ScheduleItemPropsWithoutCallback } from '@components/schedule/ScheduleItem/ScheduleItem';
 import { Dayjs } from 'dayjs';
+import { Backend } from './backend';
 
 type BaseQualifiedMember = {
   dutyCount: number;
@@ -35,5 +36,7 @@ export type Schedule = {
 export type RequestPeriod = {
   startDate: Dayjs;
   endDate: Dayjs;
+  member: Backend.Entry<Backend.Member>;
   reason: string;
+  type: Backend.RequestType;
 };

@@ -10,12 +10,14 @@ import {
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
-import { Box, Divider, Stack } from '@mui/material';
+import { Box, Divider, Stack, Typography, useTheme } from '@mui/material';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { AsyncButton } from '@components/general/async-button';
+import { InfoOutlined, ModeEdit } from '@mui/icons-material';
+import PaperTooltip from '@components/tooltips/PaperTooltip';
 
 function PlannerPublishedSchedulePageWithAPI() {
   const { month } = useParams();
@@ -32,7 +34,7 @@ function PlannerPublishedSchedulePageWithAPI() {
       }),
     },
     onLoad: ({ schedule }) => {
-      if (!schedule.isPublished) {
+      if (schedule !== null && !schedule.isPublished) {
         navigate(`/planner/schedules/${month}/edit`);
       }
     },
@@ -67,6 +69,7 @@ export type PlannerPublishedSchedulePageProps = ScheduleTableProps & {
 function PlannerPublishedSchedulePage(
   props: PlannerPublishedSchedulePageProps
 ) {
+  const theme = useTheme();
   const { startDate, endDate, onUnpublishClick, isUnpublishing } = props;
   return (
     <Stack spacing={4}>
@@ -76,14 +79,39 @@ function PlannerPublishedSchedulePage(
           endDate={endDate}
           isPublished={true}
         />
-        <Box position="absolute" top={0} right={0} display="flex" gap={1}>
-          <AsyncButton
-            loading={isUnpublishing}
-            variant="outlined"
-            asyncRequest={onUnpublishClick}
+        <Box
+          position="absolute"
+          top={0}
+          right={0}
+          display="flex"
+          flexDirection="column"
+          alignItems="end"
+        >
+          <PaperTooltip
+            placement="right"
+            title={
+              <Box display="flex" alignItems="center" gap={1}>
+                <InfoOutlined
+                  fontSize="small"
+                  htmlColor={theme.palette.text.secondary}
+                />
+                <Typography color={theme.palette.text.secondary}>
+                  Schedule will be unpublished
+                </Typography>
+              </Box>
+            }
           >
-            Unpublish
-          </AsyncButton>
+            <div>
+              <AsyncButton
+                startIcon={<ModeEdit />}
+                loading={isUnpublishing}
+                variant="outlined"
+                asyncRequest={onUnpublishClick}
+              >
+                Edit/delete
+              </AsyncButton>
+            </div>
+          </PaperTooltip>
         </Box>
       </Box>
       <Divider />

@@ -1,25 +1,31 @@
 import { Box, Button, Grid } from '@mui/material';
 import { RequestPeriod } from '@typing';
+import { Backend } from '@typing/backend';
 import { useMemo, useRef, useState } from 'react';
 import RequestFormItem, { PartialRequestPeriod } from './RequestFormItem';
 
 export type RequestFormProps = {
+  members: Backend.Entry<Backend.Member>[];
   onRequestCreate: (requestPeriods: RequestPeriod[]) => void;
 };
 
 function RequestForm(props: RequestFormProps) {
-  const { onRequestCreate } = props;
+  const { members, onRequestCreate } = props;
   const form = useRef<HTMLFormElement>();
   const [periods, setPeriods] = useState<PartialRequestPeriod[]>([
     {
       startDate: null,
       endDate: null,
+      member: null,
       reason: '',
+      type: null,
     },
     {
       startDate: null,
       endDate: null,
+      member: null,
       reason: '',
+      type: null,
     },
   ]);
 
@@ -30,7 +36,16 @@ function RequestForm(props: RequestFormProps) {
 
   function onInputFocus(index: number) {
     if (index === periods.length - 1) {
-      setPeriods([...periods, { startDate: null, endDate: null, reason: '' }]);
+      setPeriods([
+        ...periods,
+        {
+          startDate: null,
+          endDate: null,
+          member: null,
+          reason: '',
+          type: null,
+        },
+      ]);
     }
   }
 
@@ -64,6 +79,7 @@ function RequestForm(props: RequestFormProps) {
               index={index}
               isPromptItem={index === periods.length - 1}
               requestPeriod={period}
+              members={members}
             />
           </Grid>
         ))}

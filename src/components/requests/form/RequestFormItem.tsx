@@ -1,4 +1,10 @@
-import { Add, DateRangeOutlined, Clear } from '@mui/icons-material';
+import {
+  Add,
+  DateRangeOutlined,
+  Clear,
+  Person,
+  Work,
+} from '@mui/icons-material';
 import {
   Card,
   CardContent,
@@ -8,8 +14,15 @@ import {
   Grid,
   TextField,
   useTheme,
+  MenuItem,
+  Autocomplete,
+  Select,
+  FormControl,
+  InputLabel,
+  Divider,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { Backend } from '@typing/backend';
 import { ERROR_END_DATE_BEFORE_START_DATE } from '@utils/constants/string';
 import { getCardColor } from '@utils/theme';
 import { Dayjs } from 'dayjs';
@@ -17,13 +30,16 @@ import { Dayjs } from 'dayjs';
 export type PartialRequestPeriod = {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
+  member: Backend.Entry<Backend.Member> | null;
   reason: string;
+  type: Backend.RequestType | null;
 };
 
 export type RequestFormItemProps = {
   index: number;
   isPromptItem: boolean;
   requestPeriod: PartialRequestPeriod;
+  members: Backend.Entry<Backend.Member>[];
   canDelete: boolean;
   onUpdate: () => void;
   onDelete: () => void;
@@ -33,6 +49,7 @@ export type RequestFormItemProps = {
 function RequestFormItem(props: RequestFormItemProps) {
   const {
     requestPeriod: request,
+    members,
     canDelete,
     index,
     isPromptItem,
@@ -84,6 +101,7 @@ function RequestFormItem(props: RequestFormItemProps) {
               </IconButton>
             )}
           </Box>
+          <Divider />
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <DatePicker
@@ -144,6 +162,72 @@ function RequestFormItem(props: RequestFormItemProps) {
                   );
                 }}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                autoHighlight
+                options={members}
+                getOptionLabel={(option) => option.callsign}
+                onChange={(event, value) => {
+                  request.member = value;
+                  onUpdate();
+                }}
+                onFocus={() => {
+                  onInputFocus();
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Callsign"
+                    fullWidth
+                    variant="filled"
+                    required={!isPromptItem}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <MenuItem {...props}>{option.callsign}</MenuItem>
+                )}
+                value={request.member}
+                isOptionEqualToValue={(option, value) => {
+                  return option.callsign === value.callsign;
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth variant="filled" required={!isPromptItem}>
+                <InputLabel>Type</InputLabel>
+                <Select
+                  label="Type"
+                  required={!isPromptItem}
+                  value={request.type}
+                  onChange={(event) => {
+                    request.type = event.target.value as Backend.RequestType;
+                    onUpdate();
+                  }}
+                  onFocus={() => {
+                    onInputFocus();
+                  }}
+                >
+                  <MenuItem value="Work">
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Work
+                        fontSize="small"
+                        htmlColor={theme.palette.text.secondary}
+                      />
+                      Work
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="Personal">
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Person
+                        fontSize="small"
+                        htmlColor={theme.palette.text.secondary}
+                      />
+                      Personal
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <TextField

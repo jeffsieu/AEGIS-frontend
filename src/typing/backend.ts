@@ -30,11 +30,14 @@ export namespace Backend {
     requests: Entry<Request>[];
   };
 
+  export type RequestType = 'Work' | 'Personal';
+
   export type Request = {
     startDate: string;
     endDate: string;
     reason: string;
     memberId: number;
+    type: RequestType;
   };
 
   export type Entry<T> = {

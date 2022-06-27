@@ -1,14 +1,16 @@
 import { CircularProgress } from '@mui/material';
-import { useEffect, useMemo } from 'react';
+import { ReactElement, useEffect, useMemo } from 'react';
+
+type NotUndefined<T> = T extends undefined ? never : T;
 
 type SuccessArgs<Q extends QueryResults> = {
-  [K in keyof Q]: NonNullable<Q[K]['data']>;
+  [K in keyof Q]: NotUndefined<Q[K]['data']>;
 };
 type ErrorArgs<Q extends QueryResults> = {
   reasons: (keyof Q)[];
 };
 
-type ApiStateBuilder = () => JSX.Element;
+type ApiStateBuilder = () => ReactElement;
 type SuccessBuilder<Q extends QueryResults> = (
   args: SuccessArgs<Q>
 ) => ReturnType<ApiStateBuilder>;
