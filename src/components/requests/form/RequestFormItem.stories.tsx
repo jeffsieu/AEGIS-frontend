@@ -18,6 +18,7 @@ Default.args = {
   requestPeriod: {
     startDate: null,
     endDate: null,
+    member: null,
     reason: '',
   },
 };
@@ -28,6 +29,7 @@ Prompt.args = {
   requestPeriod: {
     startDate: null,
     endDate: null,
+    member: null,
     reason: '',
   },
   isPromptItem: true,
