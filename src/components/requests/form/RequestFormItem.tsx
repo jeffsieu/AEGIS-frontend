@@ -8,8 +8,11 @@ import {
   Grid,
   TextField,
   useTheme,
+  MenuItem,
+  Autocomplete,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { Backend } from '@typing/backend';
 import { ERROR_END_DATE_BEFORE_START_DATE } from '@utils/constants/string';
 import { getCardColor } from '@utils/theme';
 import { Dayjs } from 'dayjs';
@@ -17,6 +20,7 @@ import { Dayjs } from 'dayjs';
 export type PartialRequestPeriod = {
   startDate: Dayjs | null;
   endDate: Dayjs | null;
+  member: Backend.Entry<Backend.Member> | null;
   reason: string;
 };
 
@@ -24,6 +28,7 @@ export type RequestFormItemProps = {
   index: number;
   isPromptItem: boolean;
   requestPeriod: PartialRequestPeriod;
+  members: Backend.Entry<Backend.Member>[];
   canDelete: boolean;
   onUpdate: () => void;
   onDelete: () => void;
@@ -33,6 +38,7 @@ export type RequestFormItemProps = {
 function RequestFormItem(props: RequestFormItemProps) {
   const {
     requestPeriod: request,
+    members,
     canDelete,
     index,
     isPromptItem,
@@ -145,7 +151,34 @@ function RequestFormItem(props: RequestFormItemProps) {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                autoHighlight
+                options={members}
+                getOptionLabel={(option) => option.callsign}
+                onChange={(event, value) => {
+                  request.member = value;
+                  onUpdate();
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Callsign"
+                    fullWidth
+                    variant="filled"
+                    required={!isPromptItem}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <MenuItem {...props}>{option.callsign}</MenuItem>
+                )}
+                value={request.member}
+                isOptionEqualToValue={(option, value) => {
+                  return option.callsign === value.callsign;
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Reason"
