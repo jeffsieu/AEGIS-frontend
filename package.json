@@ -23,14 +23,14 @@
     "react-dom": "^18.1.0",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.2",
     "redux": "^4.2.0",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
   "resolutions": {
-    "**/@emotion/styled": "11.0.0"
+    "**/@emotion/styled": "11.0.0",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "craco start",
@@ -69,16 +69,14 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^6.5.0",
-    "@storybook/addon-essentials": "^6.5.0",
-    "@storybook/addon-interactions": "^6.5.0",
-    "@storybook/addon-links": "^6.5.0",
-    "@storybook/builder-webpack5": "^6.5.0",
-    "@storybook/manager-webpack5": "^6.5.0",
-    "@storybook/node-logger": "^6.5.0",
-    "@storybook/preset-create-react-app": "^4.1.0",
-    "@storybook/react": "^6.5.0",
-    "@storybook/testing-library": "0.0.11",
+    "@storybook/addon-actions": "^7.0.0-alpha.6",
+    "@storybook/addon-interactions": "^7.0.0-alpha.6",
+    "@storybook/addon-links": "^7.0.0-alpha.6",
+    "@storybook/builder-webpack5": "^7.0.0-alpha.6",
+    "@storybook/manager-webpack5": "^7.0.0-alpha.6",
+    "@storybook/node-logger": "^7.0.0-alpha.6",
+    "@storybook/react": "^7.0.0-alpha.6",
+    "@storybook/testing-library": "0.0.14-next.0",
     "@types/jest": "^27.5.1",
     "@types/node": "^17.0.35",
     "@types/react": "^18.0.9",
@@ -87,6 +85,7 @@
     "prop-types": "^15.8.1",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.6.4",
-    "webpack": "^5.72.1"
+    "webpack": "^5.72.1",
+    "react-scripts": "5.0.1"
   }
 }
