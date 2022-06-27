@@ -20,6 +20,7 @@ Default.args = {
     endDate: null,
     member: null,
     reason: '',
+    type: null,
   },
 };
 
@@ -31,6 +32,7 @@ Prompt.args = {
     endDate: null,
     member: null,
     reason: '',
+    type: null,
   },
   isPromptItem: true,
 };

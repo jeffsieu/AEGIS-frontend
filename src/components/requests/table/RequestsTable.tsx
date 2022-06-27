@@ -13,6 +13,7 @@ import {
   GridRowId,
   GridRowsProp,
 } from '@mui/x-data-grid';
+import { Backend } from '@typing/backend';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
@@ -22,6 +23,7 @@ export type Request = {
   startDate: Date;
   endDate: Date;
   reason: string;
+  type: Backend.RequestType;
 };
 
 export type RequestsTableProps = {
@@ -103,6 +105,13 @@ export default function RequestsTable(props: RequestsTableProps) {
       type: 'date',
       valueFormatter: (params: GridValueFormatterParams<Date>) =>
         dayjs(params.value).format('DD/MM/YYYY'),
+    },
+    {
+      field: 'type',
+      headerName: 'Type',
+      type: 'singleSelect',
+      valueOptions: ['Work', 'Personal'],
+      editable: true,
     },
     {
       field: 'reason',

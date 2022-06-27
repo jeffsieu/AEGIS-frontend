@@ -20,6 +20,7 @@ Default.args = {
       startDate: new Date('2020-05-01'),
       endDate: new Date('2020-05-05'),
       reason: 'Chao geng',
+      type: 'Personal',
     },
     {
       id: 1,
@@ -27,6 +28,7 @@ Default.args = {
       startDate: new Date('2020-05-01'),
       endDate: new Date('2020-05-05'),
       reason: 'Go back to village, approved by OC',
+      type: 'Personal',
     },
   ],
 };

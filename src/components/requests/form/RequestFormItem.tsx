@@ -1,4 +1,10 @@
-import { Add, DateRangeOutlined, Clear } from '@mui/icons-material';
+import {
+  Add,
+  DateRangeOutlined,
+  Clear,
+  Person,
+  Work,
+} from '@mui/icons-material';
 import {
   Card,
   CardContent,
@@ -10,6 +16,10 @@ import {
   useTheme,
   MenuItem,
   Autocomplete,
+  Select,
+  FormControl,
+  InputLabel,
+  Divider,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Backend } from '@typing/backend';
@@ -22,6 +32,7 @@ export type PartialRequestPeriod = {
   endDate: Dayjs | null;
   member: Backend.Entry<Backend.Member> | null;
   reason: string;
+  type: Backend.RequestType | null;
 };
 
 export type RequestFormItemProps = {
@@ -90,6 +101,7 @@ function RequestFormItem(props: RequestFormItemProps) {
               </IconButton>
             )}
           </Box>
+          <Divider />
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <DatePicker
@@ -160,6 +172,9 @@ function RequestFormItem(props: RequestFormItemProps) {
                   request.member = value;
                   onUpdate();
                 }}
+                onFocus={() => {
+                  onInputFocus();
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -179,6 +194,42 @@ function RequestFormItem(props: RequestFormItemProps) {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <FormControl fullWidth variant="filled" required={!isPromptItem}>
+                <InputLabel>Type</InputLabel>
+                <Select
+                  label="Type"
+                  required={!isPromptItem}
+                  value={request.type}
+                  onChange={(event) => {
+                    request.type = event.target.value as Backend.RequestType;
+                    onUpdate();
+                  }}
+                  onFocus={() => {
+                    onInputFocus();
+                  }}
+                >
+                  <MenuItem value="Work">
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Work
+                        fontSize="small"
+                        htmlColor={theme.palette.text.secondary}
+                      />
+                      Work
+                    </Box>
+                  </MenuItem>
+                  <MenuItem value="Personal">
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Person
+                        fontSize="small"
+                        htmlColor={theme.palette.text.secondary}
+                      />
+                      Personal
+                    </Box>
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Reason"
