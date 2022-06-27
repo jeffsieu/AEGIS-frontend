@@ -1,7 +1,7 @@
 import EmptyHint from '@components/general/empty-hint';
 import TitledContainer from '@components/general/titled-container';
 import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
-import { Stack, Skeleton } from '@mui/material';
+import { Stack } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRolesQuery,
@@ -47,17 +47,6 @@ function PublishedSchedulesPageWithAPI(
         onScheduleClick,
       };
       return <PublishedSchedulesPage {...props} />;
-    },
-    onLoading: () => {
-      return (
-        <TitledContainer title="Published">
-          <Stack spacing={4}>
-            <Skeleton variant="rectangular" height={250} />
-            <Skeleton variant="rectangular" height={250} />
-            <Skeleton variant="rectangular" height={250} />
-          </Stack>
-        </TitledContainer>
-      );
     },
   });
 }
