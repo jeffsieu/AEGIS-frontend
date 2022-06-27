@@ -132,6 +132,7 @@ function AnimatedRoutes() {
                     element={<PlannerSchedulePage />}
                   />
                   <Route path="members" element={<PlannerMembersPage />} />
+                  <Route path="requests" element={<MemberRequestPage />} />
                   <Route path="roles" element={<PlannerRolesPage />} />
                 </Route>
                 <Route path="/login" element={<PlannerSimpleLoginPage />} />
