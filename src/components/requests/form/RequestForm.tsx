@@ -18,12 +18,14 @@ function RequestForm(props: RequestFormProps) {
       endDate: null,
       member: null,
       reason: '',
+      type: null,
     },
     {
       startDate: null,
       endDate: null,
       member: null,
       reason: '',
+      type: null,
     },
   ]);
 
@@ -36,7 +38,13 @@ function RequestForm(props: RequestFormProps) {
     if (index === periods.length - 1) {
       setPeriods([
         ...periods,
-        { startDate: null, endDate: null, member: null, reason: '' },
+        {
+          startDate: null,
+          endDate: null,
+          member: null,
+          reason: '',
+          type: null,
+        },
       ]);
     }
   }

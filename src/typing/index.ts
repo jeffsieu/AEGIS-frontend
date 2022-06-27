@@ -38,4 +38,5 @@ export type RequestPeriod = {
   endDate: Dayjs;
   member: Backend.Entry<Backend.Member>;
   reason: string;
+  type: Backend.RequestType;
 };

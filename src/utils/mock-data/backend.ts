@@ -338,7 +338,7 @@ export const QUALIFICATIONS: MockQualification[] = [
     memberId: 35,
     roles: [],
   },
-]
+];
 
 export const SCHEDULES: Backend.Schedule[] = [
   {
@@ -760,41 +760,48 @@ export const REQUESTS: Backend.Request[] = [
     startDate: '2022-07-25',
     endDate: '2022-08-05',
     reason: 'Cse: Para Counselling',
+    type: 'Work',
   },
   {
     memberId: 4,
     startDate: '2022-07-01',
     endDate: '2022-07-12',
     reason: 'Overseas: ',
+    type: 'Personal',
   },
   {
     memberId: 9,
     startDate: '2022-07-14',
     endDate: '2022-07-16',
     reason: 'Bravo Cohesion',
+    type: 'Work',
   },
   {
     memberId: 9,
     startDate: '2022-07-01',
     endDate: '2022-07-01',
     reason: 'SAFDP',
+    type: 'Work',
   },
   {
     memberId: 9,
     startDate: '2022-07-12',
     endDate: '2022-07-12',
     reason: 'XX',
+    type: 'Personal',
   },
   {
     memberId: 9,
     startDate: '2022-07-18',
     endDate: '2022-07-18',
     reason: 'XX',
+    type: 'Personal',
   },
   {
     memberId: 9,
     startDate: '2022-07-23',
     endDate: '2022-07-23',
     reason: 'XX',
+    type: 'Personal',
   },
 ];

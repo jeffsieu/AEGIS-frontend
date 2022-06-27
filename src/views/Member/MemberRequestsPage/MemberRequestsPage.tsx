@@ -48,15 +48,11 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
             onRequestsUpdate={() => {
               // Todo: update requests
             }}
-            requests={periods.map(
-              ({ reason, startDate, endDate, callsign, id }) => ({
-                id,
-                reason,
-                startDate: startDate.toDate(),
-                endDate: endDate.toDate(),
-                callsign,
-              })
-            )}
+            requests={periods.map(({ startDate, endDate, ...rest }) => ({
+              startDate: startDate.toDate(),
+              endDate: endDate.toDate(),
+              ...rest,
+            }))}
           />
         )}
       </Stack>
