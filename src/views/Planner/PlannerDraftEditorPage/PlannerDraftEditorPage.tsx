@@ -27,12 +27,12 @@ import {
   RequiredScheduleItemProps,
   ScheduleItemPropsWithoutCallback,
 } from '@components/schedule/ScheduleItem/ScheduleItem';
-import { QualifiedMember, Role, UnavailableQualifiedMember } from '@typing';
+import { QualifiedMember, UnavailableQualifiedMember } from '@typing';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   useDeleteScheduleMutation,
   useGetMemberAvailabilitiesForMonthQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
@@ -65,7 +65,7 @@ function PlannerDraftEditorPageWithAPI() {
       draft: useGetScheduleForMonthQuery({
         month: month!,
       }),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       memberAvailabilities: useGetMemberAvailabilitiesForMonthQuery(
         dayjs(`${month}-01`).toDate()
       ),
@@ -75,7 +75,7 @@ function PlannerDraftEditorPageWithAPI() {
         navigate(`/planner/schedules/${month}/view`);
       }
     },
-    onSuccess: ({ roles, memberAvailabilities, draft }) => {
+    onSuccess: ({ roleInstances, memberAvailabilities, draft }) => {
       if (draft === null) return <>No records for {month} found</>;
 
       const updateDraft =
@@ -88,7 +88,7 @@ function PlannerDraftEditorPageWithAPI() {
 
       const props = {
         draft,
-        roles,
+        roleInstances,
         memberAvailabilities,
         onPublished: updateDraft(true),
         onSaved: updateDraft(false),
@@ -104,7 +104,7 @@ function PlannerDraftEditorPageWithAPI() {
 }
 
 export type PlannerDraftEditorPageWithStateProps = {
-  roles: Backend.Entry<Backend.Role>[];
+  roleInstances: Backend.Entry<Backend.RoleInstance>[];
   draft: Backend.Entry<Backend.Schedule>;
   memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[];
   onPublished: (draft: Backend.Schedule) => Promise<void>;
@@ -116,8 +116,13 @@ function PlannerDraftEditorPageWithState(
   props: PlannerDraftEditorPageWithStateProps
 ) {
   const navigate = useNavigate();
-  const { roles, memberAvailabilities, onSaved, onPublished, onDeleted } =
-    props;
+  const {
+    roleInstances,
+    memberAvailabilities,
+    onSaved,
+    onPublished,
+    onDeleted,
+  } = props;
   const [draft, setDraft] = useState(props.draft);
   const [isPublishing, setPublishing] = useState(false);
   const [isSaving, setSaving] = useState(false);
@@ -131,22 +136,27 @@ function PlannerDraftEditorPageWithState(
     () =>
       scheduleToScheduleTableProps(
         draft,
-        roles,
+        roleInstances,
         memberAvailabilities,
         memberAvailabilities
       ),
-    [draft, roles, memberAvailabilities]
+    [draft, roleInstances, memberAvailabilities]
   );
 
   const onMemberSelected = (
     date: Date,
-    role: Role,
+    roleInstance: Backend.RoleInstance,
     member: QualifiedMember | null
   ) => {
-    const backendRole = roles.find((r) => r.name === role.name)!;
+    const backendRoleInstance = roleInstances.find(
+      (r) =>
+        r.description === roleInstance.description &&
+        r.name === roleInstance.name
+    )!;
     const duty = draft.duties.find(
       (duty) =>
-        dayjs(date).isSame(duty.date, 'day') && duty.roleId === backendRole.id
+        dayjs(date).isSame(duty.date, 'day') &&
+        duty.roleInstanceId === backendRoleInstance.id
     )!;
     const backendMember =
       memberAvailabilities.find((m) => m.callsign === member?.callsign) ?? null;
@@ -205,11 +215,11 @@ function PlannerDraftEditorPageWithState(
 export type PlannerDraftEditorPageProps = {
   startDate: Date;
   endDate: Date;
-  roles: Role[];
+  roleInstances: Backend.RoleInstance[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
   onMemberSelected: (
     date: Date,
-    role: Role,
+    roleInstance: Backend.RoleInstance,
     member: QualifiedMember | null
   ) => void;
   onPublishClick: () => Promise<void>;
@@ -225,7 +235,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
   const {
     startDate,
     endDate,
-    roles,
+    roleInstances,
     scheduleItemsByDay,
     onMemberSelected,
     onPublishClick,
@@ -284,10 +294,10 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
         .map((scheduleItem, roleIndex) => ({
           ...scheduleItem,
           date: dayjs(startDate).add(dayIndex, 'day'),
-          role: roles[roleIndex],
+          roleInstance: roleInstances[roleIndex],
         }));
     });
-  }, [scheduleItemsByDay, startDate, roles]);
+  }, [scheduleItemsByDay, startDate, roleInstances]);
 
   const clashCount = useMemo(
     () => clashes.reduce((acc, clash) => acc + clash.length, 0),
@@ -370,7 +380,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
             <ScheduleTable
               startDate={startDate}
               endDate={endDate}
-              roles={roles}
+              roleInstances={roleInstances}
               scheduleItemsByDay={scheduleItemsByDay}
               onMemberSelected={onMemberSelected}
               stickyHeader={true}
@@ -434,7 +444,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
                       ).unavailableReasons.map((reason, reasonIndex) => (
                         <ListItem key={reasonIndex}>
                           <ListItemText
-                            primary={`[${clash.role.name} | ${
+                            primary={`[${clash.roleInstance.name} | ${
                               clash.assignedMember!.callsign
                             }]`}
                             secondary={reason}

@@ -5,7 +5,7 @@ import { Add } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import {
   useGetMembersQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetSchedulesQuery,
 } from '@services/backend';
 import { Backend } from '@typing/backend';
@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 export type PlannerDraftsPageProps = {
   drafts: Backend.Schedule[];
-  roles: Backend.Entry<Backend.Role>[];
+  roleInstances: Backend.Entry<Backend.RoleInstance>[];
   members: Backend.Entry<Backend.Member>[];
   onDraftClick: (draft: Backend.Schedule) => void;
   onNewDraftClick: () => void;
@@ -29,17 +29,17 @@ function PlannerDraftsPageWithAPI() {
   return useBuildWithApiQueries({
     queries: {
       schedules: useGetSchedulesQuery({ isPublished: false }),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       members: useGetMembersQuery(),
     },
-    onSuccess: ({ schedules, roles, members }) => {
+    onSuccess: ({ schedules, roleInstances, members }) => {
       const sortedSchedules = [...schedules];
       sortedSchedules.sort((a, b) => {
         return -dayjs(a.month).diff(dayjs(b.month));
       });
       const props: PlannerDraftsPageProps = {
         drafts: sortedSchedules,
-        roles: roles,
+        roleInstances: roleInstances,
         members: members,
         onDraftClick: (draft) => {
           navigate(
@@ -56,7 +56,8 @@ function PlannerDraftsPageWithAPI() {
 }
 
 function PlannerDraftsPage(props: PlannerDraftsPageProps) {
-  const { drafts, roles, members, onDraftClick, onNewDraftClick } = props;
+  const { drafts, roleInstances, members, onDraftClick, onNewDraftClick } =
+    props;
 
   return (
     <TitledContainer title="Drafts">
@@ -76,7 +77,7 @@ function PlannerDraftsPage(props: PlannerDraftsPageProps) {
         {drafts.map((draft, index) => (
           <div key={index}>
             <ScheduleCard
-              {...scheduleToScheduleTableProps(draft, roles, members)}
+              {...scheduleToScheduleTableProps(draft, roleInstances, members)}
               canFilter={false}
               onClick={() => onDraftClick(draft)}
             />

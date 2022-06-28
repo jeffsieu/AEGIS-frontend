@@ -5,14 +5,14 @@ import {
   ThemeProvider,
   useTheme,
 } from '@mui/material';
-import { Role } from '@typing';
+import { Backend } from '@typing/backend';
 
 export type ScheduleRowHeaderProps = {
-  role: Role;
+  roleInstance: Backend.RoleInstance;
 };
 
 function ScheduleRowHeader(props: ScheduleRowHeaderProps) {
-  const { role } = props;
+  const { roleInstance } = props;
   const theme = useTheme();
   const customButtonTheme = createTheme({
     typography: {
@@ -32,7 +32,7 @@ function ScheduleRowHeader(props: ScheduleRowHeaderProps) {
         sx={{ justifyContent: 'left', whiteSpace: 'nowrap' }}
       >
         <Typography color={theme.palette.text.secondary}>
-          {role.name}
+          {roleInstance.name}
         </Typography>
       </Button>
     </ThemeProvider>

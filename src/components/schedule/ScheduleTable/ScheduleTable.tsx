@@ -3,17 +3,18 @@ import { useMemo, useState } from 'react';
 import ScheduleColumns from '../ScheduleColumns/ScheduleColumns';
 import ScheduleRowHeaders from '../ScheduleRowHeaders/ScheduleRowHeaders';
 import { ScheduleItemPropsWithoutCallback } from '../ScheduleItem/ScheduleItem';
-import { QualifiedMember, Role } from '@typing';
+import { QualifiedMember } from '@typing';
 import { iterateDates } from '@utils/helpers/schedule';
+import { Backend } from '@typing/backend';
 
 export type ScheduleTableProps = {
   startDate: Date;
   endDate: Date;
-  roles: Role[];
+  roleInstances: Backend.RoleInstance[];
   scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][];
   onMemberSelected?: (
     date: Date,
-    role: Role,
+    roleInstance: Backend.RoleInstance,
     member: QualifiedMember | null
   ) => void;
   header?: React.ReactElement;
@@ -25,7 +26,7 @@ function ScheduleTable(props: ScheduleTableProps) {
   const {
     startDate,
     endDate,
-    roles,
+    roleInstances,
     scheduleItemsByDay,
     onMemberSelected,
     header,
@@ -37,16 +38,16 @@ function ScheduleTable(props: ScheduleTableProps) {
     return [...iterateDates(startDate, endDate)];
   }, [startDate, endDate]);
 
-  const [selectedRoles, setSelectedRoles] = useState(roles);
+  const [selectedRoles, setSelectedRoles] = useState(roleInstances);
 
   return (
     <Box display="flex" margin="auto" gap={2}>
       <ScheduleRowHeaders
-        roles={roles}
+        roleInstances={roleInstances}
         sticky={stickyHeader}
         canFilter={canFilter}
-        selectedRoles={selectedRoles}
-        onSelectedRolesChange={setSelectedRoles}
+        selectedRoleInstances={selectedRoles}
+        onSelectedRoleInstancesChange={setSelectedRoles}
       />
       <Box display="flex" flexDirection="column" flexBasis={0}>
         {header}
@@ -62,9 +63,13 @@ function ScheduleTable(props: ScheduleTableProps) {
                       ...scheduleItem,
                       onMemberSelected: onMemberSelected
                         ? (member: QualifiedMember | null) =>
-                            onMemberSelected(date, roles[roleIndex], member)
+                            onMemberSelected(
+                              date,
+                              roleInstances[roleIndex],
+                              member
+                            )
                         : undefined,
-                      role: roles[roleIndex],
+                      role: roleInstances[roleIndex],
                     }))
                     .filter((scheduleItem) =>
                       selectedRoles.includes(scheduleItem.role)

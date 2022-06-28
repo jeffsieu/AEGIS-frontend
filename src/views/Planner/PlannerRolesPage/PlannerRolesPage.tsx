@@ -39,7 +39,10 @@ function PlannerRolesPageWithAPI() {
   const [addRole] = useAddRoleMutation();
 
   async function createRole(role: Backend.Role) {
-    await addRole(role).unwrap();
+    await addRole({
+      ...role,
+      roleInstances: [],
+    }).unwrap();
   }
 
   return useBuildWithApiQueries({

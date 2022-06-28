@@ -29,7 +29,7 @@ function MemberTable(props: MemberTableProps) {
     <Box display="flex" flexDirection="column" gap={4}>
       {members.length === 0 && <EmptyHint>{ERROR_NO_MEMBERS}</EmptyHint>}
       {members.map((member, index) => (
-        <div key={index}>
+        <div key={member.callsign}>
           <Typography variant="h6" gutterBottom>
             {member.callsign}
           </Typography>

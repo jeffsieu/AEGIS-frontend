@@ -4,7 +4,7 @@ import { ArrowForward } from '@mui/icons-material';
 import { Button, Divider, Stack, Typography, useTheme } from '@mui/material';
 import {
   useGetMembersQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetScheduleForMonthQuery,
   useGetSchedulesQuery,
 } from '@services/backend';
@@ -76,10 +76,10 @@ function LatestDraft() {
       drafts: useGetSchedulesQuery({
         isPublished: false,
       }),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       members: useGetMembersQuery(),
     },
-    onSuccess: ({ drafts, roles, members }) => {
+    onSuccess: ({ drafts, roleInstances, members }) => {
       const sortedDrafts = drafts.filter((draft) =>
         dayjs(draft.month).isAfter(dayjs(), 'month')
       );
@@ -95,7 +95,7 @@ function LatestDraft() {
 
       const scheduleCardProps = scheduleToScheduleTableProps(
         closestDraft,
-        roles,
+        roleInstances,
         members
       );
 

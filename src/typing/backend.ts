@@ -1,12 +1,20 @@
 export namespace Backend {
   export type Date = `${number}-${number}-${number}`;
 
-  export type Duty = {
-    memberId?: number;
-    roleId: number;
-    // scheduleId: number;
-    date: string;
-  };
+  export type Duty =
+    | {
+        memberId?: number;
+        roleInstanceId: number;
+        date: string;
+      } & (
+        | {
+            id?: never;
+          }
+        | {
+            id: number;
+            scheduleId: number;
+          }
+      );
 
   export type Schedule = {
     month: string;
@@ -16,7 +24,25 @@ export namespace Backend {
 
   export type Role = {
     name: string;
+    roleInstances?: RoleInstance[];
   };
+
+  export type RoleInstance =
+    | {
+        name: string;
+        description: string;
+      } & (
+        | {
+            id?: never;
+            role?: never;
+            roleId?: never;
+          }
+        | {
+            id: number;
+            role: Role;
+            roleId: number;
+          }
+      );
 
   export type Member = {
     callsign: string;
@@ -25,7 +51,6 @@ export namespace Backend {
   };
 
   export type MemberWithAvailability = Member & {
-    // dutyCount: number;
     roles: Entry<Role>[];
     requests: Entry<Request>[];
   };
