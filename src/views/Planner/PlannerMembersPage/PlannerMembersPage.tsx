@@ -25,7 +25,7 @@ import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
 import { Add } from '@mui/icons-material';
-import useAppBarHeight from '@utils/helpers/app-bar-height';
+import StickyHeader from '@components/general/sticky-header';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
@@ -203,7 +203,6 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   } = props;
 
   const theme = useTheme();
-  const appBarHeight = useAppBarHeight();
 
   const alphaRegex = /^[a-zA-Z_]*$/;
   const isCallsignNotAlphanumeric = !alphaRegex.test(callsignFieldText);
@@ -224,12 +223,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 
   return (
     <Box display="flex" flexDirection="column" gap={4}>
-      <Box
-        position="sticky"
-        top={appBarHeight}
-        bgcolor={theme.palette.background.default}
-        zIndex={1}
-      >
+      <StickyHeader>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -258,7 +252,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
           )}
         </Box>
         <Divider />
-      </Box>
+      </StickyHeader>
       <MemberTable
         members={members}
         onMemberRolesChange={onMemberRolesChange}

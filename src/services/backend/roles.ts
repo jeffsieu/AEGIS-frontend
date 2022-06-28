@@ -3,7 +3,10 @@ import { baseApi } from './base';
 
 export const rolesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getRoles: builder.query<Backend.Entry<Backend.Role>[], void>({
+    getRoles: builder.query<
+      Backend.Entry<Backend.Role & { roleInstances: Backend.RoleInstance[] }>[],
+      void
+    >({
       query: () => ({
         url: 'roles',
       }),
