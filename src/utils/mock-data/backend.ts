@@ -188,7 +188,7 @@ export const ROLES: (Backend.Role & {
     roleInstances: [
       {
         name: 'G4 COMD',
-        description: '',
+        description: 'Main',
       },
       {
         name: 'G4 COMD Stby',
@@ -201,7 +201,7 @@ export const ROLES: (Backend.Role & {
     roleInstances: [
       {
         name: 'G4',
-        description: '',
+        description: 'Main',
       },
       {
         name: 'G4 Stby',
@@ -213,19 +213,19 @@ export const ROLES: (Backend.Role & {
     name: 'A2',
     roleInstances: [
       {
-        name: 'A2 AM',
-        description: '',
+        name: 'A2(AM)',
+        description: 'AM Main',
       },
       {
-        name: 'A2 AM Stby',
+        name: 'A2(AM) Stby',
         description: 'AM Stby',
       },
       {
-        name: 'A2 PM',
-        description: '',
+        name: 'A2(PM)',
+        description: 'PM Main',
       },
       {
-        name: 'A2 PM Stby',
+        name: 'A2(PM) Stby',
         description: 'PM Stby',
       },
     ],
