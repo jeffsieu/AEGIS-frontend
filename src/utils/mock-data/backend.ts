@@ -213,12 +213,20 @@ export const ROLES: (Backend.Role & {
     name: 'A2',
     roleInstances: [
       {
-        name: 'A2',
+        name: 'A2 AM',
         description: '',
       },
       {
-        name: 'A2 Stby',
-        description: 'Stby',
+        name: 'A2 AM Stby',
+        description: 'AM Stby',
+      },
+      {
+        name: 'A2 PM',
+        description: '',
+      },
+      {
+        name: 'A2 PM Stby',
+        description: 'PM Stby',
       },
     ],
   },
