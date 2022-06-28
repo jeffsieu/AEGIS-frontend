@@ -6,7 +6,7 @@ import ScheduleTable, {
 import { scheduleToScheduleTableProps } from '@utils/helpers/schedule';
 import {
   useGetMembersQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
@@ -28,7 +28,7 @@ function PlannerPublishedSchedulePageWithAPI() {
   return useBuildWithApiQueries({
     queries: {
       members: useGetMembersQuery(),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       schedule: useGetScheduleForMonthQuery({
         month: month!,
       }),
@@ -38,11 +38,11 @@ function PlannerPublishedSchedulePageWithAPI() {
         navigate(`/planner/schedules/${month}/edit`);
       }
     },
-    onSuccess: ({ members, roles, schedule }) => {
+    onSuccess: ({ members, roleInstances, schedule }) => {
       if (schedule === null) return <>No records for {month} found</>;
 
       const props: PlannerPublishedSchedulePageProps = {
-        ...scheduleToScheduleTableProps(schedule, roles, members),
+        ...scheduleToScheduleTableProps(schedule, roleInstances, members),
         stickyHeader: true,
         onUnpublishClick: async () => {
           setUnpublishing(true);

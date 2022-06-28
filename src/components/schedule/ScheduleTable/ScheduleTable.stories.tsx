@@ -45,9 +45,12 @@ export const Default = Template.bind({});
 Default.args = {
   startDate: new Date(2020, 0, 1),
   endDate: new Date(2020, 0, 14),
-  roles: ['Apple', 'Banana', 'Cherry', 'Durian', 'Elderberry'].map((name) => ({
-    name,
-  })),
+  roleInstances: ['Apple', 'Banana', 'Cherry', 'Durian', 'Elderberry'].map(
+    (name) => ({
+      name,
+      description: '',
+    })
+  ),
   scheduleItemsByDay: Array.from({ length: 14 }, (_, dayIndex) =>
     Array.from({ length: 5 }, (_, roleIndex) => {
       return {

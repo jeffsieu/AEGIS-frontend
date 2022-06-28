@@ -45,7 +45,7 @@ export function* iterateDates(
 export const getScheduleItemsByDay = (
   startDate: Date,
   endDate: Date,
-  roles: Backend.Entry<Backend.Role>[],
+  roleInstances: Backend.Entry<Backend.RoleInstance>[],
   duties: Backend.Duty[],
   members: Backend.Entry<Backend.Member>[],
   memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[]
@@ -53,7 +53,7 @@ export const getScheduleItemsByDay = (
   const scheduleItemsByDay: ScheduleItemPropsWithoutCallback[][] = [];
   const scheduleItems: Record<
     string,
-    Record<string, ScheduleItemPropsWithoutCallback>
+    Record<number, ScheduleItemPropsWithoutCallback>
   > = {};
 
   const dutyCounts: Map<number, number> = new Map();
@@ -70,12 +70,14 @@ export const getScheduleItemsByDay = (
   }
 
   for (const duty of duties) {
-    const role = roles.find((r) => r.id === duty.roleId)!;
+    const roleInstance = roleInstances.find(
+      (r) => r.id === duty.roleInstanceId
+    )!;
     const dateString = dayjs(duty.date).startOf('day').format('YYYY-MM-DD');
 
     scheduleItems[dateString] = {
       ...scheduleItems[dateString],
-      [role.name]: {
+      [roleInstance.id]: {
         isRequired: true,
         assignedMember: duty.memberId
           ? {
@@ -89,7 +91,7 @@ export const getScheduleItemsByDay = (
           : null,
         qualifiedMembers: memberAvailabilities
           .filter(({ roles }) => {
-            return roles.some((r) => r.id === role.id);
+            return roles.some((r) => r.id === roleInstance.role.id);
           })
           .map((member) => {
             const memberRequests = member.requests.filter((request) => {
@@ -126,8 +128,8 @@ export const getScheduleItemsByDay = (
     const dutyCounts = new Map<string, number>();
     const scheduleItemsMap = scheduleItems[dayjs(date).format('YYYY-MM-DD')];
 
-    for (const role of roles) {
-      const scheduleItem = scheduleItemsMap?.[role.name];
+    for (const roleInstance of roleInstances) {
+      const scheduleItem = scheduleItemsMap?.[roleInstance.id];
       if (scheduleItem) {
         if (scheduleItem.assignedMember) {
           dutyCounts.set(
@@ -145,8 +147,8 @@ export const getScheduleItemsByDay = (
     const scheduleItemsForDate: ScheduleItemPropsWithoutCallback[] = [];
     const scheduleItemsMap = scheduleItems[dayjs(date).format('YYYY-MM-DD')];
 
-    for (const role of roles) {
-      const scheduleItem = scheduleItemsMap?.[role.name];
+    for (const roleInstance of roleInstances) {
+      const scheduleItem = scheduleItemsMap?.[roleInstance.id];
       if (scheduleItem) {
         scheduleItemsForDate.push(scheduleItem);
       } else {
@@ -228,9 +230,11 @@ export const getScheduleItemsByDay = (
       continue;
     }
     const dayIndex = dayjs(duty.date).diff(startDate, 'day');
-    const roleIndex = roles.findIndex((r) => r.id === duty.roleId);
+    const roleInstanceIndex = roleInstances.findIndex(
+      (r) => r.id === duty.roleInstanceId
+    );
 
-    const scheduleItem = scheduleItemsByDay[dayIndex][roleIndex];
+    const scheduleItem = scheduleItemsByDay[dayIndex][roleInstanceIndex];
     if (scheduleItem && scheduleItem.isRequired) {
       const member = members.find((m) => m.id === duty.memberId);
       if (member === undefined) {
@@ -246,7 +250,7 @@ export const getScheduleItemsByDay = (
         continue;
       }
 
-      scheduleItemsByDay[dayIndex][roleIndex] = {
+      scheduleItemsByDay[dayIndex][roleInstanceIndex] = {
         ...scheduleItem,
         assignedMember: memberWithAvailability,
       };
@@ -258,12 +262,12 @@ export const getScheduleItemsByDay = (
 
 export function scheduleToScheduleTableProps(
   schedule: Backend.Schedule,
-  roles: Backend.Entry<Backend.Role>[],
+  roleInstances: Backend.Entry<Backend.RoleInstance>[],
   members: Backend.Entry<Backend.Member>[],
   memberAvailabilities: Backend.Entry<Backend.MemberWithAvailability>[] = []
 ): Pick<
   ScheduleTableProps,
-  'startDate' | 'endDate' | 'roles' | 'scheduleItemsByDay'
+  'startDate' | 'endDate' | 'roleInstances' | 'scheduleItemsByDay'
 > {
   const { month, duties } = schedule;
 
@@ -273,11 +277,11 @@ export function scheduleToScheduleTableProps(
   return {
     startDate,
     endDate,
-    roles,
+    roleInstances,
     scheduleItemsByDay: getScheduleItemsByDay(
       startDate,
       endDate,
-      roles,
+      roleInstances,
       duties,
       members,
       memberAvailabilities

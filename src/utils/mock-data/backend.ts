@@ -180,15 +180,45 @@ export const MEMBERS: Backend.Member[] = [
   },
 ];
 
-export const ROLES: Backend.Role[] = [
+export const ROLES: (Backend.Role & {roleInstances: Backend.RoleInstance[]})[] = [
   {
     name: 'G4 COMD',
+    roleInstances: [
+      {
+        name: 'G4 COMD',
+        description: '',
+      },
+      {
+        name: 'G4 COMD Standby',
+        description: 'Standby',
+      },
+    ],
   },
   {
     name: 'G4',
+    roleInstances: [
+      {
+        name: 'G4',
+        description: '',
+      },
+      {
+        name: 'G4 Standby',
+        description: 'Standby',
+      },
+    ],
   },
   {
     name: 'A2',
+    roleInstances: [
+      {
+        name: 'A2',
+        description: '',
+      },
+      {
+        name: 'A2 Standby',
+        description: 'Standby',
+      },
+    ],
   },
 ];
 
@@ -345,410 +375,24 @@ export const SCHEDULES: Backend.Schedule[] = [
     month: '2022-01-01',
     isPublished: false,
     duties: [
-      ...[
-        ...iterateDates(new Date('2022-01-01'), new Date('2022-01-31')),
-      ].flatMap((date, index) => [
+      ...iterateDates(new Date('2022-01-01'), new Date('2022-01-31')),
+    ].flatMap((date) =>
+      [1, 2, 3, 4, 5, 6].flatMap((roleInstanceId) => [
         {
-          roleId: 1,
+          roleInstanceId,
           memberId: Math.floor(Math.random() * 22),
           date: dayjs(date).format('YYYY-MM-DD'),
         },
-        {
-          roleId: 2,
-          memberId: Math.floor(Math.random() * 22),
-          date: dayjs(date).format('YYYY-MM-DD'),
-        },
-        {
-          roleId: 3,
-          memberId: Math.floor(Math.random() * 22),
-          date: dayjs(date).format('YYYY-MM-DD'),
-        },
-      ]),
-    ],
+      ])
+    ),
   },
   {
     month: '2022-05-01',
     isPublished: false,
     duties: [
       {
-        roleId: 1,
+        roleInstanceId: 1,
         date: '2022-05-03',
-      },
-    ],
-  },
-  {
-    month: '2022-06-01',
-    isPublished: true,
-    duties: [
-      {
-        roleId: 1,
-        memberId: 29,
-        date: '2022-06-01',
-      },
-      {
-        roleId: 2,
-        memberId: 14,
-        date: '2022-06-01',
-      },
-      {
-        roleId: 3,
-        memberId: 4,
-        date: '2022-06-01',
-      },
-      {
-        roleId: 1,
-        memberId: 9,
-        date: '2022-06-02',
-      },
-      {
-        roleId: 2,
-        memberId: 33,
-        date: '2022-06-02',
-      },
-      {
-        roleId: 1,
-        memberId: 21,
-        date: '2022-06-03',
-      },
-      {
-        roleId: 2,
-        memberId: 11,
-        date: '2022-06-03',
-      },
-      {
-        roleId: 1,
-        memberId: 7,
-        date: '2022-06-04',
-      },
-      {
-        roleId: 2,
-        memberId: 23,
-        date: '2022-06-04',
-      },
-      {
-        roleId: 3,
-        memberId: 19,
-        date: '2022-06-04',
-      },
-      {
-        roleId: 1,
-        memberId: 9,
-        date: '2022-06-05',
-      },
-      {
-        roleId: 2,
-        memberId: 28,
-        date: '2022-06-05',
-      },
-      {
-        roleId: 1,
-        memberId: 6,
-        date: '2022-06-06',
-      },
-      {
-        roleId: 2,
-        memberId: 31,
-        date: '2022-06-06',
-      },
-      {
-        roleId: 3,
-        memberId: 4,
-        date: '2022-06-06',
-      },
-      {
-        roleId: 1,
-        memberId: 10,
-        date: '2022-06-07',
-      },
-      {
-        roleId: 2,
-        memberId: 11,
-        date: '2022-06-07',
-      },
-      {
-        roleId: 1,
-        memberId: 28,
-        date: '2022-06-08',
-      },
-      {
-        roleId: 2,
-        memberId: 17,
-        date: '2022-06-08',
-      },
-      {
-        roleId: 3,
-        memberId: 16,
-        date: '2022-06-08',
-      },
-      {
-        roleId: 1,
-        memberId: 21,
-        date: '2022-06-09',
-      },
-      {
-        roleId: 2,
-        memberId: 23,
-        date: '2022-06-09',
-      },
-      {
-        roleId: 3,
-        memberId: 4,
-        date: '2022-06-09',
-      },
-      {
-        roleId: 1,
-        memberId: 13,
-        date: '2022-06-10',
-      },
-      {
-        roleId: 2,
-        memberId: 5,
-        date: '2022-06-10',
-      },
-      {
-        roleId: 1,
-        memberId: 6,
-        date: '2022-06-11',
-      },
-      {
-        roleId: 2,
-        memberId: 20,
-        date: '2022-06-11',
-      },
-      {
-        roleId: 3,
-        memberId: 15,
-        date: '2022-06-11',
-      },
-      {
-        roleId: 1,
-        memberId: 27,
-        date: '2022-06-12',
-      },
-      {
-        roleId: 2,
-        memberId: 23,
-        date: '2022-06-12',
-      },
-      {
-        roleId: 1,
-        memberId: 34,
-        date: '2022-06-13',
-      },
-      {
-        roleId: 2,
-        memberId: 11,
-        date: '2022-06-13',
-      },
-      {
-        roleId: 1,
-        memberId: 10,
-        date: '2022-06-14',
-      },
-      {
-        roleId: 2,
-        memberId: 7,
-        date: '2022-06-14',
-      },
-      {
-        roleId: 1,
-        memberId: 17,
-        date: '2022-06-15',
-      },
-      {
-        roleId: 2,
-        memberId: 33,
-        date: '2022-06-15',
-      },
-      {
-        roleId: 3,
-        memberId: 4,
-        date: '2022-06-15',
-      },
-      {
-        roleId: 1,
-        memberId: 27,
-        date: '2022-06-16',
-      },
-      {
-        roleId: 2,
-        memberId: 22,
-        date: '2022-06-16',
-      },
-      {
-        roleId: 3,
-        memberId: 15,
-        date: '2022-06-16',
-      },
-      {
-        roleId: 1,
-        memberId: 13,
-        date: '2022-06-17',
-      },
-      {
-        roleId: 2,
-        memberId: 25,
-        date: '2022-06-17',
-      },
-      {
-        roleId: 1,
-        memberId: 24,
-        date: '2022-06-18',
-      },
-      {
-        roleId: 2,
-        memberId: 20,
-        date: '2022-06-18',
-      },
-      {
-        roleId: 3,
-        memberId: 19,
-        date: '2022-06-18',
-      },
-      {
-        roleId: 1,
-        memberId: 22,
-        date: '2022-06-19',
-      },
-      {
-        roleId: 2,
-        memberId: 7,
-        date: '2022-06-19',
-      },
-      {
-        roleId: 1,
-        memberId: 6,
-        date: '2022-06-20',
-      },
-      {
-        roleId: 2,
-        memberId: 14,
-        date: '2022-06-20',
-      },
-      {
-        roleId: 3,
-        memberId: 15,
-        date: '2022-06-20',
-      },
-      {
-        roleId: 1,
-        memberId: 34,
-        date: '2022-06-21',
-      },
-      {
-        roleId: 2,
-        memberId: 1,
-        date: '2022-06-21',
-      },
-      {
-        roleId: 1,
-        memberId: 24,
-        date: '2022-06-22',
-      },
-      {
-        roleId: 2,
-        memberId: 28,
-        date: '2022-06-22',
-      },
-      {
-        roleId: 1,
-        memberId: 9,
-        date: '2022-06-23',
-      },
-      {
-        roleId: 2,
-        memberId: 26,
-        date: '2022-06-23',
-      },
-      {
-        roleId: 3,
-        memberId: 8,
-        date: '2022-06-23',
-      },
-      {
-        roleId: 1,
-        memberId: 21,
-        date: '2022-06-24',
-      },
-      {
-        roleId: 2,
-        memberId: 31,
-        date: '2022-06-24',
-      },
-      {
-        roleId: 3,
-        memberId: 15,
-        date: '2022-06-24',
-      },
-      {
-        roleId: 1,
-        memberId: 27,
-        date: '2022-06-25',
-      },
-      {
-        roleId: 2,
-        memberId: 7,
-        date: '2022-06-25',
-      },
-      {
-        roleId: 1,
-        memberId: 24,
-        date: '2022-06-26',
-      },
-      {
-        roleId: 2,
-        memberId: 14,
-        date: '2022-06-26',
-      },
-      {
-        roleId: 3,
-        memberId: 4,
-        date: '2022-06-26',
-      },
-      {
-        roleId: 1,
-        memberId: 10,
-        date: '2022-06-27',
-      },
-      {
-        roleId: 2,
-        memberId: 22,
-        date: '2022-06-27',
-      },
-      {
-        roleId: 1,
-        memberId: 33,
-        date: '2022-06-28',
-      },
-      {
-        roleId: 2,
-        memberId: 1,
-        date: '2022-06-28',
-      },
-      {
-        roleId: 1,
-        memberId: 29,
-        date: '2022-06-29',
-      },
-      {
-        roleId: 2,
-        memberId: 25,
-        date: '2022-06-29',
-      },
-      {
-        roleId: 3,
-        memberId: 15,
-        date: '2022-06-29',
-      },
-      {
-        roleId: 1,
-        memberId: 24,
-        date: '2022-06-30',
-      },
-      {
-        roleId: 2,
-        memberId: 26,
-        date: '2022-06-30',
       },
     ],
   },

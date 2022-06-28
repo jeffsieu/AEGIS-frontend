@@ -24,13 +24,13 @@ export default function InitializeDataButton() {
     await clearData();
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    for (const member of MEMBERS) {
-      await addMember(member);
+    for (const role of ROLES) {
+      await addRole(role);
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
 
-    for (const role of ROLES) {
-      await addRole(role);
+    for (const member of MEMBERS) {
+      await addMember(member);
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
 

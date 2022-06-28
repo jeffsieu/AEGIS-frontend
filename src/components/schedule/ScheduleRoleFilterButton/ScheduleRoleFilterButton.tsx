@@ -10,17 +10,23 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { Role } from '@typing';
+import { Backend } from '@typing/backend';
 import { useState } from 'react';
 
 export type ScheduleRowFilterButtonProps = {
-  roles: Role[];
-  selectedRoles: Role[];
-  onSelectedRolesChange: (roles: Role[]) => void;
+  roleInstances: Backend.RoleInstance[];
+  selectedRoleInstances: Backend.RoleInstance[];
+  onSelectedRoleInstancesChange: (
+    roleInstances: Backend.RoleInstance[]
+  ) => void;
 };
 
 function ScheduleRowFilterButton(props: ScheduleRowFilterButtonProps) {
-  const { roles, selectedRoles, onSelectedRolesChange } = props;
+  const {
+    roleInstances,
+    selectedRoleInstances,
+    onSelectedRoleInstancesChange,
+  } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -58,32 +64,36 @@ function ScheduleRowFilterButton(props: ScheduleRowFilterButtonProps) {
             Show roles
           </Typography>
         </li>
-        {roles.map((role, index) => {
+        {roleInstances.map((roleInstance, index) => {
           return (
             <MenuItem
               key={index}
-              selected={selectedRoles.includes(role)}
+              selected={selectedRoleInstances.includes(roleInstance)}
               disabled={
-                selectedRoles.includes(role) && selectedRoles.length === 1
+                selectedRoleInstances.includes(roleInstance) &&
+                selectedRoleInstances.length === 1
               }
               onClick={() => {
-                if (selectedRoles.includes(role)) {
-                  onSelectedRolesChange(
-                    selectedRoles.filter((r) => r !== role)
+                if (selectedRoleInstances.includes(roleInstance)) {
+                  onSelectedRoleInstancesChange(
+                    selectedRoleInstances.filter((r) => r !== roleInstance)
                   );
                 } else {
-                  onSelectedRolesChange([...selectedRoles, role]);
+                  onSelectedRoleInstancesChange([
+                    ...selectedRoleInstances,
+                    roleInstance,
+                  ]);
                 }
               }}
             >
               <ListItemIcon>
-                {selectedRoles.includes(role) ? (
+                {selectedRoleInstances.includes(roleInstance) ? (
                   <CheckBox color="primary" />
                 ) : (
                   <CheckBoxOutlineBlank color="primary" />
                 )}
               </ListItemIcon>
-              {role.name}
+              {roleInstance.name}
             </MenuItem>
           );
         })}

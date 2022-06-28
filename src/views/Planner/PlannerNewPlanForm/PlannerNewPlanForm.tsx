@@ -62,7 +62,7 @@ function PlannerNewPlanFormWithAPI() {
             duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
               dates.map((date) => ({
                 date: date.format('YYYY-MM-DD'),
-                roleId: roles.find((role) => role.name === roleName)!.id,
+                roleInstanceId: roles.find((role) => role.name === roleName)!.id,
               }))
             ),
           });

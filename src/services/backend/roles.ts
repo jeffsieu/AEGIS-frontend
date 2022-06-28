@@ -15,7 +15,27 @@ export const rolesApi = baseApi.injectEndpoints({
         { type: 'Roles', id: 'LIST' },
       ],
     }),
-    addRole: builder.mutation<void, Backend.Role>({
+    getRoleInstances: builder.query<
+      Backend.Entry<Backend.RoleInstance>[],
+      void
+    >({
+      query: () => ({
+        url: 'roleInstances',
+      }),
+      providesTags: (result) => [
+        ...(result ?? []).map(({ id }) => ({
+          type: 'RoleInstances' as const,
+          id: id,
+        })),
+        { type: 'RoleInstances', id: 'LIST' },
+      ],
+    }),
+    addRole: builder.mutation<
+      void,
+      Backend.Role & {
+        roleInstances: Backend.RoleInstance[];
+      }
+    >({
       query: (role) => ({
         url: 'roles',
         method: 'POST',
@@ -26,4 +46,8 @@ export const rolesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetRolesQuery, useAddRoleMutation } = rolesApi;
+export const {
+  useGetRolesQuery,
+  useGetRoleInstancesQuery,
+  useAddRoleMutation,
+} = rolesApi;

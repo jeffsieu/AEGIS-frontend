@@ -35,13 +35,13 @@ Default.args = {
         .map((date) => dayjs(date).format('YYYY-MM-DD'))
         .flatMap((date, index) => [
           {
-            roleId: 1,
+            roleInstanceId: 1,
             date: date,
           },
           ...(index % 2 === 0
             ? [
                 {
-                  roleId: 2,
+                  roleInstanceId: 2,
                   date: date,
                 },
               ]
@@ -49,7 +49,7 @@ Default.args = {
           ...(index % 3 === 0
             ? [
                 {
-                  roleId: 3,
+                  roleInstanceId: 3,
                   date: date,
                 },
               ]
@@ -57,18 +57,42 @@ Default.args = {
         ]),
     },
   ],
-  roles: [
+  roleInstances: [
     {
       id: 1,
       name: 'A1',
+      description: '',
+      roleId: 1,
+      role: {
+        id: 1,
+        name: 'A1',
+        createdAt: '',
+        updatedAt: '',
+      },
     },
     {
       id: 2,
       name: 'A2',
+      description: '',
+      roleId: 2,
+      role: {
+        id: 2,
+        name: 'A2',
+        createdAt: '',
+        updatedAt: '',
+      },
     },
     {
       id: 3,
       name: 'A3',
+      description: '',
+      roleId: 3,
+      role: {
+        id: 3,
+        name: 'A3',
+        createdAt: '',
+        updatedAt: '',
+      },
     },
   ].map((role) => ({ ...role, ...creationDates })),
 };

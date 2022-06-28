@@ -1,34 +1,38 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import { Role } from '@typing';
 import ScheduleRowHeader from '../ScheduleRowHeader/ScheduleRowHeader';
 import ScheduleRoleFilterButton from '../ScheduleRoleFilterButton/ScheduleRoleFilterButton';
 import { useMemo } from 'react';
+import { Backend } from '@typing/backend';
 
 export type ScheduleRowHeadersProps =
   | {
-      roles: Role[];
+      roleInstances: Backend.RoleInstance[];
       sticky?: boolean;
     } & (
       | {
           canFilter: false;
-          selectedRoles?: Role[];
+          selectedRoleInstances?: Backend.RoleInstance[];
         }
       | {
           canFilter: true;
-          selectedRoles: Role[];
-          onSelectedRolesChange: (roles: Role[]) => void;
+          selectedRoleInstances: Backend.RoleInstance[];
+          onSelectedRoleInstancesChange: (
+            roles: Backend.RoleInstance[]
+          ) => void;
         }
     );
 
 function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
-  const { roles, canFilter, sticky = false } = props;
+  const { roleInstances, canFilter, sticky = false } = props;
   const theme = useTheme();
 
-  const visibleRoles = useMemo(() => {
+  const visibleRoleInstances = useMemo(() => {
     return canFilter
-      ? roles.filter((role) => props.selectedRoles.includes(role))
-      : roles;
-  }, [canFilter, props.selectedRoles, roles]);
+      ? roleInstances.filter((role) =>
+          props.selectedRoleInstances.includes(role)
+        )
+      : roleInstances;
+  }, [canFilter, props.selectedRoleInstances, roleInstances]);
 
   return (
     <Box
@@ -52,14 +56,14 @@ function ScheduleRowHeaders(props: ScheduleRowHeadersProps) {
         <Typography variant="overline">Roles</Typography>
         {canFilter && (
           <ScheduleRoleFilterButton
-            roles={roles}
-            selectedRoles={props.selectedRoles}
-            onSelectedRolesChange={props.onSelectedRolesChange}
+            roleInstances={roleInstances}
+            selectedRoleInstances={props.selectedRoleInstances}
+            onSelectedRoleInstancesChange={props.onSelectedRoleInstancesChange}
           />
         )}
       </Box>
-      {visibleRoles.map((role, index) => {
-        return <ScheduleRowHeader key={index} role={role} />;
+      {visibleRoleInstances.map((roleInstance, index) => {
+        return <ScheduleRowHeader key={index} roleInstance={roleInstance} />;
       })}
     </Box>
   );

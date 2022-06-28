@@ -4,7 +4,7 @@ import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
 import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import {
   useGetMembersQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetScheduleForMonthQuery,
 } from '@services/backend';
 import { ERROR_SCHEDULE_NOT_READY } from '@utils/constants/string';
@@ -26,15 +26,19 @@ function ThisMonthSchedule(props: ThisMonthScheduleProps) {
         month: dayjs().format('YYYY-MM'),
         isPublished: showDraft ? undefined : true,
       }),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       members: useGetMembersQuery(),
     },
-    onSuccess: ({ schedule, roles, members }) => {
+    onSuccess: ({ schedule, roleInstances, members }) => {
       if (schedule === null) {
         return <EmptyHint>{ERROR_SCHEDULE_NOT_READY}</EmptyHint>;
       }
 
-      const props = scheduleToScheduleTableProps(schedule, roles, members);
+      const props = scheduleToScheduleTableProps(
+        schedule,
+        roleInstances,
+        members
+      );
       return (
         <Box
           display="flex"

@@ -4,7 +4,7 @@ import ScheduleCard from '@components/schedule/ScheduleCard/ScheduleCard';
 import { Stack } from '@mui/material';
 import {
   useGetMembersQuery,
-  useGetRolesQuery,
+  useGetRoleInstancesQuery,
   useGetSchedulesQuery,
 } from '@services/backend';
 import { Backend } from '@typing/backend';
@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 
 export type PublishedSchedulesPageProps = {
   schedules: Backend.Schedule[];
-  roles: Backend.Entry<Backend.Role>[];
+  roleInstances: Backend.Entry<Backend.RoleInstance>[];
   members: Backend.Entry<Backend.Member>[];
   onScheduleClick: (schedule: Backend.Schedule) => void;
 };
@@ -32,17 +32,17 @@ function PublishedSchedulesPageWithAPI(
   return useBuildWithApiQueries({
     queries: {
       schedules: useGetSchedulesQuery({ isPublished: true }),
-      roles: useGetRolesQuery(),
+      roleInstances: useGetRoleInstancesQuery(),
       members: useGetMembersQuery(),
     },
-    onSuccess: ({ roles, schedules, members }) => {
+    onSuccess: ({ roleInstances, schedules, members }) => {
       const sortedSchedules = [...schedules];
       sortedSchedules.sort((a, b) => {
         return -dayjs(a.month).diff(dayjs(b.month));
       });
       const props: PublishedSchedulesPageProps = {
         schedules: sortedSchedules,
-        roles,
+        roleInstances,
         members,
         onScheduleClick,
       };
@@ -52,7 +52,7 @@ function PublishedSchedulesPageWithAPI(
 }
 
 function PublishedSchedulesPage(props: PublishedSchedulesPageProps) {
-  const { roles, members, schedules, onScheduleClick } = props;
+  const { roleInstances: roles, members, schedules, onScheduleClick } = props;
 
   return (
     <TitledContainer title="Published">

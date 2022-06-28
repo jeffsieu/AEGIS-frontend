@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const BACKEND_URL = 'http://localhost:2000';
 export const baseApi = createApi({
   reducerPath: 'backendApi',
-  tagTypes: ['Members', 'Roles', 'Schedules', 'Requests'],
+  tagTypes: ['Members', 'Roles', 'RoleInstances', 'Schedules', 'Requests'],
   baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
   refetchOnFocus: true,
   refetchOnReconnect: true,
