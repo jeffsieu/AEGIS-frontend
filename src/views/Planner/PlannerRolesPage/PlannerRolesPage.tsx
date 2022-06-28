@@ -75,7 +75,7 @@ export type PlannerRolesPageWithStateProps = {
   createRole: (role: RoleWithInstances) => Promise<void>;
 };
 
-const DEFAULT_ROLE_INSTANCES = ['', 'Stby'];
+const DEFAULT_ROLE_INSTANCES = ['Main', 'Stby'];
 
 function PlannerRolesPageWithState(props: PlannerRolesPageWithStateProps) {
   const { createRole } = props;
