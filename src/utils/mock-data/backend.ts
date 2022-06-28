@@ -180,7 +180,9 @@ export const MEMBERS: Backend.Member[] = [
   },
 ];
 
-export const ROLES: (Backend.Role & {roleInstances: Backend.RoleInstance[]})[] = [
+export const ROLES: (Backend.Role & {
+  roleInstances: Backend.RoleInstance[];
+})[] = [
   {
     name: 'G4 COMD',
     roleInstances: [
@@ -189,8 +191,8 @@ export const ROLES: (Backend.Role & {roleInstances: Backend.RoleInstance[]})[] =
         description: '',
       },
       {
-        name: 'G4 COMD Standby',
-        description: 'Standby',
+        name: 'G4 COMD Stby',
+        description: 'Stby',
       },
     ],
   },
@@ -202,8 +204,8 @@ export const ROLES: (Backend.Role & {roleInstances: Backend.RoleInstance[]})[] =
         description: '',
       },
       {
-        name: 'G4 Standby',
-        description: 'Standby',
+        name: 'G4 Stby',
+        description: 'Stby',
       },
     ],
   },
@@ -215,8 +217,8 @@ export const ROLES: (Backend.Role & {roleInstances: Backend.RoleInstance[]})[] =
         description: '',
       },
       {
-        name: 'A2 Standby',
-        description: 'Standby',
+        name: 'A2 Stby',
+        description: 'Stby',
       },
     ],
   },
