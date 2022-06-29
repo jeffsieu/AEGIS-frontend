@@ -387,10 +387,10 @@ export const SCHEDULES: Backend.Schedule[] = [
     duties: [
       ...iterateDates(new Date('2022-01-01'), new Date('2022-01-31')),
     ].flatMap((date) =>
-      [1, 2, 3, 4, 5, 6].flatMap((roleInstanceId) => [
+      [1, 2, 3, 4, 5, 6, 7, 8].flatMap((roleInstanceId) => [
         {
           roleInstanceId,
-          memberId: Math.floor(Math.random() * 22),
+          memberId: Math.floor(Math.random() * 34),
           date: dayjs(date).format('YYYY-MM-DD'),
         },
       ])
