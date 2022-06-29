@@ -108,7 +108,7 @@ function PlannerPublishedSchedulePage(
                 variant="outlined"
                 asyncRequest={onUnpublishClick}
               >
-                Edit/delete
+                Edit/Delete
               </AsyncButton>
             </div>
           </PaperTooltip>
