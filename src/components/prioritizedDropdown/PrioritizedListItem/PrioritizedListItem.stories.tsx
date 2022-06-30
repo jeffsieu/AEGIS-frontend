@@ -32,7 +32,7 @@ Unavailable.args = {
   isAvailable: false,
   callsign: 'Daniel',
   dutyCount: 1,
-  unavailableReasons: ['Medical Leave'],
+  unavailableReasons: [{text:'Medical Leave', dateSubmitted: null, isLate: false, type: null}],
 };
 Unavailable.argTypes = {
   isAvailable: {
