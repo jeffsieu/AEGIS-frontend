@@ -8,8 +8,8 @@ import {
   Card,
   CardContent,
   Divider,
+  IconButton,
   InputAdornment,
-  InputLabel,
   TextField,
   Typography,
   useTheme,
@@ -22,11 +22,11 @@ import {
   useUpdateMemberRolesMutation,
 } from '@services/backend';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
-import { Add, Search } from '@mui/icons-material';
+import { Add, Clear, Search } from '@mui/icons-material';
 import StickyHeader from '@components/general/sticky-header';
 
 export type PlannerMembersPageProps = MemberTableProps & {
@@ -42,9 +42,9 @@ export type PlannerMembersPageProps = MemberTableProps & {
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
 
-	search: string;
-	onUpdateSearch: (event: any) => void;
-	searchFilteredMembers: () => MemberEntry[];
+  // Query-related
+  searchQuery: string;
+  onSearchQueryChange: (query: string) => void;
 };
 
 function PlannerMembersPageWithAPI() {
@@ -121,7 +121,7 @@ export type PlannerMembersPageWithStateProps = {
 function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
   const { updateMemberEntries, roles } = props;
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
-	const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState<string>('');
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
   const [isSaving, setSaving] = useState(false);
@@ -149,11 +149,6 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
     setMembers(newMembers);
   };
 
-	const searchFilteredMembers = () => {
-		const regex = new RegExp(`^${search.toLowerCase()}`)
-		return members.filter(member => regex.test(member.callsign.toLowerCase()));
-	}
-
   useEffect(() => {
     setMembers(props.members);
   }, [props.members]);
@@ -161,7 +156,6 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
   return (
     <PlannerMembersPage
       members={members}
-			searchFilteredMembers={searchFilteredMembers}
       roles={roles}
       isEditing={isEditing}
       onMemberRolesChange={onMemberRolesChange}
@@ -197,10 +191,10 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
       isSaving={isSaving}
-			search={search}
-			onUpdateSearch={(event: any) => {
-				setSearch(event.target.value.replace(/\W/g, ''));
-			}}
+      searchQuery={search}
+      onSearchQueryChange={(query: string) => {
+        setSearch(query.replace(/\W/g, ''));
+      }}
     />
   );
 }
@@ -217,9 +211,8 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     callsignFieldText,
     onCallsignChange,
     isSaving,
-		search,
-		onUpdateSearch,
-		searchFilteredMembers,
+    searchQuery,
+    onSearchQueryChange,
   } = props;
 
   const theme = useTheme();
@@ -241,6 +234,13 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     ? 'Callsign cannot be longer than 8 characters'
     : '';
 
+  const filteredMembers = useMemo(() => {
+    const regex = new RegExp(`^${searchQuery.toLowerCase()}`);
+    return members.filter((member) =>
+      regex.test(member.callsign.toLowerCase())
+    );
+  }, [members, searchQuery]);
+
   return (
     <Box display="flex" flexDirection="column" gap={4}>
       <StickyHeader>
@@ -254,42 +254,61 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
             Members
           </Typography>
 
-					<Box display="flex" gap={1}>
-					<TextField 
-						value={search}
-						onChange={onUpdateSearch}
-						placeholder="Search Callsign"
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									<Search />
-								</InputAdornment>
-							),
-						}}
-					></TextField>
-          {!isEditing && (
-            <Button variant="outlined" onClick={onEditClick}>
-              Edit
-            </Button>
-          )}
-          {isEditing && (
-						<>
-              <Button onClick={onCancelClick}>Cancel</Button>
-              <AsyncButton
-                loading={isSaving}
-                variant="contained"
-                asyncRequest={onSaveClick}
-              >
-                Save
-              </AsyncButton>
-						</>
-          )}
-					</Box>
+          <Box display="flex" gap={1} alignItems="center">
+            <TextField
+              value={searchQuery}
+              onChange={(event) => {
+                onSearchQueryChange(event.target.value);
+              }}
+              placeholder="Search callsign"
+              autoComplete="off"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      sx={{
+                        visibility:
+                          searchQuery.length > 0 ? 'visible' : 'hidden',
+                      }}
+                      onClick={() => {
+                        onSearchQueryChange('');
+                      }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            ></TextField>
+            <Divider orientation="vertical" flexItem />
+            {!isEditing && (
+              <Button variant="outlined" onClick={onEditClick}>
+                Edit
+              </Button>
+            )}
+            {isEditing && (
+              <>
+                <Button onClick={onCancelClick}>Cancel</Button>
+                <AsyncButton
+                  loading={isSaving}
+                  variant="contained"
+                  asyncRequest={onSaveClick}
+                >
+                  Save
+                </AsyncButton>
+              </>
+            )}
+          </Box>
         </Box>
         <Divider />
       </StickyHeader>
       <MemberTable
-        members={searchFilteredMembers()}
+        members={filteredMembers}
         onMemberRolesChange={onMemberRolesChange}
         disabled={!isEditing}
       />
