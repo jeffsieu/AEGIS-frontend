@@ -199,7 +199,7 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
       isSaving={isSaving}
 			search={search}
 			onUpdateSearch={(event: any) => {
-				setSearch(event.target.value);
+				setSearch(event.target.value.replace(/\W/g, ''));
 			}}
     />
   );
