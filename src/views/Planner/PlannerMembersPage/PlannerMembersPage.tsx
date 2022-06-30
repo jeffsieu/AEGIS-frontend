@@ -95,10 +95,23 @@ function PlannerMembersPageWithAPI() {
               });
             } else {
               // Member already exists
+              const mappedMember = mappedMembers.find(
+                (m) => m.callsign === member.callsign
+              )!;
+
+              // Check if member needs an update
+              const needsUpdate = Object.keys(member.roles).some((role) => {
+                return member.roles[role] !== mappedMember.roles[role];
+              });
+
+              if (!needsUpdate) {
+                continue;
+              }
+
+              // Update member
+              const memberId = mappedMember.id;
               await updateMemberRoles({
-                memberId: mappedMembers.find(
-                  (m) => m.callsign === member.callsign
-                )!.id,
+                memberId: memberId,
                 roleNames: roleNames,
               });
             }
