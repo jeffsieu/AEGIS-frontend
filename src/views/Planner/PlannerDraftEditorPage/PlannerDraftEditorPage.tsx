@@ -447,7 +447,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
                             primary={`[${clash.roleInstance.name} | ${
                               clash.assignedMember!.callsign
                             }]`}
-                            secondary={reason}
+                            secondary={reason.text}
                           />
                         </ListItem>
                       ))}

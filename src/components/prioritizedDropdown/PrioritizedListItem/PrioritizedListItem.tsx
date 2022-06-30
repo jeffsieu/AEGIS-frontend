@@ -1,5 +1,6 @@
 import { MenuItem, ListItemText, Typography, useTheme } from '@mui/material';
 import { QualifiedMember } from '@typing';
+import dayjs from 'dayjs';
 import PaperTooltip from '../../tooltips/PaperTooltip';
 
 export type PrioritizedListItemProps = QualifiedMember & {
@@ -40,6 +41,12 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
       </PaperTooltip>
     );
   } else {
+		let isLate = false;
+		member.unavailableReasons.forEach(reason => {
+			if(reason.isLate){
+				isLate = true;
+			}
+		})
     return (
       <PaperTooltip
         title={
@@ -48,7 +55,8 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
             <ul style={{ paddingInlineStart: '20px', marginBlockStart: '0' }}>
               {member.unavailableReasons.map((reason, index) => (
                 <li key={index}>
-                  <b>{reason}</b>
+                  <b>{reason.text}</b>
+									{(reason.isLate && reason.dateSubmitted !== null) ? ` (Late submission: ${dayjs(reason.dateSubmitted).toString()})` : null}
                 </li>
               ))}
             </ul>
@@ -59,7 +67,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
         <MenuItem
           onClick={onClick}
           selected={selected}
-          sx={{ color: theme.palette.action.disabled }}
+          sx={{ color: isLate ? theme.palette.error.light : theme.palette.action.disabled}}
         >
           <ListItemText
             primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
