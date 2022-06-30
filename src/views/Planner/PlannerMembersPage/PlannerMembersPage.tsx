@@ -3,6 +3,7 @@ import MemberTable, {
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -305,6 +306,13 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
             )}
           </Box>
         </Box>
+        {isEditing && (
+          <Box marginBottom={1}>
+            <Alert severity="info">
+              Currently editing. Remember to save your changes.
+            </Alert>
+          </Box>
+        )}
         <Divider />
       </StickyHeader>
       <MemberTable
