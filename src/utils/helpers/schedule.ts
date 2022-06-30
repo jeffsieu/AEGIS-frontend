@@ -122,7 +122,8 @@ export const getScheduleItemsByDay = (
 										return({
 											text: `Request: ${request.reason}`,
 											dateSubmitted: request.createdAt, 
-											isLate
+											isLate,
+											type: request.type
 										})
 									}
                 ),
@@ -209,7 +210,7 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  {text: 'Scheduled on same day', dateSubmitted: null, isLate: false},
+                  {text: 'Scheduled on same day', dateSubmitted: null, isLate: false, type: null},
                 ],
               };
             }
@@ -223,7 +224,7 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  {text: 'Scheduled on previous day', dateSubmitted: null, isLate: false},
+                  {text: 'Scheduled on previous day', dateSubmitted: null, isLate: false, type: null},
                 ],
               };
             }
@@ -299,4 +300,13 @@ export function scheduleToScheduleTableProps(
       memberAvailabilities
     ),
   };
+}
+
+export function requestTypeToEmoji(requestType: Backend.RequestType){
+	switch (requestType){
+		case "Work":
+			return "💼"
+		case "Personal":
+			return "👪"
+	}
 }

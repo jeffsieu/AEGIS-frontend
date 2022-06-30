@@ -17,7 +17,7 @@ export const MOCK_QUALIFIED_MEMBERS: QualifiedMember[] = [
     dutyCount: 10,
     callsign: 'Charlie',
     isAvailable: false,
-    unavailableReasons: [{text:'Too Busy', dateSubmitted: null, isLate: false}],
+    unavailableReasons: [{text:'Too Busy', dateSubmitted: null, isLate: false, type: null}],
   },
 ];
 

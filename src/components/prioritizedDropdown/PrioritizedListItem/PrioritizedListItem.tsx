@@ -1,5 +1,6 @@
 import { MenuItem, ListItemText, Typography, useTheme } from '@mui/material';
 import { QualifiedMember } from '@typing';
+import { requestTypeToEmoji } from '@utils/helpers/schedule';
 import dayjs from 'dayjs';
 import PaperTooltip from '../../tooltips/PaperTooltip';
 
@@ -42,10 +43,10 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
     );
   } else {
 		let isLate = false;
+		let reasonsEmoji = "";
 		member.unavailableReasons.forEach(reason => {
-			if(reason.isLate){
-				isLate = true;
-			}
+			if(reason.isLate) isLate = true;
+			if(reason.type !== null) reasonsEmoji += requestTypeToEmoji(reason.type);
 		})
     return (
       <PaperTooltip
@@ -72,7 +73,7 @@ function PrioritizedListItem(props: PrioritizedListItemProps) {
           <ListItemText
             primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
           >
-            {member.callsign}
+            {member.callsign} {reasonsEmoji}
           </ListItemText>
           <Typography sx={{ ml: 5 }}>{member.dutyCount} </Typography>
         </MenuItem>
