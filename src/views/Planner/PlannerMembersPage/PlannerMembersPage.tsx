@@ -28,7 +28,7 @@ import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
 import { Add, Clear, Search } from '@mui/icons-material';
-import StickyHeader from '@components/general/sticky-header';
+import TitledContainer from '@components/general/titled-container';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
@@ -256,78 +256,71 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   }, [members, searchQuery]);
 
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <StickyHeader>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          paddingY={1}
-        >
-          <Typography variant="h4" gutterBottom>
-            Members
-          </Typography>
-
-          <Box display="flex" gap={1} alignItems="center">
-            <TextField
-              value={searchQuery}
-              onChange={(event) => {
-                onSearchQueryChange(event.target.value);
-              }}
-              placeholder="Search callsign"
-              autoComplete="off"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      sx={{
-                        visibility:
-                          searchQuery.length > 0 ? 'visible' : 'hidden',
-                      }}
-                      onClick={() => {
-                        onSearchQueryChange('');
-                      }}
-                    >
-                      <Clear />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            ></TextField>
-            <Divider orientation="vertical" flexItem />
-            {!isEditing && (
-              <Button variant="outlined" onClick={onEditClick}>
-                Edit
-              </Button>
-            )}
-            {isEditing && (
-              <>
-                <Button onClick={onCancelClick}>Cancel</Button>
-                <AsyncButton
-                  loading={isSaving}
-                  variant="contained"
-                  asyncRequest={onSaveClick}
-                >
-                  Save
-                </AsyncButton>
-              </>
-            )}
-          </Box>
+    <TitledContainer
+      title="Members"
+      endComponent={
+        <Box display="flex" gap={1} alignItems="center">
+          <TextField
+            value={searchQuery}
+            onChange={(event) => {
+              onSearchQueryChange(event.target.value);
+            }}
+            placeholder="Search callsign"
+            autoComplete="off"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{
+                      visibility: searchQuery.length > 0 ? 'visible' : 'hidden',
+                    }}
+                    onClick={() => {
+                      onSearchQueryChange('');
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          ></TextField>
+          <Divider orientation="vertical" flexItem />
+          {!isEditing && (
+            <Button variant="outlined" onClick={onEditClick}>
+              Edit
+            </Button>
+          )}
+          {isEditing && (
+            <>
+              <Button onClick={onCancelClick}>Cancel</Button>
+              <AsyncButton
+                loading={isSaving}
+                variant="contained"
+                asyncRequest={onSaveClick}
+              >
+                Save
+              </AsyncButton>
+            </>
+          )}
         </Box>
-        {isEditing && (
-          <Box marginBottom={1}>
-            <Alert severity="info">
-              Currently editing. Remember to save your changes.
-            </Alert>
-          </Box>
-        )}
-        <Divider />
-      </StickyHeader>
+      }
+      bottomComponent={
+        <div>
+          {isEditing && (
+            <Box marginBottom={1}>
+              <Alert severity="info">
+                Currently editing. Remember to save your changes.
+              </Alert>
+            </Box>
+          )}
+        </div>
+      }
+    >
       <MemberTable
         members={filteredMembers}
         onMemberRolesChange={onMemberRolesChange}
@@ -382,7 +375,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
           </CardContent>
         </Card>
       )}
-    </Box>
+    </TitledContainer>
   );
 }
 
