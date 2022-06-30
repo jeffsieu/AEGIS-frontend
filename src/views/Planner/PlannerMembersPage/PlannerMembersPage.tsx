@@ -11,6 +11,7 @@ import {
   Divider,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
   useTheme,
@@ -194,11 +195,11 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
           newMemberRoles[role.name] = false;
         }
         setMembers([
-          ...members,
           {
             callsign: name,
             roles: newMemberRoles,
           },
+          ...members,
         ]);
         setCallsignFieldText('');
       }}
@@ -321,60 +322,59 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
         </div>
       }
     >
-      <MemberTable
-        members={filteredMembers}
-        onMemberRolesChange={onMemberRolesChange}
-        disabled={!isEditing}
-      />
-      {isEditing && (
-        <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
-          <CardContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-              }}
-            >
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="start"
-                gap={2}
-                paddingY={1}
+      <Stack spacing={4}>
+        {isEditing && (
+          <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
+            <CardContent>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                }}
               >
-                <Box display="flex" gap={1}>
-                  <Add htmlColor={theme.palette.text.secondary} />
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="start"
+                  gap={2}
+                  paddingY={1}
+                >
                   <Typography
-                    variant="h6"
+                    variant="h5"
                     gutterBottom
                     color={theme.palette.text.secondary}
                   >
-                    New member
+                    Add member
                   </Typography>
+                  <TextField
+                    autoComplete="off"
+                    label="Callsign"
+                    variant="filled"
+                    value={callsignFieldText}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      onCallsignChange(event.target.value);
+                    }}
+                    error={isInvalidCallsign && !isCallsignEmpty}
+                    helperText={errorText}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isInvalidCallsign}
+                    variant="contained"
+                    onClick={() => onAddMemberClick(callsignFieldText)}
+                  >
+                    Add member
+                  </Button>
                 </Box>
-                <TextField
-                  autoComplete="off"
-                  label="Callsign"
-                  variant="filled"
-                  value={callsignFieldText}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    onCallsignChange(event.target.value);
-                  }}
-                  error={isInvalidCallsign && !isCallsignEmpty}
-                  helperText={errorText}
-                />
-                <Button
-                  type="submit"
-                  disabled={isInvalidCallsign}
-                  variant="contained"
-                  onClick={() => onAddMemberClick(callsignFieldText)}
-                >
-                  Add member
-                </Button>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+              </form>
+            </CardContent>
+          </Card>
+        )}
+        <MemberTable
+          members={filteredMembers}
+          onMemberRolesChange={onMemberRolesChange}
+          disabled={!isEditing}
+        />
+      </Stack>
     </TitledContainer>
   );
 }

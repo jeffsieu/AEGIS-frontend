@@ -236,31 +236,25 @@ function PlannerRolesPage(props: PlannerRolesPageProps) {
                     gap={2}
                     paddingY={1}
                   >
-                    <Box display="flex" gap={4}>
-                      <Add htmlColor={theme.palette.text.secondary} />
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        color={theme.palette.text.secondary}
-                      >
-                        New role
-                      </Typography>
-                    </Box>
-                    <ListItem disableGutters>
-                      <ListItemText inset>
-                        <TextField
-                          autoComplete="off"
-                          label="Name"
-                          variant="filled"
-                          value={roleFieldText}
-                          onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            onRoleFieldChange(event.target.value);
-                          }}
-                        />
-                      </ListItemText>
-                    </ListItem>
+                    <Typography
+                      variant="h5"
+                      color={theme.palette.text.secondary}
+                    >
+                      Add role
+                    </Typography>
+                    <TextField
+                      autoComplete="off"
+                      label="Name"
+                      variant="filled"
+                      required
+                      value={roleFieldText}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        onRoleFieldChange(event.target.value);
+                      }}
+                    />
+                    <Divider flexItem />
                     <List disablePadding>
                       <ListItem disableGutters>
                         <ListItemText inset>
