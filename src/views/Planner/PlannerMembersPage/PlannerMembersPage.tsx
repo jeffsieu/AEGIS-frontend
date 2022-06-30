@@ -28,7 +28,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
-import { Add, Clear, Search } from '@mui/icons-material';
+import { Clear, Search } from '@mui/icons-material';
 import TitledContainer from '@components/general/titled-container';
 
 export type PlannerMembersPageProps = MemberTableProps & {
