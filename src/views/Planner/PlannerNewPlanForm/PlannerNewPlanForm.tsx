@@ -167,6 +167,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                         ...dateSelections,
                         [role.name]: selectedDates,
                       });
+
                     }}
                     selection={dateSelections[role.name] || []}
                     textFieldProps={{
@@ -177,6 +178,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                           ? ' '
                           : `${role.name} will not be scheduled in entire month.`,
                     }}
+                    selectAll={role.name != "A2" ? true : false} //awaiting backend for new field in roles
                   ></MultiDatePicker>
                 </Box>
               </Box>

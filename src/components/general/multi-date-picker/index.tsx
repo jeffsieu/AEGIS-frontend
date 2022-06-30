@@ -15,7 +15,7 @@ import {
   PickersDay,
   PickersDayProps,
 } from '@mui/x-date-pickers';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { dateRangesToString, getDateRanges } from '@utils/helpers/dateRange';
 import {
@@ -48,6 +48,7 @@ export type MultiDatePickerProps = {
   minDate: Dayjs;
   maxDate: Dayjs;
   textFieldProps?: Partial<TextFieldProps>;
+  selectAll?: boolean;
 };
 
 function MultiDatePicker(
@@ -61,6 +62,7 @@ function MultiDatePicker(
     textFieldProps,
     minDate,
     maxDate,
+    selectAll,
     ...restProps
   } = props;
 
@@ -116,6 +118,20 @@ function MultiDatePicker(
     setAnchorEl(null);
   }
 
+  const allDatesInMonth = [...iterateDates(minDate.toDate(), maxDate.toDate())].map((date) => dayjs(date))
+
+  // Select all dates in month in date picker on rendering of component if selectAll=true
+  // Unsure why dates are only updating for last eligible MultiDatePicker in a page 
+  // i.e. if G4 COMD and G4 are set to select all dates, only G4 updates.
+  // However, function does iterate over G4 COMD.
+  // Tried async/await, but no promise to return from onSelectionChanged...
+  useEffect(() => {
+    if (selectAll) {
+      onSelectionChanged(allDatesInMonth);
+      console.log(label); //to check 
+    }
+  },[JSON.stringify(allDatesInMonth)]);
+
   return (
     <>
       <TextField
@@ -161,7 +177,7 @@ function MultiDatePicker(
           displayStaticWrapperAs="desktop"
           {...restProps}
           onChange={onChange}
-          value={null}
+          value={dayjs(minDate.toDate())}
           closeOnSelect={false}
           renderInput={({ value, ...params }) => (
             <TextField
@@ -182,11 +198,7 @@ function MultiDatePicker(
               startIcon={<SelectAllOutlined />}
               size="small"
               onClick={() => {
-                onSelectionChanged(
-                  [...iterateDates(minDate.toDate(), maxDate.toDate())].map(
-                    (date) => dayjs(date)
-                  )
-                );
+                onSelectionChanged(allDatesInMonth);
               }}
             >
               Select all
