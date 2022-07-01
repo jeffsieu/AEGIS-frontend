@@ -56,6 +56,10 @@ export const getScheduleItemsByDay = (
     Record<number, ScheduleItemPropsWithoutCallback>
   > = {};
 
+	const cutOffDate = new Date(startDate);
+	cutOffDate.setMonth(startDate.getMonth() - 1);
+	cutOffDate.setDate(25);
+
   const dutyCounts: Map<number, number> = new Map();
   for (const duty of duties) {
     if (duty.memberId === undefined) {
@@ -112,7 +116,16 @@ export const getScheduleItemsByDay = (
                 ...member,
                 isAvailable: false,
                 unavailableReasons: memberRequests.map(
-                  (request) => `Request: ${request.reason}`
+                  (request) => {
+										const createdAtDate = dayjs(request.createdAt);
+										const isLate = createdAtDate.isAfter(cutOffDate);
+										return({
+											text: `Request: ${request.reason}`,
+											dateSubmitted: request.createdAt, 
+											isLate,
+											type: request.type
+										})
+									}
                 ),
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
@@ -197,7 +210,7 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  'Scheduled on same day',
+                  {text: 'Scheduled on same day', dateSubmitted: null, isLate: false, type: null},
                 ],
               };
             }
@@ -211,7 +224,7 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  'Scheduled on previous day',
+                  {text: 'Scheduled on previous day', dateSubmitted: null, isLate: false, type: null},
                 ],
               };
             }
@@ -287,4 +300,13 @@ export function scheduleToScheduleTableProps(
       memberAvailabilities
     ),
   };
+}
+
+export function requestTypeToEmoji(requestType: Backend.RequestType){
+	switch (requestType){
+		case "Work":
+			return "💼"
+		case "Personal":
+			return "👪"
+	}
 }

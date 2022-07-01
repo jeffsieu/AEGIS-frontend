@@ -60,13 +60,15 @@ function PlannerNewPlanFormWithAPI() {
           await addSchedule({
             month: month.format('YYYY-MM-DD'),
             isPublished: false,
-            duties: Object.entries(roleDates).flatMap(([roleName, dates]) =>
-              dates.map((date) => ({
-                date: date.format('YYYY-MM-DD'),
-                roleInstanceId: roles.find((role) => role.name === roleName)!
-                  .id,
-              }))
-            ),
+            duties: Object.entries(roleDates).flatMap(([roleName, dates]) => {
+              const role = roles.find((role) => role.name === roleName)!;
+              return role.roleInstances.flatMap((roleInstance) =>
+                dates.map((date) => ({
+                  date: date.format('YYYY-MM-DD'),
+                  roleInstanceId: roleInstance.id,
+                }))
+              );
+            }),
           });
 
           navigate(`/planner/schedules/${month.format('YYYY-MM')}/edit`);
@@ -79,12 +81,7 @@ function PlannerNewPlanFormWithAPI() {
 }
 
 function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
-  const {
-    roles,
-    defaultMonth,
-    months,
-    onScheduleCreate: onScheduleCreated,
-  } = props;
+  const { roles, defaultMonth, months, onScheduleCreate } = props;
 
   const theme = useTheme();
 
@@ -211,7 +208,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
         <Button
           variant="contained"
           onClick={() => {
-            onScheduleCreated(month, dateSelections);
+            onScheduleCreate(month, dateSelections);
           }}
         >
           Create

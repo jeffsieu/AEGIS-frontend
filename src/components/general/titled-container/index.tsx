@@ -1,17 +1,31 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { PropsWithChildren } from 'react';
+import StickyHeader from '../sticky-header';
 
 export type TitledContainerProps = {
   title: string;
+  endComponent?: React.ReactNode;
+  bottomComponent?: React.ReactNode;
 };
 
 function TitledContainer(props: PropsWithChildren<TitledContainerProps>) {
-  const { title, children } = props;
+  const { title, children, endComponent, bottomComponent } = props;
   return (
     <Box display="flex" flexDirection="column" alignItems="inherit" gap={4}>
-      <Typography variant="h4" gutterBottom>
-        {title}
-      </Typography>
+      <StickyHeader>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          paddingTop={2}
+          paddingBottom={1}
+        >
+          <Typography variant="h4">{title}</Typography>
+          {endComponent}
+        </Box>
+        {bottomComponent}
+        <Divider />
+      </StickyHeader>
       <div>{children}</div>
     </Box>
   );

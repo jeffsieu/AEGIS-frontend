@@ -3,11 +3,15 @@ import MemberTable, {
   MemberTableProps,
 } from '@components/members/MemberTable/MemberTable';
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
   Divider,
+  IconButton,
+  InputAdornment,
+  Stack,
   TextField,
   Typography,
   useTheme,
@@ -20,12 +24,12 @@ import {
   useUpdateMemberRolesMutation,
 } from '@services/backend';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
-import { Add } from '@mui/icons-material';
-import StickyHeader from '@components/general/sticky-header';
+import { Clear, Search } from '@mui/icons-material';
+import TitledContainer from '@components/general/titled-container';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
@@ -39,6 +43,10 @@ export type PlannerMembersPageProps = MemberTableProps & {
   onAddMemberClick: (callsign: string) => void;
   callsignFieldText: string;
   onCallsignChange(callsign: string): void;
+
+  // Query-related
+  searchQuery: string;
+  onSearchQueryChange: (query: string) => void;
 };
 
 function PlannerMembersPageWithAPI() {
@@ -88,10 +96,23 @@ function PlannerMembersPageWithAPI() {
               });
             } else {
               // Member already exists
+              const mappedMember = mappedMembers.find(
+                (m) => m.callsign === member.callsign
+              )!;
+
+              // Check if member needs an update
+              const needsUpdate = Object.keys(member.roles).some((role) => {
+                return member.roles[role] !== mappedMember.roles[role];
+              });
+
+              if (!needsUpdate) {
+                continue;
+              }
+
+              // Update member
+              const memberId = mappedMember.id;
               await updateMemberRoles({
-                memberId: mappedMembers.find(
-                  (m) => m.callsign === member.callsign
-                )!.id,
+                memberId: memberId,
                 roleNames: roleNames,
               });
             }
@@ -115,6 +136,7 @@ export type PlannerMembersPageWithStateProps = {
 function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
   const { updateMemberEntries, roles } = props;
   const [members, setMembers] = useState<MemberEntry[]>(props.members);
+  const [search, setSearch] = useState<string>('');
   const [isEditing, setEditing] = useState(false);
   const [callsignFieldText, setCallsignFieldText] = useState('');
   const [isSaving, setSaving] = useState(false);
@@ -173,17 +195,21 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
           newMemberRoles[role.name] = false;
         }
         setMembers([
-          ...members,
           {
             callsign: name,
             roles: newMemberRoles,
           },
+          ...members,
         ]);
         setCallsignFieldText('');
       }}
       callsignFieldText={callsignFieldText}
       onCallsignChange={(callsign) => setCallsignFieldText(callsign)}
       isSaving={isSaving}
+      searchQuery={search}
+      onSearchQueryChange={(query: string) => {
+        setSearch(query.replace(/\W/g, ''));
+      }}
     />
   );
 }
@@ -200,6 +226,8 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     callsignFieldText,
     onCallsignChange,
     isSaving,
+    searchQuery,
+    onSearchQueryChange,
   } = props;
 
   const theme = useTheme();
@@ -221,25 +249,55 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
     ? 'Callsign cannot be longer than 8 characters'
     : '';
 
+  const filteredMembers = useMemo(() => {
+    const regex = new RegExp(`^${searchQuery.toLowerCase()}`);
+    return members.filter((member) =>
+      regex.test(member.callsign.toLowerCase())
+    );
+  }, [members, searchQuery]);
+
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <StickyHeader>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          paddingY={1}
-        >
-          <Typography variant="h4" gutterBottom>
-            Members
-          </Typography>
+    <TitledContainer
+      title="Members"
+      endComponent={
+        <Box display="flex" gap={1} alignItems="center">
+          <TextField
+            value={searchQuery}
+            onChange={(event) => {
+              onSearchQueryChange(event.target.value);
+            }}
+            placeholder="Search callsign"
+            autoComplete="off"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{
+                      visibility: searchQuery.length > 0 ? 'visible' : 'hidden',
+                    }}
+                    onClick={() => {
+                      onSearchQueryChange('');
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          ></TextField>
+          <Divider orientation="vertical" flexItem />
           {!isEditing && (
             <Button variant="outlined" onClick={onEditClick}>
               Edit
             </Button>
           )}
           {isEditing && (
-            <Box display="flex" gap={1}>
+            <>
               <Button onClick={onCancelClick}>Cancel</Button>
               <AsyncButton
                 loading={isSaving}
@@ -248,66 +306,76 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
               >
                 Save
               </AsyncButton>
-            </Box>
+            </>
           )}
         </Box>
-        <Divider />
-      </StickyHeader>
-      <MemberTable
-        members={members}
-        onMemberRolesChange={onMemberRolesChange}
-        disabled={!isEditing}
-      />
-      {isEditing && (
-        <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
-          <CardContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-              }}
-            >
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="start"
-                gap={2}
-                paddingY={1}
+      }
+      bottomComponent={
+        <div>
+          {isEditing && (
+            <Box marginBottom={1}>
+              <Alert severity="info">
+                Currently editing. Remember to save your changes.
+              </Alert>
+            </Box>
+          )}
+        </div>
+      }
+    >
+      <Stack spacing={4}>
+        {isEditing && (
+          <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
+            <CardContent>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                }}
               >
-                <Box display="flex" gap={1}>
-                  <Add htmlColor={theme.palette.text.secondary} />
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="start"
+                  gap={2}
+                  paddingY={1}
+                >
                   <Typography
-                    variant="h6"
+                    variant="h5"
                     gutterBottom
                     color={theme.palette.text.secondary}
                   >
-                    New member
+                    Add member
                   </Typography>
+                  <TextField
+                    autoComplete="off"
+                    label="Callsign"
+                    variant="filled"
+                    value={callsignFieldText}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      onCallsignChange(event.target.value);
+                    }}
+                    error={isInvalidCallsign && !isCallsignEmpty}
+                    helperText={errorText}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isInvalidCallsign}
+                    variant="contained"
+                    onClick={() => onAddMemberClick(callsignFieldText)}
+                  >
+                    Add member
+                  </Button>
                 </Box>
-                <TextField
-                  autoComplete="off"
-                  label="Callsign"
-                  variant="filled"
-                  value={callsignFieldText}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    onCallsignChange(event.target.value);
-                  }}
-                  error={isInvalidCallsign && !isCallsignEmpty}
-                  helperText={errorText}
-                />
-                <Button
-                  type="submit"
-                  disabled={isInvalidCallsign}
-                  variant="contained"
-                  onClick={() => onAddMemberClick(callsignFieldText)}
-                >
-                  Add member
-                </Button>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </Box>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+        <MemberTable
+          members={filteredMembers}
+          onMemberRolesChange={onMemberRolesChange}
+          disabled={!isEditing}
+        />
+      </Stack>
+    </TitledContainer>
   );
 }
 

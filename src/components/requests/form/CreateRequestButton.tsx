@@ -34,7 +34,6 @@ function CreateRequestButton() {
       if (isCreating) {
         return (
           <Stack spacing={4}>
-            <Divider />
             <Typography variant="h5" color={theme.palette.text.secondary}>
               New request
             </Typography>

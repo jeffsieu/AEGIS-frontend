@@ -11,7 +11,12 @@ export type AvailableQualifiedMember = BaseQualifiedMember & {
   isAvailable: true;
 };
 
-type Reason = string;
+type Reason = {
+	text: string;
+	dateSubmitted: string | null;
+	isLate: boolean;
+	type: Backend.RequestType | null;
+};
 
 export type UnavailableQualifiedMember = BaseQualifiedMember & {
   isAvailable: false;
