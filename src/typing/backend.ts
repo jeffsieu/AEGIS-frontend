@@ -46,7 +46,7 @@ export namespace Backend {
 
   export type Member = {
     callsign: string;
-    squadron: string;
+    sqn: string;
     type: string;
   };
 

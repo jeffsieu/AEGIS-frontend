@@ -86,7 +86,7 @@ function PlannerMembersPageWithAPI() {
               // Add member
               const memberId = await addMember({
                 callsign: member.callsign,
-                squadron: 'placeholder',
+                sqn: 'placeholder',
                 type: 'MEMBER',
               }).unwrap();
 
