@@ -27,17 +27,17 @@ function MemberTable(props: MemberTableProps) {
   const { members, onMemberRolesChange, disabled = false } = props;
 
   return (
-    <Box display='flex' flexDirection='column' gap={4}>
+    <Box display="flex" flexDirection="column" gap={4}>
       <Grid container spacing={2}>
         {members.length === 0 && <EmptyHint>{ERROR_NO_MEMBERS}</EmptyHint>}
         {members.map((member, index) => (
           <Grid item xs={12} lg={6} key={member.callsign}>
-            <Typography variant='h6' gutterBottom>
+            <Typography variant="h6" gutterBottom>
               {member.callsign}
             </Typography>
             <ToggleButtonGroup
               disabled={disabled}
-              color='primary'
+              color="primary"
               onChange={(event, roles: string[]) =>
                 onMemberRolesChange(
                   member.callsign,
@@ -49,7 +49,7 @@ function MemberTable(props: MemberTableProps) {
               )}>
               {[...Object.entries(member.roles)].map(([role, isSelected]) => (
                 <ToggleButton key={role} value={role} disabled={disabled}>
-                  <Box display='flex' gap={1}>
+                  <Box display="flex" gap={1}>
                     {isSelected ? <Check /> : <Close />}
                     {role}
                   </Box>
