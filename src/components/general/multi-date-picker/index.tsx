@@ -116,6 +116,14 @@ function MultiDatePicker(
     setAnchorEl(null);
   }
 
+  const allDatesInMonth = useMemo(
+    () =>
+      [...iterateDates(minDate.toDate(), maxDate.toDate())].map((date) =>
+        dayjs(date)
+      ),
+    [minDate, maxDate]
+  );
+
   return (
     <>
       <TextField
@@ -161,7 +169,7 @@ function MultiDatePicker(
           displayStaticWrapperAs="desktop"
           {...restProps}
           onChange={onChange}
-          value={null}
+          value={dayjs(minDate.toDate())}
           closeOnSelect={false}
           renderInput={({ value, ...params }) => (
             <TextField
@@ -182,11 +190,7 @@ function MultiDatePicker(
               startIcon={<SelectAllOutlined />}
               size="small"
               onClick={() => {
-                onSelectionChanged(
-                  [...iterateDates(minDate.toDate(), maxDate.toDate())].map(
-                    (date) => dayjs(date)
-                  )
-                );
+                onSelectionChanged(allDatesInMonth);
               }}
             >
               Select all

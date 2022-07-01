@@ -20,8 +20,9 @@ import {
 } from '@services/backend';
 import { Role } from '@typing';
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
+import { iterateDates } from '@utils/helpers/schedule';
 import dayjs, { Dayjs } from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export type PlannerNewPlanFormProps = {
@@ -84,10 +85,6 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
 
   const theme = useTheme();
 
-  const [dateSelections, setDateSelections] = useState<{
-    [key: string]: Dayjs[];
-  }>({});
-
   const [month, setMonth] = useState(defaultMonth);
 
   const minDate = useMemo(() => {
@@ -98,12 +95,34 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
     return month.endOf('month');
   }, [month]);
 
+  const defaultDateSelections = useMemo(() => {
+    const defaultDates: Record<string, Dayjs[]> = {};
+    roles.forEach((role) => {
+      const allDatesInMonth = [
+        ...iterateDates(minDate.toDate(), maxDate.toDate()),
+      ].map((date) => dayjs(date));
+
+      const shouldSelectAll = role.name !== 'A2';
+
+      defaultDates[role.name] = shouldSelectAll ? allDatesInMonth : [];
+    });
+    return defaultDates;
+  }, [minDate, maxDate, roles]);
+
+  const [dateSelections, setDateSelections] = useState<{
+    [key: string]: Dayjs[];
+  }>(defaultDateSelections);
+
+  // Update date selection when month is changed.
+  useEffect(() => {
+    setDateSelections(defaultDateSelections);
+  }, [defaultDateSelections, month]);
+
   function onMonthChange(event: SelectChangeEvent<Dayjs>) {
     const newMonth = event.target.value as Dayjs;
     const hasMonthChanged = !month.isSame(newMonth, 'month');
     if (hasMonthChanged) {
       setMonth(newMonth);
-      setDateSelections({});
     }
   }
 
@@ -161,6 +180,11 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                     views={['day']}
                     defaultCalendarMonth={month}
                     onSelectionChanged={(selectedDates: Dayjs[]) => {
+                      console.log('fk');
+                      console.log({
+                        ...dateSelections,
+                        [role.name]: selectedDates,
+                      });
                       setDateSelections({
                         ...dateSelections,
                         [role.name]: selectedDates,
