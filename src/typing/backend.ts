@@ -78,4 +78,8 @@ export namespace Backend {
       ? Entry<T[K]>
       : T[K];
   };
+
+  export type WithId<T> = {
+    id: number;
+  } & T;
 }
