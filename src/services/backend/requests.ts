@@ -40,11 +40,20 @@ export const requestsApi = baseApi.injectEndpoints({
         { type: 'Requests', id: 'LIST' },
       ],
     }),
+    deleteRequests: builder.mutation<void, number[]>({
+      query: (requestIds) => ({
+        url: 'requests/batch/',
+        method: 'DELETE',
+        body: requestIds,
+      }),
+      invalidatesTags: [{ type: 'Requests', id: 'LIST' }],
+    }),
   }),
 });
 
 export const {
   useAddRequestsMutation,
+  useDeleteRequestsMutation,
   useGetRequestsQuery,
   useGetRequestsForMemberQuery,
 } = requestsApi;

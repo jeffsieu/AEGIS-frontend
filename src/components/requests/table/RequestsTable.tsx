@@ -67,7 +67,9 @@ export default function RequestsTable(props: RequestsTableProps) {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    // setRows(rows.filter((row) => row.id !== id));
+    const newRows = rows.filter((row) => row.id !== id);
+    setRows(newRows);
+    onRequestsUpdate(newRows as Request[]);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {

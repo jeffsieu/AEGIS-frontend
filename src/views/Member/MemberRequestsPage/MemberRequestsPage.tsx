@@ -1,7 +1,10 @@
 import { useBuildWithApiQueries } from '@utils/helpers/api-builder';
 import EmptyHint from '@components/general/empty-hint';
 import RequestsTable from '@components/requests/table/RequestsTable';
-import { useGetRequestsQuery } from '@services/backend';
+import {
+  useDeleteRequestsMutation,
+  useGetRequestsQuery,
+} from '@services/backend';
 import { RequestPeriod } from '@typing';
 import { ERROR_NO_REQUESTS } from '@utils/constants/string';
 import dayjs from 'dayjs';
@@ -11,9 +14,11 @@ import CreateRequestButton from '@components/requests/form/CreateRequestButton';
 
 export type MemberRequestsPageProps = {
   periods: (RequestPeriod & { id: number; callsign: string })[];
+  deleteRequests: (ids: number[]) => Promise<void>;
 };
 
 function MemberRequestsPageWithAPI() {
+  const [deleteRequests] = useDeleteRequestsMutation();
   return useBuildWithApiQueries({
     queries: {
       periods: useGetRequestsQuery(),
@@ -27,6 +32,10 @@ function MemberRequestsPageWithAPI() {
           endDate: dayjs(period.endDate),
           callsign: period.member.callsign,
         })),
+        deleteRequests: async (ids) => {
+          console.log('deleting', ids);
+          deleteRequests(ids);
+        },
       };
       return <MemberRequestsPage {...props} />;
     },
@@ -34,7 +43,7 @@ function MemberRequestsPageWithAPI() {
 }
 
 function MemberRequestsPage(props: MemberRequestsPageProps) {
-  const { periods } = props;
+  const { periods, deleteRequests } = props;
 
   return (
     <TitledContainer title="Requests">
@@ -45,7 +54,16 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
         </div>
         {periods.length > 0 && (
           <RequestsTable
-            onRequestsUpdate={() => {
+            onRequestsUpdate={(requests) => {
+              console.log(requests);
+              const oldRequestIds = periods.map((period) => period.id);
+              const newRequestIds = requests.map((request) => request.id);
+              const deletedRequestIds = oldRequestIds.filter(
+                (id) => !newRequestIds.includes(id)
+              );
+              console.log(deletedRequestIds);
+              deleteRequests(deletedRequestIds);
+
               // Todo: update requests
             }}
             requests={periods.map(({ startDate, endDate, ...rest }) => ({
