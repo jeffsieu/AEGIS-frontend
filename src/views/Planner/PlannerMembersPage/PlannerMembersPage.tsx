@@ -11,6 +11,7 @@ import {
   Divider,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Typography,
   useTheme,
@@ -27,8 +28,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
-import { Add, Clear, Search } from '@mui/icons-material';
-import StickyHeader from '@components/general/sticky-header';
+import { Clear, Search } from '@mui/icons-material';
+import TitledContainer from '@components/general/titled-container';
 
 export type PlannerMembersPageProps = MemberTableProps & {
   roles: Backend.Role[];
@@ -194,11 +195,11 @@ function PlannerMembersPageWithState(props: PlannerMembersPageWithStateProps) {
           newMemberRoles[role.name] = false;
         }
         setMembers([
-          ...members,
           {
             callsign: name,
             roles: newMemberRoles,
           },
+          ...members,
         ]);
         setCallsignFieldText('');
       }}
@@ -256,133 +257,125 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
   }, [members, searchQuery]);
 
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <StickyHeader>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          paddingY={1}
-        >
-          <Typography variant="h4" gutterBottom>
-            Members
-          </Typography>
-
-          <Box display="flex" gap={1} alignItems="center">
-            <TextField
-              value={searchQuery}
-              onChange={(event) => {
-                onSearchQueryChange(event.target.value);
-              }}
-              placeholder="Search callsign"
-              autoComplete="off"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      sx={{
-                        visibility:
-                          searchQuery.length > 0 ? 'visible' : 'hidden',
-                      }}
-                      onClick={() => {
-                        onSearchQueryChange('');
-                      }}
-                    >
-                      <Clear />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            ></TextField>
-            <Divider orientation="vertical" flexItem />
-            {!isEditing && (
-              <Button variant="outlined" onClick={onEditClick}>
-                Edit
-              </Button>
-            )}
-            {isEditing && (
-              <>
-                <Button onClick={onCancelClick}>Cancel</Button>
-                <AsyncButton
-                  loading={isSaving}
-                  variant="contained"
-                  asyncRequest={onSaveClick}
-                >
-                  Save
-                </AsyncButton>
-              </>
-            )}
-          </Box>
-        </Box>
-        {isEditing && (
-          <Box marginBottom={1}>
-            <Alert severity="info">
-              Currently editing. Remember to save your changes.
-            </Alert>
-          </Box>
-        )}
-        <Divider />
-      </StickyHeader>
-      <MemberTable
-        members={filteredMembers}
-        onMemberRolesChange={onMemberRolesChange}
-        disabled={!isEditing}
-      />
-      {isEditing && (
-        <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
-          <CardContent>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-              }}
-            >
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="start"
-                gap={2}
-                paddingY={1}
+    <TitledContainer
+      title="Members"
+      endComponent={
+        <Box display="flex" gap={1} alignItems="center">
+          <TextField
+            value={searchQuery}
+            onChange={(event) => {
+              onSearchQueryChange(event.target.value);
+            }}
+            placeholder="Search callsign"
+            autoComplete="off"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{
+                      visibility: searchQuery.length > 0 ? 'visible' : 'hidden',
+                    }}
+                    onClick={() => {
+                      onSearchQueryChange('');
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          ></TextField>
+          <Divider orientation="vertical" flexItem />
+          {!isEditing && (
+            <Button variant="outlined" onClick={onEditClick}>
+              Edit
+            </Button>
+          )}
+          {isEditing && (
+            <>
+              <Button onClick={onCancelClick}>Cancel</Button>
+              <AsyncButton
+                loading={isSaving}
+                variant="contained"
+                asyncRequest={onSaveClick}
               >
-                <Box display="flex" gap={1}>
-                  <Add htmlColor={theme.palette.text.secondary} />
+                Save
+              </AsyncButton>
+            </>
+          )}
+        </Box>
+      }
+      bottomComponent={
+        <div>
+          {isEditing && (
+            <Box marginBottom={1}>
+              <Alert severity="info">
+                Currently editing. Remember to save your changes.
+              </Alert>
+            </Box>
+          )}
+        </div>
+      }
+    >
+      <Stack spacing={4}>
+        {isEditing && (
+          <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
+            <CardContent>
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                }}
+              >
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="start"
+                  gap={2}
+                  paddingY={1}
+                >
                   <Typography
-                    variant="h6"
+                    variant="h5"
                     gutterBottom
                     color={theme.palette.text.secondary}
                   >
-                    New member
+                    Add member
                   </Typography>
+                  <TextField
+                    autoComplete="off"
+                    label="Callsign"
+                    variant="filled"
+                    value={callsignFieldText}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      onCallsignChange(event.target.value);
+                    }}
+                    error={isInvalidCallsign && !isCallsignEmpty}
+                    helperText={errorText}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isInvalidCallsign}
+                    variant="contained"
+                    onClick={() => onAddMemberClick(callsignFieldText)}
+                  >
+                    Add member
+                  </Button>
                 </Box>
-                <TextField
-                  autoComplete="off"
-                  label="Callsign"
-                  variant="filled"
-                  value={callsignFieldText}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    onCallsignChange(event.target.value);
-                  }}
-                  error={isInvalidCallsign && !isCallsignEmpty}
-                  helperText={errorText}
-                />
-                <Button
-                  type="submit"
-                  disabled={isInvalidCallsign}
-                  variant="contained"
-                  onClick={() => onAddMemberClick(callsignFieldText)}
-                >
-                  Add member
-                </Button>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </Box>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+        <MemberTable
+          members={filteredMembers}
+          onMemberRolesChange={onMemberRolesChange}
+          disabled={!isEditing}
+        />
+      </Stack>
+    </TitledContainer>
   );
 }
 

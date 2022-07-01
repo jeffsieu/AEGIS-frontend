@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Stack,
   TextField,
   Typography,
   useTheme,
@@ -22,7 +23,7 @@ import { Backend } from '@typing/backend';
 import { AsyncButton } from '@components/general/async-button';
 import { getCardColor } from '@utils/theme';
 import { Add, Clear, Person } from '@mui/icons-material';
-import StickyHeader from '@components/general/sticky-header';
+import TitledContainer from '@components/general/titled-container';
 
 type RoleWithInstances = Backend.Role & {
   roleInstances: Backend.RoleInstance[];
@@ -176,17 +177,10 @@ function PlannerRolesPage(props: PlannerRolesPageProps) {
   const isInvalidRole = roleFieldText.length === 0;
 
   return (
-    <Box display="flex" flexDirection="column" gap={4}>
-      <StickyHeader>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          paddingY={1}
-        >
-          <Typography variant="h4" gutterBottom>
-            Roles
-          </Typography>
+    <TitledContainer
+      title="Roles"
+      endComponent={
+        <div>
           {!isEditing && (
             <Button variant="outlined" onClick={onEditClick}>
               Edit
@@ -204,146 +198,142 @@ function PlannerRolesPage(props: PlannerRolesPageProps) {
               </AsyncButton>
             </Box>
           )}
-        </Box>
-        <Divider />
-      </StickyHeader>
-      <Card variant="outlined">
-        <List disablePadding>
-          {roles.map((role) => (
-            <div key={role.name}>
-              <ListSubheader>{role.name}</ListSubheader>
-              {role.roleInstances.map((roleInstance) => (
-                <ListItem key={roleInstance.name}>
-                  <ListItemIcon>
-                    <Person />
-                  </ListItemIcon>
-                  <ListItemText>{roleInstance.name}</ListItemText>
-                </ListItem>
-              ))}
-              <Divider />
-            </div>
-          ))}
-        </List>
-      </Card>
-      {isEditing && (
-        <>
-          <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
-            <CardContent>
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                }}
-              >
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="start"
-                  gap={2}
-                  paddingY={1}
+        </div>
+      }
+    >
+      <Stack spacing={2}>
+        <Card variant="outlined">
+          <List disablePadding>
+            {roles.map((role) => (
+              <div key={role.name}>
+                <ListSubheader>{role.name}</ListSubheader>
+                {role.roleInstances.map((roleInstance) => (
+                  <ListItem key={roleInstance.name}>
+                    <ListItemIcon>
+                      <Person />
+                    </ListItemIcon>
+                    <ListItemText>{roleInstance.name}</ListItemText>
+                  </ListItem>
+                ))}
+                <Divider />
+              </div>
+            ))}
+          </List>
+        </Card>
+        {isEditing && (
+          <>
+            <Card variant="outlined" sx={{ background: getCardColor(theme) }}>
+              <CardContent>
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                  }}
                 >
-                  <Box display="flex" gap={4}>
-                    <Add htmlColor={theme.palette.text.secondary} />
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="start"
+                    gap={2}
+                    paddingY={1}
+                  >
                     <Typography
-                      variant="h6"
-                      gutterBottom
+                      variant="h5"
                       color={theme.palette.text.secondary}
                     >
-                      New role
+                      Add role
                     </Typography>
-                  </Box>
-                  <ListItem disableGutters>
-                    <ListItemText inset>
-                      <TextField
-                        autoComplete="off"
-                        label="Name"
-                        variant="filled"
-                        value={roleFieldText}
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                          onRoleFieldChange(event.target.value);
-                        }}
-                      />
-                    </ListItemText>
-                  </ListItem>
-                  <List disablePadding>
-                    <ListItem disableGutters>
-                      <ListItemText inset>
-                        <Typography
-                          variant="h6"
-                          color={theme.palette.text.secondary}
-                        >
-                          Role variants
-                        </Typography>
-                      </ListItemText>
-                    </ListItem>
-                    {roleInstanceDescriptions.map((description, index) => (
+                    <TextField
+                      autoComplete="off"
+                      label="Name"
+                      variant="filled"
+                      required
+                      value={roleFieldText}
+                      onChange={(
+                        event: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        onRoleFieldChange(event.target.value);
+                      }}
+                    />
+                    <Divider flexItem />
+                    <List disablePadding>
                       <ListItem disableGutters>
-                        <ListItemIcon>
-                          <Person />
-                        </ListItemIcon>
-                        <TextField
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                {index + 1}
-                              </InputAdornment>
-                            ),
-                          }}
-                          label="Description"
-                          variant="filled"
-                          autoComplete="off"
-                          key={index}
-                          value={description}
-                          onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            const newRoleInstanceDescriptions = [
-                              ...roleInstanceDescriptions,
-                            ];
-                            newRoleInstanceDescriptions[index] =
-                              event.target.value;
-                            onRoleInstanceDescriptionsChange(
-                              newRoleInstanceDescriptions
-                            );
-                          }}
-                        />
-                        {roleInstanceDescriptions.length > 1 && (
-                          <IconButton
-                            onClick={() => onDeleteInstanceClick(index)}
+                        <ListItemText inset>
+                          <Typography
+                            variant="h6"
+                            color={theme.palette.text.secondary}
                           >
-                            <Clear />
-                          </IconButton>
-                        )}
+                            Role variants
+                          </Typography>
+                        </ListItemText>
                       </ListItem>
-                    ))}
-                    <ListItem disableGutters>
-                      <ListItemText inset>
-                        <Button
-                          variant="outlined"
-                          startIcon={<Add />}
-                          onClick={onAddInstanceClick}
-                        >
-                          Add variant
-                        </Button>
-                      </ListItemText>
-                    </ListItem>
-                  </List>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={isInvalidRole}
-                    onClick={() => onAddRoleClick(roleFieldText)}
-                  >
-                    Add role
-                  </Button>
-                </Box>
-              </form>
-            </CardContent>
-          </Card>
-        </>
-      )}
-    </Box>
+                      {roleInstanceDescriptions.map((description, index) => (
+                        <ListItem disableGutters>
+                          <ListItemIcon>
+                            <Person />
+                          </ListItemIcon>
+                          <TextField
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  {index + 1}
+                                </InputAdornment>
+                              ),
+                            }}
+                            label="Description"
+                            variant="filled"
+                            autoComplete="off"
+                            key={index}
+                            value={description}
+                            onChange={(
+                              event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              const newRoleInstanceDescriptions = [
+                                ...roleInstanceDescriptions,
+                              ];
+                              newRoleInstanceDescriptions[index] =
+                                event.target.value;
+                              onRoleInstanceDescriptionsChange(
+                                newRoleInstanceDescriptions
+                              );
+                            }}
+                          />
+                          {roleInstanceDescriptions.length > 1 && (
+                            <IconButton
+                              onClick={() => onDeleteInstanceClick(index)}
+                            >
+                              <Clear />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <ListItem disableGutters>
+                        <ListItemText inset>
+                          <Button
+                            variant="outlined"
+                            startIcon={<Add />}
+                            onClick={onAddInstanceClick}
+                          >
+                            Add variant
+                          </Button>
+                        </ListItemText>
+                      </ListItem>
+                    </List>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      disabled={isInvalidRole}
+                      onClick={() => onAddRoleClick(roleFieldText)}
+                    >
+                      Add role
+                    </Button>
+                  </Box>
+                </form>
+              </CardContent>
+            </Card>
+          </>
+        )}
+      </Stack>
+    </TitledContainer>
   );
 }
 
