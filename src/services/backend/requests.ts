@@ -48,6 +48,14 @@ export const requestsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Requests', id: 'LIST' }],
     }),
+    updateRequest: builder.mutation<void, Backend.WithId<Backend.Request>>({
+      query: (request) => ({
+        url: `requests/${request.id}`,
+        method: 'PUT',
+        body: request,
+      }),
+      invalidatesTags: [{ type: 'Requests', id: 'LIST' }],
+    }),
   }),
 });
 
@@ -56,4 +64,5 @@ export const {
   useDeleteRequestsMutation,
   useGetRequestsQuery,
   useGetRequestsForMemberQuery,
+  useUpdateRequestMutation,
 } = requestsApi;

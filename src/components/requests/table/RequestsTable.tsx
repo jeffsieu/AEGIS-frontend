@@ -12,6 +12,7 @@ import {
   GridActionsCellItem,
   GridRowId,
   GridRowsProp,
+  GridRowModel,
 } from '@mui/x-data-grid';
 import { Backend } from '@typing/backend';
 import dayjs from 'dayjs';
@@ -28,14 +29,15 @@ export type Request = {
 
 export type RequestsTableProps = {
   requests: Request[];
+  members: Backend.Entry<Backend.Member>[];
   onRequestsUpdate: (requests: Request[]) => void;
 };
 
 export default function RequestsTable(props: RequestsTableProps) {
-  const { onRequestsUpdate } = props;
+  const { members, onRequestsUpdate } = props;
 
   const theme = useTheme();
-  const [rows, setRows] = useState<GridRowsProp>(props.requests);
+  const [rows, setRows] = useState<GridRowsProp<Request>>(props.requests);
 
   useEffect(() => {
     setRows(props.requests);
@@ -63,13 +65,23 @@ export default function RequestsTable(props: RequestsTableProps) {
 
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    onRequestsUpdate(rows as Request[]);
+  };
+
+  const processRowUpdate = async (newRow: GridRowModel<Request>) => {
+    const newRows = rows.map((row) => {
+      if (row.id === newRow.id) {
+        return newRow;
+      }
+      return row;
+    });
+    onRequestsUpdate(newRows);
+    return newRow;
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     const newRows = rows.filter((row) => row.id !== id);
     setRows(newRows);
-    onRequestsUpdate(newRows as Request[]);
+    onRequestsUpdate(newRows);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -77,11 +89,6 @@ export default function RequestsTable(props: RequestsTableProps) {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
   };
 
   const columns: GridColumns = [
@@ -89,6 +96,9 @@ export default function RequestsTable(props: RequestsTableProps) {
       field: 'callsign',
       headerName: 'Callsign',
       width: 150,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: members.map((member) => member.callsign),
     },
     {
       field: 'startDate',
@@ -171,6 +181,7 @@ export default function RequestsTable(props: RequestsTableProps) {
       editMode="row"
       columns={columns}
       rows={rows}
+      processRowUpdate={processRowUpdate}
       rowModesModel={rowModesModel}
       experimentalFeatures={{ newEditingApi: true }}
       onRowEditStart={handleRowEditStart}
