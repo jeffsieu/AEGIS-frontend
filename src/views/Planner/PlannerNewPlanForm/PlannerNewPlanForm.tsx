@@ -180,11 +180,6 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                     views={['day']}
                     defaultCalendarMonth={month}
                     onSelectionChanged={(selectedDates: Dayjs[]) => {
-                      console.log('fk');
-                      console.log({
-                        ...dateSelections,
-                        [role.name]: selectedDates,
-                      });
                       setDateSelections({
                         ...dateSelections,
                         [role.name]: selectedDates,

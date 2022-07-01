@@ -92,7 +92,6 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
                     oldRequest.reason !== request.reason ||
                     oldRequest.type !== request.type
                   ) {
-                    console.log('updating');
                     const newMemberId = members.find(
                       (member) => member.callsign === request.callsign
                     )!.id;
