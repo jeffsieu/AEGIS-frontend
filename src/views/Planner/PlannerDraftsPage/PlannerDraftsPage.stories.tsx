@@ -17,7 +17,7 @@ export default {
 };
 
 const Template: ComponentStory<typeof PlannerDraftsPageWithProps> = (args) => (
-  <PlannerDraftsPageWithProps {...args} />
+    <PlannerDraftsPageWithProps {...args} />
 );
 
 const creationDates = {
