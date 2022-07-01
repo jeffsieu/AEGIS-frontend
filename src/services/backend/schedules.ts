@@ -80,6 +80,7 @@ export const schedulesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, { month }) => [
         { type: 'Schedules', id: month },
+        { type: 'Schedules', id: 'LIST' },
       ],
     }),
   }),

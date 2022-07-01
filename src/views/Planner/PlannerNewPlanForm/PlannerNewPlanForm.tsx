@@ -85,14 +85,16 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
 
   const theme = useTheme();
 
-  const [month, setMonth] = useState(defaultMonth);
+  const defaultMonthString = defaultMonth.format('YYYY-MM-DD');
+
+  const [month, setMonth] = useState(defaultMonthString);
 
   const minDate = useMemo(() => {
-    return month.startOf('month');
+    return dayjs(month).startOf('month');
   }, [month]);
 
   const maxDate = useMemo(() => {
-    return month.endOf('month');
+    return dayjs(month).endOf('month');
   }, [month]);
 
   const defaultDateSelections = useMemo(() => {
@@ -118,11 +120,11 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
     setDateSelections(defaultDateSelections);
   }, [defaultDateSelections, month]);
 
-  function onMonthChange(event: SelectChangeEvent<Dayjs>) {
-    const newMonth = event.target.value as Dayjs;
-    const hasMonthChanged = !month.isSame(newMonth, 'month');
+  function onMonthChange(event: SelectChangeEvent<string>) {
+    const newMonthString = event.target.value as string;
+    const hasMonthChanged = !dayjs(month).isSame(newMonthString, 'month');
     if (hasMonthChanged) {
-      setMonth(newMonth);
+      setMonth(newMonthString);
     }
   }
 
@@ -133,15 +135,12 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
           <InputLabel>Month</InputLabel>
           <Select
             label="Month"
-            defaultValue={defaultMonth}
+            defaultValue={defaultMonthString}
             value={month}
             onChange={onMonthChange}
           >
             {months.map((month, index) => (
-              <MenuItem
-                key={index}
-                value={month as unknown as string /* Workaround */}
-              >
+              <MenuItem key={index} value={month.format('YYYY-MM-DD')}>
                 {month.format('MMMM YYYY')}
               </MenuItem>
             ))}
@@ -178,13 +177,8 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
                     minDate={minDate}
                     maxDate={maxDate}
                     views={['day']}
-                    defaultCalendarMonth={month}
+                    defaultCalendarMonth={dayjs(month)}
                     onSelectionChanged={(selectedDates: Dayjs[]) => {
-                      console.log('fk');
-                      console.log({
-                        ...dateSelections,
-                        [role.name]: selectedDates,
-                      });
                       setDateSelections({
                         ...dateSelections,
                         [role.name]: selectedDates,
@@ -208,7 +202,7 @@ function PlannerNewPlanForm(props: PlannerNewPlanFormProps) {
         <Button
           variant="contained"
           onClick={() => {
-            onScheduleCreate(month, dateSelections);
+            onScheduleCreate(dayjs(month), dateSelections);
           }}
         >
           Create
