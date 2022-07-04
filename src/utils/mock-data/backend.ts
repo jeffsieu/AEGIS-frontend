@@ -191,7 +191,12 @@ export const MEMBERS: Backend.Member[] = [
   {
     callsign: '165',
     sqn: '165',
-    type: '165',
+    type: 'MEMBER',
+  },
+  {
+    callsign: 'ADG',
+    sqn: 'ADG',
+    type: 'MEMBER',
   },
 ];
 
@@ -279,7 +284,7 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 7,
-    roles: ['G4 COMD', 'A2'],
+    roles: ['G4 COMD', 'G4'],
   },
   {
     memberId: 8,
@@ -404,6 +409,10 @@ export const QUALIFICATIONS: MockQualification[] = [
   {
     memberId: 38,
     roles: ['A2'],
+  },
+  {
+    memberId: 39,
+    roles: ['A2'],
   }
 ];
 
@@ -417,7 +426,7 @@ export const SCHEDULES: Backend.Schedule[] = [
       [1, 2, 3, 4, 5, 6, 7, 8].flatMap((roleInstanceId) => [
         {
           roleInstanceId,
-          memberId: Math.floor(Math.random() * 38),
+          memberId: Math.floor(Math.random() * 39),
           date: dayjs(date).format('YYYY-MM-DD'),
         },
       ])

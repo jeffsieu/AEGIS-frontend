@@ -232,7 +232,7 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 
   const theme = useTheme();
 
-  const alphaRegex = /^[a-zA-Z_]*$/;
+  const alphaRegex = /^[a-zA-Z0-9_]*$/;
   const isCallsignNotAlphanumeric = !alphaRegex.test(callsignFieldText);
   const isCallsignTooShort = callsignFieldText.length < 3;
   const isCallsignTooLong = callsignFieldText.length > 8;
