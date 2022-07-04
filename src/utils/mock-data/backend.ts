@@ -232,12 +232,12 @@ export const ROLES: (Backend.Role & {
         description: 'AM',
       },
       {
-        name: 'A2 AM Stby',
-        description: 'AM Stby',
-      },
-      {
         name: 'A2 PM',
         description: 'PM',
+      },
+      {
+        name: 'A2 AM Stby',
+        description: 'AM Stby',
       },
       {
         name: 'A2 PM Stby',
