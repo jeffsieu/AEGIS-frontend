@@ -8,10 +8,6 @@ import {
   Stack, 
   Typography, 
   useTheme,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   SelectChangeEvent } from '@mui/material';
 import {
   useGetMembersQuery,
@@ -80,7 +76,7 @@ function ThisMonthSchedule(props: ThisMonthScheduleProps) {
               variant="outlined"
               color={schedule.isPublished ? 'primary' : undefined}
             />
-          <ScheduleSelectMember members={members} selectedMember={selectedMember} handleSelectedMemberChange={handleSelectedMemberChange} />
+            <ScheduleSelectMember members={members} selectedMember={selectedMember} handleSelectedMemberChange={handleSelectedMemberChange} />
           </Stack>
           <FullWidthScheduleContainer>
             <Box paddingLeft="calc(50vw - 600px + 24px - 36px)">
