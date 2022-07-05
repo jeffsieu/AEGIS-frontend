@@ -84,11 +84,6 @@ export const MEMBERS: Backend.Member[] = [
     type: 'MEMBER',
   },
   {
-    callsign: 'Muru',
-    sqn: '69',
-    type: 'MEMBER',
-  },
-  {
     callsign: 'Priscilla',
     sqn: '69',
     type: 'MEMBER',
@@ -324,47 +319,47 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 17,
-    roles: ['G4 COMD', 'G4'],
-  },
-  {
-    memberId: 18,
     roles: [],
   },
   {
-    memberId: 19,
+    memberId: 18,
     roles: ['A2'],
   },
   {
-    memberId: 20,
+    memberId: 19,
     roles: ['G4'],
+  },
+  {
+    memberId: 20,
+    roles: ['G4 COMD'],
   },
   {
     memberId: 21,
-    roles: ['G4 COMD'],
+    roles: ['G4 COMD', 'G4'],
   },
   {
     memberId: 22,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['G4'],
   },
   {
     memberId: 23,
-    roles: ['G4'],
+    roles: ['G4 COMD'],
   },
   {
     memberId: 24,
-    roles: ['G4 COMD'],
-  },
-  {
-    memberId: 25,
     roles: ['G4 COMD', 'G4'],
   },
   {
-    memberId: 26,
+    memberId: 25,
     roles: ['G4'],
   },
   {
-    memberId: 27,
+    memberId: 26,
     roles: ['G4 COMD'],
+  },
+  {
+    memberId: 27,
+    roles: ['G4 COMD', 'G4'],
   },
   {
     memberId: 28,
@@ -380,23 +375,23 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 31,
-    roles: ['G4 COMD', 'G4'],
+    roles: ['G4 COMD'],
   },
   {
     memberId: 32,
-    roles: ['G4 COMD'],
-  },
-  {
-    memberId: 33,
     roles: ['G4 COMD', 'G4'],
   },
   {
-    memberId: 34,
+    memberId: 33,
     roles: ['G4 COMD'],
   },
   {
-    memberId: 35,
+    memberId: 34,
     roles: [],
+  },
+  {
+    memberId: 35,
+    roles: ['A2'],
   },
   {
     memberId: 36,
@@ -408,10 +403,6 @@ export const QUALIFICATIONS: MockQualification[] = [
   },
   {
     memberId: 38,
-    roles: ['A2'],
-  },
-  {
-    memberId: 39,
     roles: ['A2'],
   }
 ];
@@ -426,7 +417,7 @@ export const SCHEDULES: Backend.Schedule[] = [
       [1, 2, 3, 4, 5, 6, 7, 8].flatMap((roleInstanceId) => [
         {
           roleInstanceId,
-          memberId: Math.floor(Math.random() * 39),
+          memberId: Math.floor(Math.random() * 38),
           date: dayjs(date).format('YYYY-MM-DD'),
         },
       ])
