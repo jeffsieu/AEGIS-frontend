@@ -32,7 +32,7 @@ function ScheduleSelectMember(props: ScheduleSelectMemberProps) {
             </MenuItem>
             ))}
         </Select>
-        </FormControl>
+    </FormControl>
     );
 };
 
