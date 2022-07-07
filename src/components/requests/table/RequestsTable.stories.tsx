@@ -31,4 +31,20 @@ Default.args = {
       type: 'Personal',
     },
   ],
+  members: [
+    { id: 123,
+      createdAt: '2020-05-01',
+      updatedAt: '2020-05-01',
+      callsign: 'Upin',
+      sqn: '123',
+      type: 'member',
+    },
+    { id: 124,
+      createdAt: '2020-05-01',
+      updatedAt: '2020-05-01',
+      callsign: 'Ipin',
+      sqn: '123',
+      type: 'member',
+    }
+  ]
 };
