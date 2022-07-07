@@ -20,9 +20,12 @@ function ScheduleSelectMember(props: ScheduleSelectMemberProps) {
 
     return (
     <FormControl style={{minWidth: '34%'}}>
-        <InputLabel>Callsign</InputLabel>
+        <InputLabel id='callsign-select-label'>Callsign</InputLabel>
         <Select
+            labelId="callsign-select-label"
+            id="callsign-select"
             value={selectedMember}
+            label="Callsign"
             onChange={handleSelectedMemberChange}
             >
             <MenuItem value=''><Typography color="primary"><strong>See All</strong></Typography></MenuItem>
