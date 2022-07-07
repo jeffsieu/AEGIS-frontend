@@ -169,7 +169,7 @@ function MultiDatePicker(
           displayStaticWrapperAs="desktop"
           {...restProps}
           onChange={onChange}
-          value={dayjs(minDate.toDate())}
+          value={null}
           closeOnSelect={false}
           renderInput={({ value, ...params }) => (
             <TextField
