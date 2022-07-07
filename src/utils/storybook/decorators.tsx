@@ -3,6 +3,8 @@ import PlannerNavBar from '@components/layout/navigation/PlannerNavBar/PlannerNa
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MemberNavBar from '@components/layout/navigation/MemberNavBar/MemberNavBar';
+import { Provider } from 'react-redux';
+import store from '@store';
 
 export namespace Decorators {
   export const plannerContainerDecorator = (Story: any) => (
@@ -28,8 +30,8 @@ export namespace Decorators {
   );
 
   export const dateLocalizationProvider = (Story: any) => (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Story />
-    </LocalizationProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Story />
+      </LocalizationProvider>
   );
 }
