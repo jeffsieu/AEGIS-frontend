@@ -1,14 +1,10 @@
 import EmptyHint from '@components/general/empty-hint';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
 import ScheduleTable from '@components/schedule/ScheduleTable/ScheduleTable';
-import ScheduleSelectMember from '@components/schedule/ScheduleSelectMember/ScheduleSelectMember';
-import { 
-  Box, 
-  Chip, 
-  Stack, 
-  Typography, 
-  useTheme,
-  SelectChangeEvent } from '@mui/material';
+import ScheduleSelectMember, {
+  ScheduleSelectOption,
+} from '@components/schedule/ScheduleSelectMember/ScheduleSelectMember';
+import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import {
   useGetMembersQuery,
   useGetRoleInstancesQuery,
@@ -29,9 +25,11 @@ function ThisMonthSchedule(props: ThisMonthScheduleProps) {
   const theme = useTheme();
 
   // handles change in selected member to display on schedule
-  const [ selectedMember, setSelectedMember ] = useState<string | undefined>('');
-  const handleSelectedMemberChange = (event: SelectChangeEvent) => {
-    setSelectedMember(event.target.value);
+  const [selectedMembers, setSelectedMembers] = useState<
+    ScheduleSelectOption[]
+  >([]);
+  const handleSelectedMembersChange = (newMembers: ScheduleSelectOption[]) => {
+    setSelectedMembers(newMembers);
   };
 
   return useBuildWithApiQueries({
@@ -60,7 +58,7 @@ function ThisMonthSchedule(props: ThisMonthScheduleProps) {
           position="relative"
           flexDirection="column"
           alignItems="center"
-          gap={2}
+          gap={4}
         >
           <Stack width="100%" alignItems="start" spacing={2}>
             <div>
@@ -76,11 +74,24 @@ function ThisMonthSchedule(props: ThisMonthScheduleProps) {
               variant="outlined"
               color={schedule.isPublished ? 'primary' : undefined}
             />
-            <ScheduleSelectMember members={members} selectedMember={selectedMember} handleSelectedMemberChange={handleSelectedMemberChange} />
           </Stack>
+          <Box display="flex" flexDirection="column" width="100%">
+            <ScheduleSelectMember
+              members={members}
+              selectedMembers={selectedMembers}
+              onSelectedMembersChange={handleSelectedMembersChange}
+            />
+          </Box>
           <FullWidthScheduleContainer>
             <Box paddingLeft="calc(50vw - 600px + 24px - 36px)">
-              <ScheduleTable {...props} stickyHeader={true} canFilter={true} selectedMember={selectedMember} />
+              <ScheduleTable
+                {...props}
+                stickyHeader={true}
+                canFilter={true}
+                selectedMembers={
+                  selectedMembers.length > 0 ? selectedMembers : undefined
+                }
+              />
             </Box>
           </FullWidthScheduleContainer>
         </Box>
