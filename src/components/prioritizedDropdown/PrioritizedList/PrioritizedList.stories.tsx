@@ -2,10 +2,13 @@ import PrioritizedList from './PrioritizedList';
 import PrioritizedListPopover from './PrioritizedListPopover';
 import { Button } from '@mui/material';
 import { ComponentStory } from '@storybook/react';
+import { withTests } from '@storybook/addon-jest';
+import results from '../../../../.jest-test-results.json'
 
 export default {
   title: 'Prioritized Dropdown/Prioritized List',
   component: PrioritizedList,
+	decorators: [withTests({results})]
 };
 
 const Template: ComponentStory<typeof PrioritizedListPopover> = (args) => {

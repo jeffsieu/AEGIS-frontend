@@ -35,10 +35,11 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
+		"test": "craco test --json --outputFile=.jest-test-results.json",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "test:jest": "jest --json --outputFile=.jest-test-results.json"
   },
   "eslintConfig": {
     "extends": [
@@ -72,6 +73,7 @@
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-jest": "^6.5.9",
     "@storybook/addon-links": "^6.5.9",
     "@storybook/builder-webpack5": "^6.5.9",
     "@storybook/manager-webpack5": "^6.5.9",
@@ -86,8 +88,24 @@
     "babel-plugin-named-exports-order": "0.0.2",
     "prop-types": "^15.8.1",
     "react-scripts": "5.0.1",
+    "ts-jest": "^28.0.5",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.6.4",
     "webpack": "^5.72.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|tsx|js|jsx)$": "ts-jest"
+    },
+		"moduleNameMapper": {
+			"^@assets(.*)$": "<rootDir>/src/assets$1",
+			"^@components(.*)$": "<rootDir>/src/components$1",
+			"^@sample(.*)$": "<rootDir>/src/sample$1",
+			"^@services(.*)$": "<rootDir>/src/services$1",
+			"^@store(.*)$": "<rootDir>/src/store$1",
+			"^@types(.*)$": "<rootDir>/src/types$1",
+			"^@utils(.*)$": "<rootDir>/src/utils$1",
+			"^@views(.*)$": "<rootDir>/src/views$1"
+		} 
   }
 }
