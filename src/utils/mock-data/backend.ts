@@ -31,7 +31,7 @@ export const MEMBERS: Backend.Member[] = [
   {
     callsign: 'EngChow',
     sqn: '18',
-    type: 'ADMIN',
+    type: 'MEMBER',
   },
   {
     callsign: 'Faisal',

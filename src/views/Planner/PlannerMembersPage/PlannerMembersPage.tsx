@@ -86,7 +86,7 @@ function PlannerMembersPageWithAPI() {
               // Add member
               const memberId = await addMember({
                 callsign: member.callsign,
-                sqn: 'placeholder',
+                sqn: 'ADW',
                 type: 'MEMBER',
               }).unwrap();
 
@@ -234,19 +234,13 @@ function PlannerMembersPage(props: PlannerMembersPageProps) {
 
   const alphaRegex = /^[a-zA-Z0-9_]*$/;
   const isCallsignNotAlphanumeric = !alphaRegex.test(callsignFieldText);
-  const isCallsignTooShort = callsignFieldText.length < 3;
-  const isCallsignTooLong = callsignFieldText.length > 8;
   const isCallsignEmpty = callsignFieldText.length === 0;
   const isInvalidCallsign =
-    isCallsignNotAlphanumeric || isCallsignTooShort || isCallsignTooLong;
+    isCallsignNotAlphanumeric;
   const errorText = isCallsignEmpty
     ? ''
     : isCallsignNotAlphanumeric
-    ? 'Callsign can only contain letters'
-    : isCallsignTooShort
-    ? 'Callsign must be at least 3 characters'
-    : isCallsignTooLong
-    ? 'Callsign cannot be longer than 8 characters'
+    ? 'Callsign can only contain letters and numbers'
     : '';
 
   const filteredMembers = useMemo(() => {
