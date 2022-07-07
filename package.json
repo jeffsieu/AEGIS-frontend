@@ -28,11 +28,11 @@
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
-  "resolutions": {
-    "**/trim": "^1.0.0",
-    "**/trim-newlines": "^3.0.1",
-    "**/glob-parent": "^5.1.2",
-    "**/nth-check": "^2.0.1"
+  "overrides": {
+    "trim": "^1.0.0",
+    "trim-newlines": "^3.0.1",
+    "glob-parent": "^5.1.2",
+    "nth-check": "^2.0.1"
   },
   "scripts": {
     "start": "craco start",
