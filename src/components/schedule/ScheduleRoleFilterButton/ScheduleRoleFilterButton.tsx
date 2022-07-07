@@ -1,7 +1,7 @@
 import {
   CheckBox,
   CheckBoxOutlineBlank,
-  FilterAltOutlined,
+  FilterList,
 } from '@mui/icons-material';
 import {
   IconButton,
@@ -43,7 +43,7 @@ function ScheduleRowFilterButton(props: ScheduleRowFilterButtonProps) {
   return (
     <div>
       <IconButton onClick={handleClick}>
-        <FilterAltOutlined />
+        <FilterList />
       </IconButton>
       <Menu
         id="basic-menu"
