@@ -26,6 +26,7 @@ function ScheduleSelectMember(props: ScheduleSelectMemberProps) {
         multiple
         autoComplete
         autoHighlight
+        openOnFocus
         options={members}
         getOptionLabel={(member) => member.callsign}
         onChange={(event, newMembers) => {
