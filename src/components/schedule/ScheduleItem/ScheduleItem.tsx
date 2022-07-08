@@ -19,7 +19,7 @@ export type RequiredScheduleItemProps = {
   qualifiedMembers: QualifiedMember[];
   assignedMember: QualifiedMember | null;
   onMemberSelected?: (member: QualifiedMember | null) => void;
-  selectedMember?: string | undefined
+  isMemberSelected: boolean;
 };
 
 export type NotRequiredScheduleItemProps = {
@@ -32,7 +32,7 @@ export type ScheduleItemProps =
   | NotRequiredScheduleItemProps;
 
 export type ScheduleItemPropsWithoutCallback =
-  | Omit<RequiredScheduleItemProps, 'onMemberSelected'>
+  | Omit<RequiredScheduleItemProps, 'onMemberSelected' | 'isMemberSelected'>
   | NotRequiredScheduleItemProps;
 
 function ScheduleItem(props: ScheduleItemProps) {
@@ -41,26 +41,33 @@ function ScheduleItem(props: ScheduleItemProps) {
   const customButtonTheme = useCustomButtonTheme();
 
   if (isRequired) {
-    const { qualifiedMembers, assignedMember, onMemberSelected, selectedMember } = props;
+    const {
+      qualifiedMembers,
+      assignedMember,
+      onMemberSelected,
+      isMemberSelected,
+    } = props;
 
     const disabledButtonStyles: SxProps<Theme> = {
       pointerEvents: 'none',
     };
 
     const unselectedMemberStyles: SxProps<Theme> = {
-      opacity: 0.5
+      opacity: 0.5,
     };
 
-    const buttonProps: ButtonProps = 
+    const buttonProps: ButtonProps =
       onMemberSelected === undefined
-      ? {
-          sx: Object.assign({}, disabledButtonStyles, selectedMember === '' || selectedMember === undefined || selectedMember === assignedMember!.callsign ? {} : unselectedMemberStyles),
-          'aria-disabled': true,
-          tabIndex: -1, // To make the non-interactable button unfocusable through tabbing, without using disabled
-        }
-      : {};
-
-;
+        ? {
+            sx: Object.assign(
+              {},
+              disabledButtonStyles,
+              isMemberSelected ? {} : unselectedMemberStyles
+            ),
+            'aria-disabled': true,
+            tabIndex: -1, // To make the non-interactable button unfocusable through tabbing, without using disabled
+          }
+        : {};
 
     return (
       <PrioritizedListPopover
