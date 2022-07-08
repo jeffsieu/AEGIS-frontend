@@ -19,6 +19,7 @@ export type RequiredScheduleItemProps = {
   qualifiedMembers: QualifiedMember[];
   assignedMember: QualifiedMember | null;
   onMemberSelected?: (member: QualifiedMember | null) => void;
+  selectedMember?: string | undefined
 };
 
 export type NotRequiredScheduleItemProps = {
@@ -40,20 +41,26 @@ function ScheduleItem(props: ScheduleItemProps) {
   const customButtonTheme = useCustomButtonTheme();
 
   if (isRequired) {
-    const { qualifiedMembers, assignedMember, onMemberSelected } = props;
+    const { qualifiedMembers, assignedMember, onMemberSelected, selectedMember } = props;
 
     const disabledButtonStyles: SxProps<Theme> = {
       pointerEvents: 'none',
     };
 
-    const buttonProps: ButtonProps =
+    const unselectedMemberStyles: SxProps<Theme> = {
+      opacity: 0.5
+    };
+
+    const buttonProps: ButtonProps = 
       onMemberSelected === undefined
-        ? {
-            sx: disabledButtonStyles,
-            'aria-disabled': true,
-            tabIndex: -1, // To make the non-interactable button unfocusable through tabbing, without using disabled
-          }
-        : {};
+      ? {
+          sx: Object.assign({}, disabledButtonStyles, selectedMember === '' || selectedMember === undefined || selectedMember === assignedMember!.callsign ? {} : unselectedMemberStyles),
+          'aria-disabled': true,
+          tabIndex: -1, // To make the non-interactable button unfocusable through tabbing, without using disabled
+        }
+      : {};
+
+;
 
     return (
       <PrioritizedListPopover

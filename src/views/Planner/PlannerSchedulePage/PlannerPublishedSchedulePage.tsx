@@ -10,20 +10,23 @@ import {
   useGetScheduleForMonthQuery,
   useUpdateScheduleMutation,
 } from '@services/backend';
-import { Box, Divider, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Divider, Stack, Typography, useTheme, SelectChangeEvent } from '@mui/material';
 import FullWidthScheduleContainer from '@components/schedule/FullWidthScheduleContainer/FullWidthScheduleContainer';
+import ScheduleSelectMember from '@components/schedule/ScheduleSelectMember/ScheduleSelectMember';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScheduleHeader from '@components/schedule/ScheduleHeader/ScheduleHeader';
 import { AsyncButton } from '@components/general/async-button';
 import { InfoOutlined, ModeEdit } from '@mui/icons-material';
 import PaperTooltip from '@components/tooltips/PaperTooltip';
+import { Backend } from '@typing/backend';
 
 function PlannerPublishedSchedulePageWithAPI() {
   const { month } = useParams();
   const navigate = useNavigate();
   const [updateSchedule] = useUpdateScheduleMutation();
   const [isUnpublishing, setUnpublishing] = useState(false);
+
 
   return useBuildWithApiQueries({
     queries: {
@@ -54,6 +57,7 @@ function PlannerPublishedSchedulePageWithAPI() {
         },
         isUnpublishing,
         canFilter: true,
+        members: members
       };
 
       return <PlannerPublishedSchedulePage {...props} />;
@@ -64,13 +68,23 @@ function PlannerPublishedSchedulePageWithAPI() {
 export type PlannerPublishedSchedulePageProps = ScheduleTableProps & {
   onUnpublishClick: () => Promise<void>;
   isUnpublishing: boolean;
+  members: Backend.Entry<Backend.Member & {
+    roles: Backend.Role[];
+  }>[];
 };
 
 function PlannerPublishedSchedulePage(
   props: PlannerPublishedSchedulePageProps
 ) {
   const theme = useTheme();
-  const { startDate, endDate, onUnpublishClick, isUnpublishing } = props;
+  const { startDate, endDate, onUnpublishClick, isUnpublishing, members } = props;
+
+  // handles change in selected member to display on schedule
+  const [ selectedMember, setSelectedMember ] = useState<string | undefined>('');
+  const handleSelectedMemberChange = (event: SelectChangeEvent) => {
+    setSelectedMember(event.target.value);
+  };
+  
   return (
     <Stack spacing={4}>
       <Box position="relative">
@@ -114,6 +128,7 @@ function PlannerPublishedSchedulePage(
           </PaperTooltip>
         </Box>
       </Box>
+      <ScheduleSelectMember members={members} selectedMember={selectedMember} handleSelectedMemberChange={handleSelectedMemberChange} />
       <Divider />
       <Box
         display="flex"
@@ -122,7 +137,7 @@ function PlannerPublishedSchedulePage(
         alignItems="center"
       >
         <FullWidthScheduleContainer>
-          <ScheduleTable {...props} />
+          <ScheduleTable {...props} selectedMember={selectedMember} />
         </FullWidthScheduleContainer>
       </Box>
     </Stack>
