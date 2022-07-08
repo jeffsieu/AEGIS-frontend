@@ -19,11 +19,32 @@ const Template: ComponentStory<typeof PlannerMembersPageWithProps> = (args) => (
   <PlannerMembersPageWithProps {...args} />
 );
 
+const mockRoles = [{
+  id: 2,
+  name: 'A2',
+  createdAt: '',
+  updatedAt: '',
+  }, 
+  {
+  id: 1,
+  name: 'A1',
+  createdAt: '',
+  updatedAt: '',
+  },
+]
+
 export const Default = Template.bind({});
 // Reuse args from MemberTable
-Default.args = MemberTableDefault.args;
-
-export const Empty = Template.bind({});
-Empty.args = {
-  members: [],
-};
+Default.args = Object.assign({},MemberTableDefault.args,{
+  roles: mockRoles,
+  isEditing: false,
+  isSaving: false,
+  onSaveClick: () => Promise.resolve(),
+  onEditClick: () => {},
+  onCancelClick: () => {},
+  onAddMemberClick: () => {},
+  callsignFieldText: 'Test',
+  onCallsignChange: () => {},
+  searchQuery: '',
+  onSearchQueryChange: () => {},
+});
