@@ -39,6 +39,7 @@ Default.args = {
       isRequired: true,
       qualifiedMembers: MOCK_QUALIFIED_MEMBERS,
       assignedMember: null,
+      isMemberSelected: true,
     },
     {
       isRequired: true,
@@ -46,6 +47,7 @@ Default.args = {
       assignedMember: MOCK_QUALIFIED_MEMBERS.find(
         (member): member is AvailableQualifiedMember => member.isAvailable
       )!,
+      isMemberSelected: true,
     },
   ],
 };

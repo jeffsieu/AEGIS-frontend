@@ -20,7 +20,7 @@ export type ScheduleTableProps = {
   header?: React.ReactElement;
   stickyHeader?: boolean;
   canFilter: boolean;
-  selectedMember?: string | undefined;
+  selectedMembers?: Backend.Member[];
 };
 
 function ScheduleTable(props: ScheduleTableProps) {
@@ -33,7 +33,7 @@ function ScheduleTable(props: ScheduleTableProps) {
     header,
     stickyHeader = false,
     canFilter,
-    selectedMember
+    selectedMembers,
   } = props;
 
   const dates = useMemo(() => {
@@ -72,7 +72,14 @@ function ScheduleTable(props: ScheduleTableProps) {
                             )
                         : undefined,
                       role: roleInstances[roleIndex],
-                      selectedMember: selectedMember
+                      isMemberSelected:
+                        scheduleItem.assignedMember !== null
+                          ? selectedMembers?.some(
+                              (member) =>
+                                member.callsign ===
+                                scheduleItem.assignedMember!.callsign
+                            ) ?? true
+                          : true,
                     }))
                     .filter((scheduleItem) =>
                       selectedRoles.includes(scheduleItem.role)
