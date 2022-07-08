@@ -52,7 +52,7 @@ function ScheduleHeader(props: ScheduleHeaderProps) {
   // Either show "January" or "Jan - Feb".
   const monthRangeString = dateRangeToString([startDate, endDate], 'MMM YYYY');
 
-  const completionStatusString = `${progress}% completed`;
+  const completionStatusString = `${progress.toFixed(1)}% completed`;
 
   // Inline css needed to position the rounded button.
   return (
