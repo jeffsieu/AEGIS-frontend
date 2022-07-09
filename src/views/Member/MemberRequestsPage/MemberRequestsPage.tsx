@@ -63,10 +63,10 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
   return (
     <TitledContainer title="Requests">
       <Stack spacing={4}>
-        {periods.length === 0 && <EmptyHint>{ERROR_NO_REQUESTS}</EmptyHint>}
         <div>
           <CreateRequestButton />
         </div>
+        {periods.length === 0 && <EmptyHint>{ERROR_NO_REQUESTS}</EmptyHint>}
         {periods.length > 0 && (
           <RequestsTable
             members={members}
