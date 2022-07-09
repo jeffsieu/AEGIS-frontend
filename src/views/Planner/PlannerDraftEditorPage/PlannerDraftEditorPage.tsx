@@ -278,9 +278,7 @@ function PlannerDraftEditorPage(props: PlannerDraftEditorPageProps) {
     [scheduleItemsByDay]
   );
 
-  const progress = Math.round(
-    (filledRequiredItemsCount / totalRequiredItemsCount) * 100
-  );
+  const progress = (filledRequiredItemsCount / totalRequiredItemsCount) * 100;
 
   const clashes = useMemo(() => {
     // Get all unavailable members that are still assigned
