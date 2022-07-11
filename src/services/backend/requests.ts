@@ -47,6 +47,24 @@ export const requestsApi = baseApi.injectEndpoints({
         body: requestIds,
       }),
       invalidatesTags: [{ type: 'Requests', id: 'LIST' }],
+      onQueryStarted(requestIds, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          requestsApi.util.updateQueryData(
+            'getRequests',
+            undefined,
+            (requests: RequestResponse[]) => {
+              // Mutate list
+              requestIds.forEach((id) => {
+                const index = requests.findIndex((r) => r.id === id);
+                if (index !== -1) {
+                  requests.splice(index, 1);
+                }
+              });
+            }
+          )
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
     updateRequest: builder.mutation<void, Backend.WithId<Backend.Request>>({
       query: (request) => ({
@@ -55,6 +73,26 @@ export const requestsApi = baseApi.injectEndpoints({
         body: request,
       }),
       invalidatesTags: [{ type: 'Requests', id: 'LIST' }],
+      onQueryStarted({ id, ...request }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          requestsApi.util.updateQueryData(
+            'getRequests',
+            undefined,
+            (requests: RequestResponse[]) => {
+              // Mutate list
+              const index = requests.findIndex((r) => r.id === id);
+
+              if (index !== -1) {
+                requests[index] = {
+                  ...requests[index],
+                  ...request,
+                };
+              }
+            }
+          )
+        );
+        queryFulfilled.catch(patchResult.undo);
+      },
     }),
   }),
 });

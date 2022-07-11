@@ -45,8 +45,8 @@ export type MultiDatePickerProps = {
   label: string;
   onSelectionChanged: (selectedDates: Dayjs[]) => void;
   selection: Dayjs[];
-  minDate: Dayjs;
-  maxDate: Dayjs;
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
   textFieldProps?: Partial<TextFieldProps>;
 };
 
@@ -116,22 +116,29 @@ function MultiDatePicker(
     setAnchorEl(null);
   }
 
-  const allDatesInMonth = useMemo(
-    () =>
-      [...iterateDates(minDate.toDate(), maxDate.toDate())].map((date) =>
+  const allDatesInMonth = useMemo(() => {
+    if (minDate !== undefined && maxDate !== undefined) {
+      return [...iterateDates(minDate.toDate(), maxDate.toDate())].map((date) =>
         dayjs(date)
-      ),
-    [minDate, maxDate]
-  );
+      );
+    } else {
+      return undefined;
+    }
+  }, [minDate, maxDate]);
+
+  const isSelectionEmpty = selection.length === 0;
 
   return (
     <>
       <TextField
-        aria-describedby="text-field"
         label={label}
         value=""
         error={false}
-        inputProps={{ value: displayString }}
+        inputProps={{
+          value: !isSelectionEmpty ? displayString : '',
+          placeholder: isSelectionEmpty ? displayString : '',
+        }}
+        InputLabelProps={{ shrink: true }}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -171,30 +178,23 @@ function MultiDatePicker(
           onChange={onChange}
           value={null}
           closeOnSelect={false}
-          renderInput={({ value, ...params }) => (
-            <TextField
-              {...params}
-              label={label}
-              value=""
-              error={false}
-              inputProps={{ value: displayString }}
-              {...textFieldProps}
-            />
-          )}
+          renderInput={({ value, ...params }) => <></>}
           renderDay={renderPickerDay}
         />
         <Box display="flex" flexDirection="column" alignItems="end">
           <Box display="flex" gap={1} padding={2}>
-            <Button
-              variant="outlined"
-              startIcon={<SelectAllOutlined />}
-              size="small"
-              onClick={() => {
-                onSelectionChanged(allDatesInMonth);
-              }}
-            >
-              Select all
-            </Button>
+            {allDatesInMonth !== undefined && (
+              <Button
+                variant="outlined"
+                startIcon={<SelectAllOutlined />}
+                size="small"
+                onClick={() => {
+                  onSelectionChanged(allDatesInMonth);
+                }}
+              >
+                Select all
+              </Button>
+            )}
             <Button
               variant="outlined"
               startIcon={<Clear />}

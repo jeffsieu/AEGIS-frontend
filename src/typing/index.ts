@@ -12,10 +12,10 @@ export type AvailableQualifiedMember = BaseQualifiedMember & {
 };
 
 type Reason = {
-	text: string;
-	dateSubmitted: string | null;
-	isLate: boolean;
-	type: Backend.RequestType | null;
+  text: string;
+  dateSubmitted: string | null;
+  isLate: boolean;
+  type: Backend.RequestType | null;
 };
 
 export type UnavailableQualifiedMember = BaseQualifiedMember & {
@@ -39,8 +39,7 @@ export type Schedule = {
 };
 
 export type RequestPeriod = {
-  startDate: Dayjs;
-  endDate: Dayjs;
+  dates: Dayjs[];
   member: Backend.Entry<Backend.Member>;
   reason: string;
   type: Backend.RequestType;

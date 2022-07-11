@@ -18,15 +18,12 @@ function CreateRequestButton() {
     onSuccess: ({ members }) => {
       const onRequestCreate = async (requestPeriods: RequestPeriod[]) => {
         await addRequests(
-          requestPeriods.map(
-            ({ startDate, endDate, reason, member, type }) => ({
-              startDate: startDate.format('YYYY-MM-DD'),
-              endDate: endDate.format('YYYY-MM-DD'),
-              reason,
-              type,
-              memberId: member.id,
-            })
-          )
+          requestPeriods.map(({ dates, reason, member, type }) => ({
+            dates: dates.map((date) => date.format('YYYY-MM-DD')),
+            reason,
+            type,
+            memberId: member.id,
+          }))
         );
         setCreating(false);
       };
