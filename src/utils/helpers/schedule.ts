@@ -56,9 +56,9 @@ export const getScheduleItemsByDay = (
     Record<number, ScheduleItemPropsWithoutCallback>
   > = {};
 
-	const cutOffDate = new Date(startDate);
-	cutOffDate.setMonth(startDate.getMonth() - 1);
-	cutOffDate.setDate(25);
+  const cutOffDate = new Date(startDate);
+  cutOffDate.setMonth(startDate.getMonth() - 1);
+  cutOffDate.setDate(25);
 
   const dutyCounts: Map<number, number> = new Map();
   for (const duty of duties) {
@@ -99,11 +99,11 @@ export const getScheduleItemsByDay = (
           })
           .map((member) => {
             const memberRequests = member.requests.filter((request) => {
-              return !(
-                dayjs(request.endDate).isBefore(duty.date, 'day') ||
-                dayjs(request.startDate).isAfter(duty.date, 'day')
+              return request.dates.some((date) =>
+                dayjs(date).isSame(duty.date, 'day')
               );
             });
+
             if (memberRequests.length === 0) {
               return {
                 ...member,
@@ -115,18 +115,16 @@ export const getScheduleItemsByDay = (
               return {
                 ...member,
                 isAvailable: false,
-                unavailableReasons: memberRequests.map(
-                  (request) => {
-										const createdAtDate = dayjs(request.createdAt);
-										const isLate = createdAtDate.isAfter(cutOffDate);
-										return({
-											text: `Request: ${request.reason}`,
-											dateSubmitted: request.createdAt, 
-											isLate,
-											type: request.type
-										})
-									}
-                ),
+                unavailableReasons: memberRequests.map((request) => {
+                  const createdAtDate = dayjs(request.createdAt);
+                  const isLate = createdAtDate.isAfter(cutOffDate);
+                  return {
+                    text: `Request: ${request.reason}`,
+                    dateSubmitted: request.createdAt,
+                    isLate,
+                    type: request.type,
+                  };
+                }),
                 dutyCount: dutyCounts.get(member.id) || 0,
               };
             }
@@ -210,7 +208,12 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  {text: 'Scheduled on same day', dateSubmitted: null, isLate: false, type: null},
+                  {
+                    text: 'Scheduled on same day',
+                    dateSubmitted: null,
+                    isLate: false,
+                    type: null,
+                  },
                 ],
               };
             }
@@ -224,7 +227,12 @@ export const getScheduleItemsByDay = (
                 isAvailable: false,
                 unavailableReasons: [
                   ...oldUnavailableReasons,
-                  {text: 'Scheduled on previous day', dateSubmitted: null, isLate: false, type: null},
+                  {
+                    text: 'Scheduled on previous day',
+                    dateSubmitted: null,
+                    isLate: false,
+                    type: null,
+                  },
                 ],
               };
             }
@@ -302,11 +310,11 @@ export function scheduleToScheduleTableProps(
   };
 }
 
-export function requestTypeToEmoji(requestType: Backend.RequestType){
-	switch (requestType){
-		case "Work":
-			return "💼"
-		case "Personal":
-			return "👪"
-	}
+export function requestTypeToEmoji(requestType: Backend.RequestType) {
+  switch (requestType) {
+    case 'Work':
+      return '💼';
+    case 'Personal':
+      return '👪';
+  }
 }

@@ -14,15 +14,13 @@ function RequestForm(props: RequestFormProps) {
   const form = useRef<HTMLFormElement>();
   const [periods, setPeriods] = useState<PartialRequestPeriod[]>([
     {
-      startDate: null,
-      endDate: null,
+      dates: [],
       member: null,
       reason: '',
       type: null,
     },
     {
-      startDate: null,
-      endDate: null,
+      dates: [],
       member: null,
       reason: '',
       type: null,
@@ -39,8 +37,7 @@ function RequestForm(props: RequestFormProps) {
       setPeriods([
         ...periods,
         {
-          startDate: null,
-          endDate: null,
+          dates: [],
           member: null,
           reason: '',
           type: null,

@@ -404,7 +404,7 @@ export const QUALIFICATIONS: MockQualification[] = [
   {
     memberId: 38,
     roles: ['A2'],
-  }
+  },
 ];
 
 export const SCHEDULES: Backend.Schedule[] = [
@@ -428,15 +428,17 @@ export const SCHEDULES: Backend.Schedule[] = [
 export const REQUESTS: Backend.Request[] = [
   {
     memberId: 15,
-    startDate: '2022-07-25',
-    endDate: '2022-08-05',
+    dates: [
+      ...iterateDates(new Date('2022-07-25'), new Date('2022-08-05')),
+    ].map((date) => dayjs(date).format('YYYY-MM-DD')),
     reason: 'Cse: Para Counselling',
     type: 'Work',
   },
   {
     memberId: 4,
-    startDate: '2022-07-01',
-    endDate: '2022-07-12',
+    dates: [
+      ...iterateDates(new Date('2022-07-01'), new Date('2022-07-12')),
+    ].map((date) => dayjs(date).format('YYYY-MM-DD')),
     reason: 'Overseas: ',
     type: 'Personal',
   },

@@ -40,8 +40,7 @@ function MemberRequestsPageWithAPI() {
           ...period,
           id: period.id,
           memberId: period.member.id,
-          startDate: dayjs(period.startDate),
-          endDate: dayjs(period.endDate),
+          dates: period.dates.map(dayjs),
           callsign: period.member.callsign,
         })),
         members,
@@ -85,10 +84,16 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
                 );
 
                 if (oldRequest) {
+                  const requestDates = request.dates.map((date) => dayjs(date));
+                  const hasDatesChanged =
+                    requestDates.length !== oldRequest.dates.length ||
+                    requestDates.some(
+                      (date, index) =>
+                        !date.isSame(oldRequest.dates[index], 'day')
+                    );
                   if (
                     oldRequest.callsign !== request.callsign ||
-                    oldRequest.startDate.isSame(request.startDate, 'day') ||
-                    oldRequest.endDate.isSame(request.endDate, 'day') ||
+                    hasDatesChanged ||
                     oldRequest.reason !== request.reason ||
                     oldRequest.type !== request.type
                   ) {
@@ -97,17 +102,17 @@ function MemberRequestsPage(props: MemberRequestsPageProps) {
                     )!.id;
                     await updateRequest({
                       ...request,
-                      startDate: dayjs(request.startDate).format('YYYY-MM-DD'),
-                      endDate: dayjs(request.endDate).format('YYYY-MM-DD'),
+                      dates: requestDates.map((date) =>
+                        date.format('YYYY-MM-DD')
+                      ),
                       memberId: newMemberId,
                     });
                   }
                 }
               }
             }}
-            requests={periods.map(({ startDate, endDate, ...rest }) => ({
-              startDate: startDate.toDate(),
-              endDate: endDate.toDate(),
+            requests={periods.map(({ dates, ...rest }) => ({
+              dates: dates.map((date) => date.toDate()),
               ...rest,
             }))}
           />

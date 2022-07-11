@@ -1,3 +1,4 @@
+import MultiDatePicker from '@components/general/multi-date-picker';
 import { Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import {
@@ -13,25 +14,44 @@ import {
   GridRowId,
   GridRowsProp,
   GridRowModel,
+  GridRenderEditCellParams,
+  useGridApiContext,
 } from '@mui/x-data-grid';
 import { Backend } from '@typing/backend';
+import { dateRangesToString, getDateRanges } from '@utils/helpers/dateRange';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
 export type Request = {
   id: number;
   callsign: string;
-  startDate: Date;
-  endDate: Date;
-  reason: string;
-  type: Backend.RequestType;
-};
+  dates: Date[];
+} & Omit<Backend.Request, 'memberId' | 'dates'>;
 
 export type RequestsTableProps = {
   requests: Request[];
   members: Backend.Entry<Backend.Member>[];
   onRequestsUpdate: (requests: Request[]) => void;
 };
+
+function MultiDatePickerEditComponent(props: GridRenderEditCellParams<Date[]>) {
+  const { id, field, value } = props;
+  const apiRef = useGridApiContext();
+
+  return (
+    <MultiDatePicker
+      label={''}
+      selection={value!.map((date) => dayjs(date))}
+      onSelectionChanged={(selection) => {
+        apiRef.current.setEditCellValue({
+          id,
+          field,
+          value: selection.map((date) => date.toDate()),
+        });
+      }}
+    />
+  );
+}
 
 export default function RequestsTable(props: RequestsTableProps) {
   const { members, onRequestsUpdate } = props;
@@ -101,29 +121,23 @@ export default function RequestsTable(props: RequestsTableProps) {
       valueOptions: members.map((member) => member.callsign),
     },
     {
-      field: 'startDate',
-      headerName: 'Start Date',
-      width: 200,
-      editable: true,
-      type: 'date',
-      valueFormatter: (params: GridValueFormatterParams<Date>) =>
-        dayjs(params.value).format('DD/MM/YYYY'),
-    },
-    {
-      field: 'endDate',
-      headerName: 'End Date',
-      editable: true,
-      width: 200,
-      type: 'date',
-      valueFormatter: (params: GridValueFormatterParams<Date>) =>
-        dayjs(params.value).format('DD/MM/YYYY'),
-    },
-    {
       field: 'type',
       headerName: 'Type',
       type: 'singleSelect',
       valueOptions: ['Work', 'Personal'],
       editable: true,
+    },
+    {
+      field: 'dates',
+      headerName: 'Dates',
+      flex: 1,
+      editable: true,
+      valueFormatter: (params: GridValueFormatterParams<Date[]>) => {
+        return dateRangesToString(getDateRanges(params.value));
+      },
+      renderEditCell: (params: GridRenderEditCellParams<Date[]>) => {
+        return <MultiDatePickerEditComponent {...params} />;
+      },
     },
     {
       field: 'reason',
