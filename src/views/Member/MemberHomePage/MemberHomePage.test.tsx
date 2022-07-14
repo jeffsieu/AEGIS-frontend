@@ -34,8 +34,11 @@ describe('when page loads', () => {
     });
 
     renderWithProviders(<ThisMonthSchedule showDraft={true} />);
+
     await waitFor(() =>
       expect(screen.getByText('Jul 2022')).toBeInTheDocument()
     );
+
+    expect(fetchMock).toBeCalledTimes(3);
   });
 });
