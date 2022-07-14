@@ -3,8 +3,6 @@ import { renderWithProviders } from '@tests/redux-render-hook';
 import { renderHook, screen, waitFor } from '@testing-library/react';
 import ThisMonthSchedule from '@views/Shared/HomePage/ThisMonthSchedule';
 import MemberHomePage from './MemberHomePage';
-import { backendApi, schedulesApi } from '@services/backend';
-import { act } from 'react-dom/test-utils';
 import { createMockScheduleItems } from '@utils/mock-data/schedule';
 import { MEMBERS, ROLES } from '@utils/mock-data/backend';
 import { BACKEND_URL } from '@services/backend/base';
