@@ -37,7 +37,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-		"test": "craco test --json --outputFile=.jest-test-results.json",
+    "test": "craco test --json --outputFile=.jest-test-results.json",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
@@ -88,6 +88,7 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "babel-plugin-named-exports-order": "0.0.2",
+    "jest-fetch-mock": "^3.0.3",
     "prop-types": "^15.8.1",
     "react-scripts": "5.0.1",
     "ts-jest": "^28.0.5",
@@ -99,15 +100,16 @@
     "transform": {
       "^.+\\.(ts|tsx|js|jsx)$": "ts-jest"
     },
-		"moduleNameMapper": {
-			"^@assets(.*)$": "<rootDir>/src/assets$1",
-			"^@components(.*)$": "<rootDir>/src/components$1",
-			"^@sample(.*)$": "<rootDir>/src/sample$1",
-			"^@services(.*)$": "<rootDir>/src/services$1",
-			"^@store(.*)$": "<rootDir>/src/store$1",
-			"^@types(.*)$": "<rootDir>/src/types$1",
-			"^@utils(.*)$": "<rootDir>/src/utils$1",
-			"^@views(.*)$": "<rootDir>/src/views$1"
-		} 
+    "moduleNameMapper": {
+      "^@assets(.*)$": "<rootDir>/src/assets$1",
+      "^@components(.*)$": "<rootDir>/src/components$1",
+      "^@sample(.*)$": "<rootDir>/src/sample$1",
+      "^@services(.*)$": "<rootDir>/src/services$1",
+      "^@store(.*)$": "<rootDir>/src/store$1",
+      "^@types(.*)$": "<rootDir>/src/types$1",
+      "^@utils(.*)$": "<rootDir>/src/utils$1",
+      "^@views(.*)$": "<rootDir>/src/views$1",
+      "^@tests(.*)$": "<rootDir>/src/tests$1"
+    }
   }
 }
