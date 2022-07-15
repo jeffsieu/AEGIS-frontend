@@ -17,20 +17,18 @@ function ScheduleCard(props: ScheduleCardProps) {
 
   return (
     <Card variant="outlined" sx={{ backgroundColor: cardColor }}>
-      <CardActionArea onClick={onClick}>
+      <CardActionArea onClick={onClick} data-testid="schedule-button">
         <Box
           p={2}
           sx={{
             overflowX: 'clip',
             maskImage: 'linear-gradient(90deg, #000 60%, transparent);',
             pointerEvents: 'none',
-          }}
-        >
+          }}>
           <Typography
             variant="h5"
             color={theme.palette.text.secondary}
-            gutterBottom
-          >
+            gutterBottom>
             {dateRangeToString(
               [schedule.startDate, schedule.endDate],
               'MMM YYYY'
