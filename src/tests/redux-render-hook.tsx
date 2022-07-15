@@ -8,6 +8,11 @@ import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { backendApi } from '@services/backend';
 import { BrowserRouter, Routes } from 'react-router-dom';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { lightTheme } from 'hummingbird-ui';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>;
@@ -35,10 +40,22 @@ export function renderWithProviders(
   }: ExtendedRenderOptions = {}
 ) {
   function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
+    const theme = lightTheme;
+
+    theme.typography.button.textTransform = 'none';
+    theme.typography.button.fontWeight = 'bold';
+
+    dayjs.locale('en-sg');
+
     return (
-      <Provider store={store}>
-        <BrowserRouter>{children}</BrowserRouter>
-      </Provider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Provider store={store}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <BrowserRouter>{children}</BrowserRouter>
+          </LocalizationProvider>
+        </Provider>
+      </ThemeProvider>
     );
   }
 
