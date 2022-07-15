@@ -7,6 +7,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 import { backendApi } from '@services/backend';
+import { BrowserRouter, Routes } from 'react-router-dom';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { lightTheme } from 'hummingbird-ui';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: PreloadedState<RootState>;
@@ -34,7 +40,23 @@ export function renderWithProviders(
   }: ExtendedRenderOptions = {}
 ) {
   function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
-    return <Provider store={store}>{children}</Provider>;
+    const theme = lightTheme;
+
+    theme.typography.button.textTransform = 'none';
+    theme.typography.button.fontWeight = 'bold';
+
+    dayjs.locale('en-sg');
+
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Provider store={store}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <BrowserRouter>{children}</BrowserRouter>
+          </LocalizationProvider>
+        </Provider>
+      </ThemeProvider>
+    );
   }
 
   // Return an object with the store and all of RTL's query functions

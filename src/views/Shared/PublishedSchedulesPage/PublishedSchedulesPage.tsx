@@ -60,13 +60,14 @@ function PublishedSchedulesPage(props: PublishedSchedulesPageProps) {
         <EmptyHint>{ERROR_NO_PUBLISHED_SCHEDULES}</EmptyHint>
       )}
       <Stack spacing={4}>
-        {schedules.map((schedule) => (
+        {schedules.map((schedule, i) => (
           <ScheduleCard
             {...scheduleToScheduleTableProps(schedule, roles, members)}
             onClick={() => {
               onScheduleClick(schedule);
             }}
             canFilter={false}
+            key={i}
           />
         ))}
       </Stack>

@@ -97,6 +97,9 @@
     "webpack": "^5.72.1"
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+    ],
     "transform": {
       "^.+\\.(ts|tsx|js|jsx)$": "ts-jest"
     },
