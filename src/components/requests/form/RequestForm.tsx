@@ -3,6 +3,7 @@ import { RequestPeriod } from '@typing';
 import { Backend } from '@typing/backend';
 import { useMemo, useRef, useState } from 'react';
 import RequestFormItem, { PartialRequestPeriod } from './RequestFormItem';
+import CreateRequestDialog from './CreateRequestDialog'
 
 export type RequestFormProps = {
   members: Backend.Entry<Backend.Member>[];
@@ -50,6 +51,16 @@ function RequestForm(props: RequestFormProps) {
     setPeriods([...periods.filter((_, i) => i !== index)]);
   }
 
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
   return (
     <Box
       display="flex"
@@ -83,14 +94,19 @@ function RequestForm(props: RequestFormProps) {
       </Grid>
       <Button
         variant="contained"
-        onClick={() => {
+        onClick={handleClickOpen}
+      >
+        Create request
+      </Button>
+      <CreateRequestDialog 
+        openDialog={openDialog}
+        handleClose={handleClose}
+        handleCreateRequest={() => {
           if (form.current?.reportValidity()) {
             onRequestCreate(filledPeriods);
           }
         }}
-      >
-        Create request
-      </Button>
+      />
     </Box>
   );
 }
