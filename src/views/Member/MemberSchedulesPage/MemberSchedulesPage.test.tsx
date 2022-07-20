@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMockScheduleItems } from '@utils/mock-data/schedule';
 import { MEMBERS, ROLES } from '@utils/mock-data/backend';
 import { BACKEND_URL } from '@services/backend/base';
-import MemberPublishedPage from './MemberPublishedPage';
+import MemberSchedulesPage from './MemberSchedulesPage';
 enableFetchMocks();
 
 beforeEach((): void => {
@@ -49,7 +49,7 @@ describe('Member Schedule Page', () => {
       }
     });
 
-    renderWithProviders(<MemberPublishedPage />);
+    renderWithProviders(<MemberSchedulesPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Jul 2022')).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('Member Schedule Page', () => {
       }
     });
 
-    renderWithProviders(<MemberPublishedPage />);
+    renderWithProviders(<MemberSchedulesPage />);
 
     await waitFor(() => {
       expect(screen.getByTestId('schedule-button')).toBeInTheDocument();

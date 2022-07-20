@@ -5,7 +5,7 @@ import PublishedSchedulesPage, {
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 
-function MemberPublishedPage() {
+function MemberSchedulesPage() {
   const navigate = useNavigate();
   const props: PublishedSchedulesPageWithAPIProps = {
     onScheduleClick: (schedule: Backend.Schedule) => {
@@ -16,4 +16,4 @@ function MemberPublishedPage() {
   return <PublishedSchedulesPage {...props} />;
 }
 
-export default MemberPublishedPage;
+export default MemberSchedulesPage;

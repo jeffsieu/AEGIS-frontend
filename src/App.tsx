@@ -30,8 +30,9 @@ import PlannerDraftsPage from '@views/Planner/PlannerDraftsPage/PlannerDraftsPag
 import MemberNewRequestForm from '@views/Member/MemberNewRequestForm/MemberNewRequestForm';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en-sg';
+import MemberSchedulePage from '@views/Member/MemberSchedulePage/MemberSchedulePage';
 import MemberRequestPage from '@views/Member/MemberRequestsPage/MemberRequestsPage';
-import MemberPublishedPage from '@views/Member/MemberPublishedPage/MemberPublishedPage';
+import MemberSchedulesPage from '@views/Member/MemberSchedulesPage/MemberSchedulesPage';
 import PlannerDraftEditorPage from '@views/Planner/PlannerDraftEditorPage/PlannerDraftEditorPage';
 import InitializeDataButton from '@utils/mock-data/InitializeDataButton';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -108,10 +109,10 @@ function AnimatedRoutes() {
               <Routes location={location}>
                 <Route path="/" element={<MemberHomePage />} />
                 <Route path="/new-request" element={<MemberNewRequestForm />} />
-                <Route path="/schedules" element={<MemberPublishedPage />} />
+                <Route path="/schedules" element={<MemberSchedulesPage />} />
                 <Route
                   path="/schedules/:month"
-                  element={<PlannerPublishedSchedulePage />}
+                  element={<MemberSchedulePage />}
                 />
                 <Route path="/requests" element={<MemberRequestPage />} />
                 <Route path="/planner" element={<ProtectedPlannerRoute />}>

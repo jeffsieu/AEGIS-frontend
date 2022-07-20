@@ -18,7 +18,7 @@ import ScheduleSelectMember from '@components/schedule/ScheduleSelectMember/Sche
 
 import { Backend } from '@typing/backend';
 
-type PlannerPublishedSchedulePageProps =  ScheduleTableProps & {
+export type PublishedSchedulePageProps =  ScheduleTableProps & {
     onUnpublishClick: () => Promise<void>;
     isUnpublishing: boolean;
     members: Backend.Entry<
@@ -29,7 +29,7 @@ type PlannerPublishedSchedulePageProps =  ScheduleTableProps & {
     viewOnly?: boolean;
 };
 
-function PublishedSchedulePage(  props: PlannerPublishedSchedulePageProps ) {
+function PublishedSchedulePage(  props: PublishedSchedulePageProps ) {
     const { startDate, endDate, onUnpublishClick, isUnpublishing, members, viewOnly } =
     props;
     const [selectedMembers, setSelectedMembers] = useState<typeof members>([]);
