@@ -1,26 +1,29 @@
 import MultiDatePicker from '@components/general/multi-date-picker';
 import {
   Add,
-  DateRangeOutlined,
+  Announcement,
   Clear,
+  DateRangeOutlined,
   Person,
   Work,
 } from '@mui/icons-material';
 import {
+  Autocomplete,
+  Box,
   Card,
   CardContent,
-  Box,
-  Typography,
-  IconButton,
-  Grid,
-  TextField,
-  useTheme,
-  MenuItem,
-  Autocomplete,
-  Select,
-  FormControl,
-  InputLabel,
   Divider,
+  FilledInput,
+  FormControl,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  useTheme,
 } from '@mui/material';
 import { Backend } from '@typing/backend';
 import { getCardColor } from '@utils/theme';
@@ -191,20 +194,30 @@ function RequestFormItem(props: RequestFormItemProps) {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Reason"
-                variant="filled"
-                required={!isPromptItem}
-                value={request.reason}
-                onFocus={() => {
-                  onInputFocus();
-                }}
-                onChange={(e) => {
-                  request.reason = e.target.value;
-                  onUpdate();
-                }}
-              />
+              <FormControl fullWidth variant="filled" required={!isPromptItem}>
+                  <InputLabel>Reason</InputLabel>
+                  <FilledInput
+                    value={request.reason}
+                    onFocus={() => {
+                      onInputFocus();
+                    }}
+                    onChange={(e) => {
+                      request.reason = e.target.value;
+                      onUpdate();
+                    }} />
+                    <FormHelperText
+                    sx={{ 
+                      color: theme.palette.primary.main, 
+                      fontSize: 14, 
+                      fontWeight: 'bold'  
+                      }}>
+                      <Announcement 
+                      fontSize="small" 
+                      sx={{ verticalAlign: 'middle',
+                            display: 'inline-flex'}}/>
+                      Please ensure your reason is classified under OFFICIAL(OPEN)!
+                    </FormHelperText>
+                </FormControl>
             </Grid>
           </Grid>
         </Box>
