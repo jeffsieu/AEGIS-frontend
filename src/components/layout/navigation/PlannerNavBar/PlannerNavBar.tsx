@@ -52,6 +52,12 @@ function PlannerNavBar() {
             navigate('/planner/roles');
           },
         },
+        {
+          label: 'Guide',
+          onClick: () => {
+            navigate('/planner/guide');
+          },
+        },
       ]}
       actions={[
         {

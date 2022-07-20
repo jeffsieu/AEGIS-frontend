@@ -30,6 +30,12 @@ function MemberNavBar() {
             navigate('/requests');
           },
         },
+        {
+          label: 'Guide',
+          onClick: () => {
+            navigate('/guide');
+          },
+        },
       ]}
       actions={[
         {
