@@ -8,6 +8,7 @@ import {
   Work,
 } from '@mui/icons-material';
 import {
+  Alert,
   Autocomplete,
   Box,
   Card,
@@ -195,29 +196,23 @@ function RequestFormItem(props: RequestFormItemProps) {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth variant="filled" required={!isPromptItem}>
-                  <InputLabel>Reason</InputLabel>
-                  <FilledInput
-                    value={request.reason}
-                    onFocus={() => {
-                      onInputFocus();
-                    }}
-                    onChange={(e) => {
-                      request.reason = e.target.value;
-                      onUpdate();
-                    }} />
-                    <FormHelperText
-                    sx={{ 
-                      color: theme.palette.primary.main, 
-                      fontSize: 14, 
-                      fontWeight: 'bold'  
-                      }}>
-                      <Announcement 
-                      fontSize="small" 
-                      sx={{ verticalAlign: 'middle',
-                            display: 'inline-flex'}}/>
-                      Please ensure your reason is classified under OFFICIAL(OPEN)!
-                    </FormHelperText>
-                </FormControl>
+                <InputLabel>Reason</InputLabel>
+                <FilledInput
+                  value={request.reason}
+                  onFocus={() => {
+                    onInputFocus();
+                  }}
+                  onChange={(e) => {
+                    request.reason = e.target.value;
+                    onUpdate();
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Alert severity="info" variant="outlined" icon={<Announcement />}>
+                Ensure your reason is classified under OFFICIAL (OPEN)
+              </Alert>
             </Grid>
           </Grid>
         </Box>
