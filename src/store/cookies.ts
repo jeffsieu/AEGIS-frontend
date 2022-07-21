@@ -1,18 +1,12 @@
-import Cookies from 'universal-cookie';
-
-export const cookies = new Cookies();
-
 export const hasPlannerCookie = (): boolean => {
-  const cookie = cookies.get('isPlanner');
-  return cookie === 'true';
+  const isPlannerEntry = sessionStorage.getItem('isPlanner');
+  return isPlannerEntry === 'true';
 };
 
 export const setPlannerCookie = (isPlanner: boolean) => {
   if (isPlanner) {
-    cookies.set('isPlanner', isPlanner, {
-      path: '/',
-    });
+    sessionStorage.setItem('isPlanner', 'true');
   } else {
-    cookies.remove('isPlanner');
+    sessionStorage.removeItem('isPlanner');
   }
 };
