@@ -14,7 +14,7 @@ export function getDateRanges(dates: Date[]): DateRange[] {
       continue;
     }
 
-    if (date.subtract(1, 'day').isSame(end)) {
+    if (date.subtract(1, 'day').isSame(end, 'day')) {
       end = date;
     } else {
       dateRanges.push([start.toDate(), end.toDate()]);
@@ -37,7 +37,7 @@ export function dateRangeToString(
   const [startDate, endDate] = dateRange;
   const start = dayjs(startDate);
   const end = dayjs(endDate);
-  if (start.isSame(end)) {
+  if (start.isSame(end, 'day')) {
     return start.format(formatString);
   } else {
     const endString = end.format(formatString);

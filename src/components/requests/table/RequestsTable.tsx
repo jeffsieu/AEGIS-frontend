@@ -38,6 +38,8 @@ function MultiDatePickerEditComponent(props: GridRenderEditCellParams<Date[]>) {
   const { id, field, value } = props;
   const apiRef = useGridApiContext();
 
+  console.log(value);
+
   return (
     <MultiDatePicker
       label={''}

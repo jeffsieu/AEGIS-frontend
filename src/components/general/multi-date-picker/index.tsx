@@ -66,12 +66,15 @@ function MultiDatePicker(
 
   function onChange(newValue: Dayjs | null) {
     if (newValue) {
-      if (selection.some((date) => date.isSame(newValue))) {
-        const newValues = selection.filter((date) => !date.isSame(newValue));
+      if (selection.some((date) => date.isSame(newValue, 'day'))) {
+        const newValues = selection.filter(
+          (date) => !date.isSame(newValue, 'day')
+        );
         onSelectionChanged(newValues);
       } else {
         const newValues = [...selection, newValue];
         newValues.sort((a, b) => a.diff(b));
+        console.log(newValues);
         onSelectionChanged(newValues);
       }
     } else {
@@ -87,7 +90,7 @@ function MultiDatePicker(
       return <PickersDay {...pickersDayProps} />;
     }
 
-    const selected = selection.some((d) => d.isSame(date));
+    const selected = selection.some((d) => d.isSame(date, 'day'));
 
     return (
       <CustomPickersDay
@@ -149,8 +152,7 @@ function MultiDatePicker(
                     event.currentTarget.parentElement!.parentElement!
                       .parentElement
                   );
-                }}
-              >
+                }}>
                 <DateRangeOutlined />
               </IconButton>
             </InputAdornment>
@@ -170,8 +172,7 @@ function MultiDatePicker(
         transformOrigin={{
           vertical: 'top',
           horizontal: 'right',
-        }}
-      >
+        }}>
         <StaticDatePicker
           displayStaticWrapperAs="desktop"
           {...restProps}
@@ -190,8 +191,7 @@ function MultiDatePicker(
                 size="small"
                 onClick={() => {
                   onSelectionChanged(allDatesInMonth);
-                }}
-              >
+                }}>
                 Select all
               </Button>
             )}
@@ -201,8 +201,7 @@ function MultiDatePicker(
               size="small"
               onClick={() => {
                 onSelectionChanged([]);
-              }}
-            >
+              }}>
               Clear
             </Button>
           </Box>
