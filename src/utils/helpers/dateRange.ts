@@ -32,7 +32,8 @@ export function getDateRanges(dates: Date[]): DateRange[] {
 /// Only the unique part of the formatted start date is included in the formatted range.
 export function dateRangeToString(
   dateRange: DateRange,
-  formatString: string = 'D MMM YYYY'
+  formatString: string = 'D MMM YYYY',
+  formatDelimiter: string = ' '
 ): string {
   const [startDate, endDate] = dateRange;
   const start = dayjs(startDate);
@@ -54,9 +55,10 @@ export function dateRangeToString(
     const index = startStringReversed.findIndex(
       (c, i) => c !== endStringReversed[i]
     );
-    const spaceIndex = startStringReversed.findIndex(
-      (c, i) => c === ' ' && i >= index
-    );
+    const spaceIndex = startStringReversed
+      .join('')
+      .substring(0, index)
+      .lastIndexOf(formatDelimiter);
     const startStringPart = startStringReversed
       .slice(spaceIndex + 1, startStringReversed.length)
       .reverse()
