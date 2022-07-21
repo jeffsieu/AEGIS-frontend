@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import NavBar from '@components/layout/navigation/NavBar';
 import PlannerHomePage from '@views/Planner/PlannerHomePage/PlannerHomePage';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
@@ -43,6 +42,8 @@ import { useEffect } from 'react';
 import FadeTransition from '@components/general/fade-transition';
 import PlannerSimpleLoginPage from '@views/Planner/PlannerSimpleLoginPage/PlannerSimpleLoginPage';
 import ProtectedPlannerRoute from '@views/Planner/PlannerSimpleLoginPage/ProtectedPlannerRoute';
+import GuidePage from './views/Shared/GuidePage/GuidePage';
+import { userGuides, plannerGuides } from './guides';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -108,6 +109,10 @@ function AnimatedRoutes() {
             <Container>
               <Routes location={location}>
                 <Route path="/" element={<MemberHomePage />} />
+                <Route
+                  path="/guide"
+                  element={<GuidePage guides={userGuides} />}
+                />
                 <Route path="/new-request" element={<MemberNewRequestForm />} />
                 <Route path="/schedules" element={<MemberSchedulesPage />} />
                 <Route
@@ -117,6 +122,10 @@ function AnimatedRoutes() {
                 <Route path="/requests" element={<MemberRequestPage />} />
                 <Route path="/planner" element={<ProtectedPlannerRoute />}>
                   <Route index element={<PlannerHomePage />} />
+                  <Route
+                    path="guide"
+                    element={<GuidePage guides={plannerGuides} />}
+                  />
                   <Route path="new-plan" element={<PlannerNewPlanForm />} />
                   <Route path="published" element={<PlannerSchedulesPage />} />
                   <Route path="drafts" element={<PlannerDraftsPage />} />
