@@ -16,6 +16,7 @@ import {
   GridRowModel,
   GridRenderEditCellParams,
   useGridApiContext,
+  GridComparatorFn
 } from '@mui/x-data-grid';
 import { Backend } from '@typing/backend';
 import { dateRangesToString, getDateRanges } from '@utils/helpers/dateRange';
@@ -52,6 +53,10 @@ function MultiDatePickerEditComponent(props: GridRenderEditCellParams<Date[]>) {
     />
   );
 }
+
+// Function to sort request date by start date
+const requestDateComparator: GridComparatorFn<Date[]> = (v1, v2) => 
+  v1[0].getDate() - v2[0].getDate();
 
 export default function RequestsTable(props: RequestsTableProps) {
   const { members, onRequestsUpdate } = props;
@@ -138,6 +143,7 @@ export default function RequestsTable(props: RequestsTableProps) {
       renderEditCell: (params: GridRenderEditCellParams<Date[]>) => {
         return <MultiDatePickerEditComponent {...params} />;
       },
+      sortComparator: requestDateComparator,
     },
     {
       field: 'reason',
@@ -200,6 +206,14 @@ export default function RequestsTable(props: RequestsTableProps) {
       experimentalFeatures={{ newEditingApi: true }}
       onRowEditStart={handleRowEditStart}
       onRowEditStop={handleRowEditStop}
+      initialState={{
+        sorting: {
+          sortModel: [
+            {field: 'callsign', sort:'asc'},
+            {field: 'dates', sort:'asc'}
+          ]
+        }
+      }}
     />
   );
 }
