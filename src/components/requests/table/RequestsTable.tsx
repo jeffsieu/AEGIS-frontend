@@ -209,7 +209,7 @@ export default function RequestsTable(props: RequestsTableProps) {
       initialState={{
         sorting: {
           sortModel: [
-            { field: 'callsign', sort:'asc'},
+            {field: 'callsign', sort:'asc'},
             {field: 'dates', sort:'asc'}
           ]
         }
