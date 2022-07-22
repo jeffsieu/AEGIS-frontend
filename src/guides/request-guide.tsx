@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import React from 'react';
+import Link from '@mui/material/Link';
 import { Guide } from '@typing/guide';
 import { GuideImage } from '@views/Shared/GuidePage/GuidePage';
 
@@ -8,6 +8,8 @@ import GuideRequest2 from '@assets/guide-request-2.png';
 import GuideRequest3 from '@assets/guide-request-3.png';
 import GuideRequest4 from '@assets/guide-request-4.png';
 import GuideRequest5 from '@assets/guide-request-5.png';
+import GuideRequest6 from '@assets/guide-request-6.png';
+import GuideRequest7 from '@assets/guide-request-7.png';
 
 export const RequestGuide: Guide = {
   title: 'Creating requests',
@@ -76,13 +78,39 @@ export const RequestGuide: Guide = {
       ),
     },
     {
-      label: 'Submit request',
+      label: 'Create request',
       content: (
         <div>
           <Typography variant="body1">
-            Click the "Create request" button to submit your request.
+            Click the "Create request" button.
           </Typography>
           <GuideImage src={GuideRequest5} alt="'Create request' button" />
+        </div>
+      ),
+    },
+    {
+      label: 'Acknowledgement of Data Classification and Personal Data',
+      content: (
+        <div>
+          <Typography variant="body1">
+            Check that your entered data complies with the OFFICIAL(OPEN) classification
+            and does not include personal information that may be regulated under { }
+            <Link href="https://www.pdpc.gov.sg/-/media/Files/PDPC/PDF-Files/Resource-for-Individuals/what-you-need-to-know-about-pdpa-v1-0.pdf?la=en"> 
+            PDPA
+            </Link>.
+          </Typography>
+          <GuideImage src={GuideRequest6} alt="Acknowledgement of Data Classification and Personal Data" />
+        </div>
+      ),
+    },
+    {
+      label: 'Check Boxes to Acknowledge and Create Request',
+      content: (
+        <div>
+          <Typography variant="body1">
+            Check both boxes and click on the 'Create Request' button to submit your request.
+          </Typography>
+          <GuideImage src={GuideRequest7} alt="Check Boxes to Acknowledge and Create Request" />
         </div>
       ),
     },
